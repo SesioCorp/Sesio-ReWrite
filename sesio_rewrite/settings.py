@@ -52,6 +52,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+AUTH_USER_MODEL = "users.CustomUser"
+
 ROOT_URLCONF = 'sesio_rewrite.urls'
 
 TEMPLATES = [
