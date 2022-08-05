@@ -1,7 +1,7 @@
 from tkinter import CASCADE
 from django.db import models
 from systemandfacility.models import Facility
-from workorder.models import Category 
+ 
 
 TEXT = "text"
 SHORT_TEXT = "short-text"
@@ -38,7 +38,7 @@ class QuestionCategory(models.Model):
 
 class Question(models.Model):
     facility = models.ForeignKey(Facility, on_delete=models.CASCADE, related_name="questions")
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="questions")
+    category = models.ForeignKey(QuestionCategory, on_delete=models.CASCADE, related_name="questions")
     question = models.TextField()
     answer_type = models.CharField(choices=QUESTION_TYPES, max_length=50)
     choices = models.TextField(blank=True, null=True)
@@ -56,7 +56,7 @@ class Question(models.Model):
 
 class QuestionSet(models.Model):
     name = models.CharField(max_length=50)
-    question = models.ForeignKey(Question, on_delete=CASCADE, related_name="questionsets")
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name="questionsets")
     slug = models.SlugField(unique=True)
 
     def __str__(self):

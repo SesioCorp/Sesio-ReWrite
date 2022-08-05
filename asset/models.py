@@ -23,7 +23,7 @@ class Asset(models.Model):
     type = models.ForeignKey(AssetType, on_delete=models.CASCADE, related_name="assets")
     slug = models.SlugField(unique=True)
     barcode = models.IntegerField()
-    question_set = models.ForeignKey(QuestionSet, on_delete=CASCADE, related_name="assets")
+    question_set = models.ForeignKey(QuestionSet, on_delete=models.CASCADE, related_name="assets")
     is_demo = models.BooleanField(default=False)
 
     def __str__(self):

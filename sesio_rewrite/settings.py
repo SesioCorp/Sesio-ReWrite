@@ -40,7 +40,10 @@ INSTALLED_APPS = [
     'systemandfacility',
     'workorder',
     'users',
-    "asset"
+    "asset",
+    "question",
+    "map",
+    "preventivemaintenance",
 ]
 
 MIDDLEWARE = [
