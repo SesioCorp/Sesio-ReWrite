@@ -1,3 +1,4 @@
+from tkinter import CASCADE
 from django.db import models
 from systemandfacility.models import Facility
 from workorder.models import Category 
@@ -53,6 +54,11 @@ class Question(models.Model):
             text = self.question
         return text
 
-# class QuestionSet(models.Model):
-#     name = models.CharField(max_length=50)
-    
+class QuestionSet(models.Model):
+    name = models.CharField(max_length=50)
+    question = models.ForeignKey(Question, on_delete=CASCADE, related_name="questionsets")
+    slug = models.SlugField(unique=True)
+
+    def __str__(self):
+        return self.name
+
