@@ -1,5 +1,34 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Hello World</h1>
+
+    <section class="content">
+        <div class="container card_columns">
+            <div class="row">
+                <div class="col-12">
+                    <div class="filters">
+                        <form action="GET" class="filter-from">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">
+                                                        <i class="fas fa-search"></i>
+                                                    </span>
+                                                </div>
+                                                <input type="text" class="form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
 {% endblock content %}

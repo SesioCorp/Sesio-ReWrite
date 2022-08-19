@@ -1,11 +1,42 @@
-<!doctype html>
+{% load static %}
+
+<!DOCTYPE html>
 <html lang="en">
-    {% include "includes/header.html" %}
-  <body>
+
+<head>
+  {% include "includes/header.html" %}
+  {% block extra_css %}
+  {% endblock extra_css %}
+</head>
+
+<body class="hold-transition ">
+
+
+<section class="container-fluid header" style="padding: 16px 0px 0px 0px;">
+  <div class="header-homepage mb-5">
+      <div class="row">
+          <div class="col-md-3">
+          </div>
+          <div class="col-md-6 d-flex justify-content-center">
+              <a class="navbar-brand " href="#">
+                  <img src="https://sesio.s3.amazonaws.com/dev/static/img/logo/logo.png"  height='60' width="119" class="d-inline-block align-top" alt="">
+              </a>
+          </div>
+          <div class="col-md-3" style="left: 25px;">
+              <p class="text" style=" margin-bottom:0;">Kevin Peters</p>
+              <p class="text-secondary" style=' margin : 0px 31px; padding-top:0;'>Log Out</p>
+          </div>
+      </div>
+  </div>
+</section>
+  
+  {% block content %}
     
-    {% block content %}
-    {% endblock content %}
+  {% endblock content %}
+
+  {% include "includes/footer.html" %}
+  {% block extra_js %}
     
-    {% include "includes/js.html" %}
-  </body>
+  {% endblock extra_js %}
+</body>
 </html>
