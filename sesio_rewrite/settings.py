@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     "question",
     "map",
     "preventivemaintenance",
+    'bootstrap_pagination',
+    "el_pagination",
 ]
 
 MIDDLEWARE = [

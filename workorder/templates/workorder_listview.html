@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{% load el_pagination_tags %}
+
 
 {% block content %}
 <div class="content">
@@ -7,6 +9,42 @@
             <div class="col-12">
                 <div class="filters">
                     
+                </div>
+                <div class="card" id="assigned_workorders_div">
+                    <div class="card-header">
+                        <h3 class="card-title float-left pm_details font-weight-bold">
+                            Your Work Orders
+                        </h3>
+                        <h3 class="card-title float-right text-danger pm_details mr-5 font-weight-bold">
+                            Critical/Urgent: 2
+                        </float-right>
+                    </div>
+                    <div class="card card-body able-responsive">
+                        {% paginate assigned_workorders as assigned_workorders_page %}
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th class="min-phone-l">Priority</th>
+                                    <th class="desktop">Building</th>
+                                    <th class="desktop">Floor</th>
+                                    <th class="desktop">W.O Title</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for wo in assigned_workorders_page %}
+                                    <tr class="clickable-row" data-href="">
+                                        <td>{{ wo.priority }}</td>
+                                        <td>{{ wo.location.building.name }}</td>
+                                        <td>{{ wo.location.floor }}</td>
+                                        <td>{{ wo.brief_discription }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="pagination_wo_list" id="assigned_workorders_page">
+                        {% show_pages %}
+                    </div>
                 </div>
             </div>
         </div>
