@@ -56,4 +56,4 @@ class Location(models.Model):
     specific_location = models.CharField(max_length=50)
 
     def __str__(self):
-        return self.name
+        return self.specific_location

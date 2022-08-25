@@ -1,6 +1,7 @@
 from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
 from .models import WorkOrder
+from .filters import WorkOrderFilter
 
 
 class Home(TemplateView):
@@ -18,6 +19,7 @@ class WorkOrderListView(ListView):
         unassigned_workorders_queryset = WorkOrder.objects.filter(
             assigned__isnull = True
         )
-        context["assigned_workorders"] = assigned_workorders_queryset
-        context["unassigned_workorders"] = unassigned_workorders_queryset
+        context["assigned_workorders"] = WorkOrderFilter(self.request.GET, queryset=assigned_workorders_queryset)
+
+        context["unassigned_workorders"] = WorkOrderFilter(self.request.GET, queryset=unassigned_workorders_queryset)
         return context

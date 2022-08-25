@@ -46,6 +46,9 @@ INSTALLED_APPS = [
     "preventivemaintenance",
     'bootstrap_pagination',
     "el_pagination",
+    "bootstrap4",
+    "widget_tweaks",
+    "crispy_forms",
 ]
 
 MIDDLEWARE = [
@@ -142,3 +145,15 @@ MEDIA_ROOT = os.path.join(BASE_DIR,"media")
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+PAGINATION_DEFAULT_PAGINATION = 5
+
+EL_PAGINATION_PER_PAGE = 5
+
+EL_PAGINATION_NEXT_LABEL = "Next"
+
+EL_PAGINATION_PREVIOUS_LABEL = "Previous"
+
+PAGINATION_MAX_SIZE = 200
+
+PAGINATION_PAGE_PARAM = "page"

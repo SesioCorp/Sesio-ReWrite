@@ -1,5 +1,9 @@
 {% extends "base.html" %}
+{% load bootstrap4 %}
+{% load bootstrap_pagination %}
 {% load el_pagination_tags %}
+{% load widget_tweaks %}
+{% load crispy_forms_tags %}
 
 
 {% block content %}
@@ -8,7 +12,42 @@
         <div class="row">
             <div class="col-12">
                 <div class="filters">
-                    
+                    <form action="GET" class="filters">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                {% if request.GET.order_by %}
+                                <input type="hidden" name="order_by" value="{{ request.GET.order_by }}">
+                                {% endif %}
+                                <input type="hidden" name="page" value="{{ request.GET.page }}">
+                                <input type="hidden" name="page_size" value="{{ request.GET.page_size }}">
+                                <div class="col-sm-12">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                        </div>
+                                        {% render_field assigned_workorders.form.custom_search class="form-control" %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    {% bootstrap_field assigned_workorders.form.building %}
+                                </div>
+                                <div class="col-sm-4">
+                                    {% bootstrap_field assigned_workorders.form.floor %}
+                                </div>
+                                <div class="col-sm-4">
+                                    {% bootstrap_field assigned_workorders.form.department %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </form>
                 </div>
                 <div class="card" id="assigned_workorders_div">
                     <div class="card-header">
@@ -20,7 +59,7 @@
                         </float-right>
                     </div>
                     <div class="card card-body able-responsive">
-                        {% paginate assigned_workorders as assigned_workorders_page %}
+                        {% paginate assigned_workorders.qs as assigned_workorders_page %}
                         <table class="table table-striped">
                             <thead>
                                 <tr>
@@ -46,6 +85,43 @@
                         {% show_pages %}
                     </div>
                 </div>
+                <div class="card" id="unassigned_workorders_div">
+                    <div class="card-header">
+                        <h3 class="card-title float-left pm_details font-weight-bold">
+                            Unassigned Work Orders
+                        </h3>
+                        <h3 class="card-title float-right text-danger pm_details mr-5 font-weight-bold">
+                            Critical/Urgent: 2
+                        </float-right>
+                    </div>
+                    <div class="card card-body able-responsive">
+                        {% paginate unassigned_workorders.qs as unassigned_workorders_page %}
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th class="min-phone-l">Priority</th>
+                                    <th class="desktop">Building</th>
+                                    <th class="desktop">Floor</th>
+                                    <th class="desktop">W.O Title</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for wo in unassigned_workorders_page %}
+                                    <tr class="clickable-row" data-href="">
+                                        <td>{{ wo.priority }}</td>
+                                        <td>{{ wo.location.building.name }}</td>
+                                        <td>{{ wo.location.floor }}</td>
+                                        <td>{{ wo.brief_discription }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="pagination_wo_list" id="unassigned_workorders_page">
+                        {% show_pages %}
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>

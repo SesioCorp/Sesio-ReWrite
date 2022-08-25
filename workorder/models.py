@@ -29,7 +29,7 @@ class WorkOrder(models.Model):
     brief_discription =models.CharField(max_length=50)
     discription = models.TextField(blank=True, null=True)
     priority = models.ForeignKey(Priority, on_delete=models.CASCADE, related_name="work_orders")
-    assigned = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="work_orders")
+    assigned = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="work_orders", blank=True, null=True)
     completed_at = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
