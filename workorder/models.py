@@ -1,8 +1,11 @@
 from django.db import models
 from systemandfacility.models import Facility, Location
+from asset.models import *
 from django.conf import settings
 
-# Create your models here.
+AssetChoices = (("no", "No"), ("yes", "Yes"))
+Choices =(("open", "Open"), ("closed", "Closed"))
+
 class Category(models.Model):
     name = models.CharField(max_length=50)
     slug = models.SlugField(max_length=50, unique=True)
@@ -31,6 +34,12 @@ class WorkOrder(models.Model):
     priority = models.ForeignKey(Priority, on_delete=models.CASCADE, related_name="work_orders")
     assigned = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="work_orders", blank=True, null=True)
     completed_at = models.DateTimeField(blank=True, null=True)
+    enter_device_id_manually = models.CharField(max_length=100)
+    asset = models.ManyToManyField(Asset, related_name="work_orders", blank=True, null=True)
+    repair_images = models.ImageField(upload_to="uploads/", blank=True)
+    status = models.CharField(max_length=50, choices=Choices, blank=True)
+    scan_bar_code = models.CharField(max_length=50, blank=True)
+    work_orders_connected_to_an_asset=models.CharField(max_length=50, choices=AssetChoices, blank=True)
 
     def __str__(self):
         return self.brief_discription
