@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% load bootstrap4 %}
+{% load static %}
+{% load widget_tweaks %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+
+{% block content %}
+<section class="content">
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h4>New Work Order</h4>
+            </div>
+            <div class="card-body">
+                <form action="POST">
+                    <table>
+                        {{ wizard.management_form }}
+                        {% if wizard.form.forms %}
+                        {% for form in wizard.form.forms %}
+                        {% bootstrap_form form %}
+                        {% endfor %}
+                        {% else %}
+                        {% bootstrap_form wizard.form %}
+                        {% endif %}
+                    </table>
+                    {% if wizard.steps.prev %}
+                    <div class="row">
+                        <div class="col">
+                            <button name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}" class="btn">
+                                {% trans "Previous" %}
+                            </button>
+                        </div>
+                        <div class="col">
+                            <button name="wizard_goto_step" type="submit" value="{{ wizard.steps.next }}" class="btn">
+                                {% trans "Next" %}
+                            </button>
+                        </div>
+                    </div>
+                    {% endif %}
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col">
+                                <button name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}" class="btn btn-block btn-outline-primary btn-lg">
+                                    {% trans "Previous" %}
+                                </button>
+                            </div>
+                            <div class="col">
+                            <input type="submit" name="wizard_goto_step" class="btn btn-block btn-primary btn-lg" value="Next">
+                            </div>
+                        </div>  
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}

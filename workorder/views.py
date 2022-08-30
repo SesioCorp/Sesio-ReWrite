@@ -16,7 +16,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from users.models import CustomUser
 from django.http import HttpResponseRedirect
 from asset.models import Asset
-
+from django.conf import settings
 
 FORMS = [
     ("LocationForm", LocationForm),
@@ -25,8 +25,8 @@ FORMS = [
 ]
 
 TEMPLATES = {
-    "LocationForms": "locationform.html",
-    "WorkOrderForms": "workorder_form.html",
+    "LocationForm": "locationform.html",
+    "WorkOrderForm": "workorder_form.html",
     "WorkOrderStatusForm": "workorder_status.html"
 }
 
@@ -54,13 +54,13 @@ class WorkOrderListView(ListView):
 class WorkOrderWizardView(SessionWizardView):
     file_storage = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, "uploads"))
     form_list = FORMS
-    template_list = TEMPLATES
+    
 
     def get_form_list(self):
         return self.form_list
     
     def get_template_names(self):
-        return self.template_list
+        return [TEMPLATES[self.steps.current]]
 
     def process_step(self, form):
         return self.get_form_step_data(form)

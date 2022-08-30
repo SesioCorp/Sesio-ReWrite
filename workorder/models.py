@@ -29,8 +29,8 @@ class WorkOrder(models.Model):
     facility = models.ForeignKey(Facility, on_delete=models.CASCADE, related_name="work_orders")
     location = models.ForeignKey(Location, on_delete=models.CASCADE, related_name="work_orders")
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="work_orders")
-    brief_discription =models.CharField(max_length=50)
-    discription = models.TextField(blank=True, null=True)
+    brief_description =models.CharField(max_length=50)
+    description = models.TextField(blank=True, null=True)
     priority = models.ForeignKey(Priority, on_delete=models.CASCADE, related_name="work_orders")
     assigned = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="work_orders", blank=True, null=True)
     completed_at = models.DateTimeField(blank=True, null=True)
@@ -42,7 +42,7 @@ class WorkOrder(models.Model):
     work_orders_connected_to_an_asset=models.CharField(max_length=50, choices=AssetChoices, blank=True)
 
     def __str__(self):
-        return self.brief_discription
+        return self.brief_description
 
 class Comment(models.Model):
     comment = models.TextField()
