@@ -58,6 +58,9 @@
 {% endblock content %}
 
 {% block extra_js %}
+<script>
+
+
 
 $("#id_LocationForm-facility").change(function(){
     var url="{% url 'systemandfacility:building-list' %}"
@@ -94,4 +97,5 @@ $("#id_LocationForm-floor").change(function(){
         }
     })
 })
+</script>
 {% endblock extra_js %}
