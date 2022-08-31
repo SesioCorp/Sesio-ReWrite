@@ -56,3 +56,42 @@
     </div>
 </section>
 {% endblock content %}
+
+{% block extra_js %}
+
+$("#id_LocationForm-facility").change(function(){
+    var url="{% url 'systemandfacility:building-list' %}"
+    var id_locationform_facility = $(this).val();
+    $.ajax({
+        url: url,
+        data: {'facility': id_locationform_facility},
+        success: function(data){
+            $("#id_LocationForm-building").html(data)
+        }
+    })
+})
+
+$("#id_LocationForm-building").change(function(){
+    var url="{% url 'systemandfacility:floor-list' %}"
+    var id_locationform_building = $(this).val();
+    $.ajax({
+        url: url,
+        data: {'building': id_locationform_building},
+        success: function(data){
+            $("#id_LocationForm-floor").html(data)
+        }
+    })
+})
+
+$("#id_LocationForm-floor").change(function(){
+    var url="{% url 'systemandfacility:department-list' %}"
+    var id_locationform_floor = $(this).val();
+    $.ajax({
+        url: url,
+        data: {'floor': id_locationform_floor},
+        success: function(data){
+            $("#id_LocationForm-department").html(data)
+        }
+    })
+})
+{% endblock extra_js %}
