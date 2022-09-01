@@ -12,9 +12,22 @@
                 <h4 class="card-title">New Work Order</h4>
             </div>
             <div class="card-body">
-                <p>Text</p>    
+                <form action="" method="POST">
+                    {% csrf_token %}
+                    <table>
+                        {{ wizard.management_form }}
+                        {% if wizard.form.forms %}
+                        {% for field in wizard.form.forms %}
+                        { bootstrap_form field}
+                        {% endfor %}
+                        {% else %}
+                        {% bootstrap_form wizard.form %}
+                        {% endif %}
+                    </table>
+                </form>   
             </div>
         </div>
     </div>
 </section>
 
+{% endblock content %}

@@ -13,7 +13,8 @@
                 <h4>New Work Order</h4>
             </div>
             <div class="card-body">
-                <form action="POST">
+                <form action="" method="POST">
+                    {% csrf_token %}
                     <table>
                         {{ wizard.management_form }}
                         {% if wizard.form.forms %}
