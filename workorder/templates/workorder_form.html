@@ -1,7 +1,10 @@
 {% extends "base.html" %}
 {% load bootstrap4 %}
+{% load static %}
 {% load widget_tweaks %}
 {% load crispy_forms_tags %}
+{% load i18n %}
+
 
 {% block content %}
 
@@ -18,12 +21,36 @@
                         {{ wizard.management_form }}
                         {% if wizard.form.forms %}
                         {% for field in wizard.form.forms %}
-                        { bootstrap_form field}
+                        {% bootstrap_field form.category %}
+                        {% bootstrap_field form.brief_description %}
+                        {% bootstrap_field form.description %}
+                        {% bootstrap_field form.work_orders_connected_to_an_asset %}
+                        {% bootstrap_field form.enter_device_id_manually %}
+                        {% bootstrap_field form.repair_images %}
                         {% endfor %}
                         {% else %}
-                        {% bootstrap_form wizard.form %}
+                        {% bootstrap_field form.category %}
+                        {% bootstrap_field form.brief_description %}
+                        {% bootstrap_field form.description %}
+                        {% bootstrap_field form.work_orders_connected_to_an_asset %}
+                        {% bootstrap_field form.enter_device_id_manually %}
+                        {% bootstrap_field form.repair_images %}
                         {% endif %}
                     </table>
+                    <div class="form-group">
+                        <div class="row">
+                            {% if wizard.steps.prev %}
+                            <div class="col">
+                                <button name="wizard_goto_step" value="{{ wizard.steps.prev }}" class="btn btn-block btn-outline-primary btn-lg" formnovalidate="formnovalidate">
+                                    {% trans "Previous" %}
+                                </button>
+                            </div>
+                            {% endif %}
+                            <div class="col">
+                                <input type="submit" name="wizard_goto_step" class="btn btn-block btn-primary btn-lg" value="Next">
+                            </div>
+                        </div>
+                    </div>
                 </form>   
             </div>
         </div>
@@ -31,3 +58,23 @@
 </section>
 
 {% endblock content %}
+
+{% block extra_js %}
+
+<script>
+    $('label[for="id_WorkOrderForm-enter_device_id_manually"]').hide()
+    document.getElementById("id_WorkOrderForm-enter_device_id_manually").style.display = "none";
+
+    $("#id_WorkOrderForm-work_orders_connected_to_an_asset").on('change', function(){
+        if (this.value === "no"){
+            $('label[for="id_WorkOrderForm-enter_device_id_manually"]').hide()
+            document.getElementById("id_WorkOrderForm-enter_device_id_manually").style.display = "none";
+        }
+        else {
+            $('label[for="id_WorkOrderForm-enter_device_id_manually"]').show()
+            document.getElementById("id_WorkOrderForm-enter_device_id_manually").style.display = "block";
+        }
+    })
+</script>
+
+{% endblock extra_js %}

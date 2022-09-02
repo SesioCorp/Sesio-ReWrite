@@ -34,7 +34,7 @@ class WorkOrder(models.Model):
     priority = models.ForeignKey(Priority, on_delete=models.CASCADE, related_name="work_orders")
     assigned = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="work_orders", blank=True, null=True)
     completed_at = models.DateTimeField(blank=True, null=True)
-    enter_device_id_manually = models.CharField(max_length=100)
+    enter_device_id_manually = models.CharField(max_length=100, blank=True, null=True)
     asset = models.ManyToManyField(Asset, related_name="work_orders", blank=True, null=True)
     repair_images = models.ImageField(upload_to="uploads/", blank=True)
     status = models.CharField(max_length=50, choices=Choices, blank=True)
