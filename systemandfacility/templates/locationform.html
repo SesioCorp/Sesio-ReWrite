@@ -18,11 +18,11 @@
                     <table>
                         {{ wizard.management_form }}
                         {% if wizard.form.forms %}
-                        {% for field in wizard.form.forms %}
-                        {% bootstrap_form field %}
-                        {% endfor %}
+                            {% for field in wizard.form.forms %}
+                                {% bootstrap_form field %}
+                            {% endfor %}
                         {% else %}
-                        {% bootstrap_form wizard.form %}
+                            {% bootstrap_form wizard.form %}
                         {% endif %}
                     </table>
                     {% if wizard.steps.prev %}

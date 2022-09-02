@@ -20,21 +20,21 @@
                     <table>
                         {{ wizard.management_form }}
                         {% if wizard.form.forms %}
-                        {% for field in wizard.form.forms %}
-                        {% bootstrap_field form.category %}
-                        {% bootstrap_field form.brief_description %}
-                        {% bootstrap_field form.description %}
-                        {% bootstrap_field form.work_orders_connected_to_an_asset %}
-                        {% bootstrap_field form.enter_device_id_manually %}
-                        {% bootstrap_field form.repair_images %}
-                        {% endfor %}
+                            {% for field in wizard.form.forms %}
+                                {% bootstrap_field form.category %}
+                                {% bootstrap_field form.brief_description %}
+                                {% bootstrap_field form.description %}
+                                {% bootstrap_field form.work_orders_connected_to_an_asset %}
+                                {% bootstrap_field form.enter_device_id_manually %}
+                                {% bootstrap_field form.repair_images %}
+                            {% endfor %}
                         {% else %}
-                        {% bootstrap_field form.category %}
-                        {% bootstrap_field form.brief_description %}
-                        {% bootstrap_field form.description %}
-                        {% bootstrap_field form.work_orders_connected_to_an_asset %}
-                        {% bootstrap_field form.enter_device_id_manually %}
-                        {% bootstrap_field form.repair_images %}
+                            {% bootstrap_field form.category %}
+                            {% bootstrap_field form.brief_description %}
+                            {% bootstrap_field form.description %}
+                            {% bootstrap_field form.work_orders_connected_to_an_asset %}
+                            {% bootstrap_field form.enter_device_id_manually %}
+                            {% bootstrap_field form.repair_images %}
                         {% endif %}
                     </table>
                     <div class="form-group">
