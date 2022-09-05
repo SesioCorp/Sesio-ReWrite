@@ -41,10 +41,10 @@ class WorkOrderListView(ListView):
     def get_context_data(self, **kwargs):
         context = super(WorkOrderListView, self).get_context_data(**kwargs)
         assigned_workorders_queryset = WorkOrder.objects.filter(
-            assigned__isnull = False
+            assigned_to__isnull = False
         )
         unassigned_workorders_queryset = WorkOrder.objects.filter(
-            assigned__isnull = True
+            assigned_to__isnull = True
         )
         context["assigned_workorders"] = WorkOrderFilter(self.request.GET, queryset=assigned_workorders_queryset)
 
@@ -55,6 +55,14 @@ class WorkOrderWizardView(SessionWizardView):
     file_storage = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, "uploads"))
     form_list = FORMS
     
+    def get_context_data(self, form, **kwargs):
+        context = super(WorkOrderWizardView, self).get_context_data(form=form, **kwargs)
+        if self.steps.current == "WorkOrderForm":
+            user = CustomUser.objects.filter(is_dispatch=False, is_superuser=False).exclude(pk=self.request.user.pk)
+            dispatch_user = CustomUser.objects.filter(is_dispatch=True)
+            context.update({"users": user})
+            context.update({"dispatch_users": dispatch_user})
+        return context
 
     def get_form_list(self):
         return self.form_list
@@ -84,7 +92,7 @@ class WorkOrderWizardView(SessionWizardView):
         
         except ObjectDoesNotExist:
             assets = []
-        
+
         workorder = WorkOrder.objects.create(
             facility = location_object.facility,
             location = location_object,
@@ -94,7 +102,7 @@ class WorkOrderWizardView(SessionWizardView):
             status = workorder_status_data.instance.status,
             priority = priority_object,
             enter_device_id_manually = workorder_data.instance.enter_device_id_manually,
-            assigned_to = CustomUser.objects.get(id=int(self.request.POST.get("WorkOrderForm-assigned_to")))
+            assigned_to = CustomUser.objects.get(id=int(self.request.POST.get("WorkOrderStatusForm-assigned_to")))
         )
 
         if assets == []:

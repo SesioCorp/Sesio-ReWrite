@@ -32,14 +32,14 @@ class WorkOrder(models.Model):
     brief_description =models.CharField(max_length=50)
     description = models.TextField(blank=True, null=True)
     priority = models.ForeignKey(Priority, on_delete=models.CASCADE, related_name="work_orders")
-    assigned = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="work_orders", blank=True, null=True)
+    assigned_to = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="work_orders", blank=True, null=True)
     completed_at = models.DateTimeField(blank=True, null=True)
     enter_device_id_manually = models.CharField(max_length=100, blank=True, null=True)
     asset = models.ManyToManyField(Asset, related_name="work_orders", blank=True, null=True)
     repair_images = models.ImageField(upload_to="uploads/", blank=True)
-    status = models.CharField(max_length=50, choices=Choices, blank=True)
+    status = models.CharField(max_length=50, choices=Choices, blank=False, default="open")
     scan_bar_code = models.CharField(max_length=50, blank=True)
-    work_orders_connected_to_an_asset=models.CharField(max_length=50, choices=AssetChoices, blank=True)
+    work_orders_connected_to_an_asset=models.CharField(max_length=50, choices=AssetChoices, blank=True, default="no")
 
     def __str__(self):
         return self.brief_description

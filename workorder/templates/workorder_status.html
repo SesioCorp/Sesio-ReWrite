@@ -21,19 +21,33 @@
                         {% if wizard.form.forms %}
                             {% for field in wizard.form.forms %}
                                 {% bootstrap_field form.priority %}
-                                {% bootstrap_field form.brief_description %}
-                                {% bootstrap_field form.description %}
-                                {% bootstrap_field form.work_orders_connected_to_an_asset %}
-                                {% bootstrap_field form.enter_device_id_manually %}
-                                {% bootstrap_field form.repair_images %}
+                                {% bootstrap_field form.status %}
+                                {% bootstrap_field form.completed_at %}
+                                <div class="form-group">
+                                    <label for="WorkOrderStatusForm-assigned_to">Assigned To</label>
+                                    <select name="WorkOrderStatusForm-assigned_to" id="WorkOrderStatusForm-assigned_to" class="form-control">
+                                        <option value="{{ request.user.pk }}" selected="">Self</option>
+                                        <option value="{{ dispatch_user.pk }}" selected="">Dispatch</option>
+                                        {% for user in users %}
+                                            <option value="{{ user.pk }}" selected="">{{ user.get_full_name }}</option> 
+                                        {% endfor %}
+                                    </select>
+                                </div>
                             {% endfor %}
                         {% else %}
-                            {% bootstrap_field form.category %}
-                            {% bootstrap_field form.brief_description %}
-                            {% bootstrap_field form.description %}
-                            {% bootstrap_field form.work_orders_connected_to_an_asset %}
-                            {% bootstrap_field form.enter_device_id_manually %}
-                            {% bootstrap_field form.repair_images %}
+                            {% bootstrap_field form.priority %}
+                            {% bootstrap_field form.status %}
+                            {% bootstrap_field form.completed_at %}
+                            <div class="form-group">
+                                <label for="WorkOrderStatusForm-assigned_to">Assigned To</label>
+                                <select name="WorkOrderStatusForm-assigned_to" id="WorkOrderStatusForm-assigned_to" class="form-control">
+                                    <option value="{{ request.user.pk }}" selected="">Self</option>
+                                    <option value="{{ dispatch_user.pk }}" selected="">Dispatch</option>
+                                    {% for user in users %}
+                                        <option value="{{ user.pk }}" selected="">{{ user.get_full_name }}</option> 
+                                    {% endfor %}
+                                </select>
+                            </div>
                         {% endif %}
                     </table>
                     <div class="form-group">
@@ -46,7 +60,7 @@
                             </div>
                             {% endif %}
                             <div class="col">
-                                <input type="submit" name="wizard_goto_step" class="btn btn-block btn-primary btn-lg" value="Next">
+                                <input type="submit" name="wizard_goto_step" class="btn btn-block btn-primary btn-lg" value="Submit">
                             </div>
                         </div>
                     </div>
