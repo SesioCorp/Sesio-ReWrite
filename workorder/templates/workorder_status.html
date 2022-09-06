@@ -71,3 +71,20 @@
 </section>
 
 {% endblock content %}
+
+{% block extra_js %}
+<script>
+$("#id_WorkOrderStatusForm-completed_at").parent().css('display', 'none')
+$("input[type=radio][name=WorkOrderStatusForm-status]").on("change", function(){
+    debugger
+    if (this.value === "closed"){
+        $("#id_WorkOrderStatusForm-completed_at").parent().css('display', 'block')
+        $("#WorkOrderStatusForm-assigned_to").parent().css('display', 'none')
+    }
+    else {
+        $("#WorkOrderStatusForm-assigned_to").parent().css('display', 'block')
+        $("#id_WorkOrderStatusForm-completed_at").parent().css('display', 'none')
+    }
+})
+</script>
+{% endblock extra_js %}
