@@ -24,7 +24,7 @@ class WorkOrderStatusForm(forms.ModelForm):
 
     class Meta:
         model = WorkOrder
-        fields = ["priority", "status", "assigned_to", "completed_at"]
+        fields = ["priority", "status", "assigned_to", "completed_at", "timespent"]
         widgets = {
             "priority": forms.RadioSelect(),
             "status": forms.RadioSelect(),

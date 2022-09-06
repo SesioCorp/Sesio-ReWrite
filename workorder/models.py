@@ -40,6 +40,7 @@ class WorkOrder(models.Model):
     status = models.CharField(max_length=50, choices=Choices, blank=False, default="open")
     scan_bar_code = models.CharField(max_length=50, blank=True)
     work_orders_connected_to_an_asset=models.CharField(max_length=50, choices=AssetChoices, blank=True, default="no")
+    timespent = models.IntegerField(blank=True, null=True)
 
     def __str__(self):
         return self.brief_description
