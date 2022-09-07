@@ -22,9 +22,9 @@
                             {% for field in wizard.form.forms %}
                                 {% bootstrap_field form.priority %}
                                 <div class="form-group">
-                                    <label for="time_spent">Time Spent</label>
+                                    <label for="WorkOrderStatusForm-timespent">Time Spent</label>
                                     <div class="value-button"><i class="fas fa-minus-circle"></i></div>
-                                    <input type="number" name="time_spent" value="0">
+                                    <input type="number" name="WorkOrderStatusForm-timespent" value="0">
                                     <div class="value-button"><i class="fas fa-plus-circle"></i></div>
                                 </div>
                                 {% bootstrap_field form.status %}
@@ -43,11 +43,11 @@
                         {% else %}
                             {% bootstrap_field form.priority %}
                             <div class="form-group">
-                                <label for="time_spent">Time Spent</label>
+                                <label for="WorkOrderStatusForm-timespent">Time Spent</label>
                                 <div class="d-flex">
-                                    <div class="value-button"><i class="fas fa-minus-circle"></i></div>
-                                    <input type="number" name="time_spent" id="number" value="0">
-                                    <div class="value-button"><i class="fas fa-plus-circle"></i></div>  
+                                    <div class="value-button" onclick="decreaseValue()" value="Decrease value"><i class="fas fa-minus-circle"></i></div>
+                                    <input type="text" name="WorkOrderStatusForm-timespent" id="number" value="0">
+                                    <div class="value-button" onclick="increaseValue()" value="Increase value"><i class="fas fa-plus-circle"></i></div>  
                                 </div>
                                 
                             </div>
@@ -91,7 +91,6 @@
 <script>
 $("#id_WorkOrderStatusForm-completed_at").parent().css('display', 'none')
 $("input[type=radio][name=WorkOrderStatusForm-status]").on("change", function(){
-    debugger
     if (this.value === "closed"){
         $("#id_WorkOrderStatusForm-completed_at").parent().css('display', 'block')
         $("#WorkOrderStatusForm-assigned_to").parent().css('display', 'none')
@@ -101,5 +100,22 @@ $("input[type=radio][name=WorkOrderStatusForm-status]").on("change", function(){
         $("#id_WorkOrderStatusForm-completed_at").parent().css('display', 'none')
     }
 })
+$("#number").click(function(){
+    debugger
+    $("#number").prop('disabled', true)
+})
+function increaseValue(){
+    var value = parseInt(document.getElementById('number').value, 10);
+    value = isNaN(value)? 0:value;
+    value += 15;
+    document.getElementById('number').value=value;
+}
+function decreaseValue(){
+    var value = parseInt(document.getElementById('number').value, 10);
+    value = isNaN(value)? 0:value;
+    value < 15? value=15:'';
+    value -= 15;
+    document.getElementById('number').value=value;
+}
 </script>
 {% endblock extra_js %}

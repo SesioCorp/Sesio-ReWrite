@@ -92,7 +92,7 @@ class WorkOrderWizardView(SessionWizardView):
         
         except ObjectDoesNotExist:
             assets = []
-
+        import pdb; pdb.set_trace()
         workorder = WorkOrder.objects.create(
             facility = location_object.facility,
             location = location_object,
@@ -102,7 +102,8 @@ class WorkOrderWizardView(SessionWizardView):
             status = workorder_status_data.instance.status,
             priority = priority_object,
             enter_device_id_manually = workorder_data.instance.enter_device_id_manually,
-            assigned_to = CustomUser.objects.get(id=int(self.request.POST.get("WorkOrderStatusForm-assigned_to")))
+            assigned_to = CustomUser.objects.get(id=int(self.request.POST.get("WorkOrderStatusForm-assigned_to"))),
+            timespent = int(self.request.POST.get('WorkOrderStatusForm-timespent'))
         )
 
         if assets == []:
@@ -113,4 +114,5 @@ class WorkOrderWizardView(SessionWizardView):
             workorder.save()
 
         return HttpResponseRedirect("/")
+
 
