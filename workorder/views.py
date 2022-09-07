@@ -92,8 +92,27 @@ class WorkOrderWizardView(SessionWizardView):
         
         except ObjectDoesNotExist:
             assets = []
-        import pdb; pdb.set_trace()
-        workorder = WorkOrder.objects.create(
+        timespent = self.request.POST.get('WorkOrderStatusForm-timespent')
+        if timespent == '':
+            timespent = 0
+        else:
+            timespent = timespent
+        workorder_status = self.request.POST.get('WorkOrderStatusForm-status')
+        if workorder_status == "open":
+            workorder = WorkOrder.objects.create(
+                facility = location_object.facility,
+                location = location_object,
+                category = category_object,
+                brief_description = workorder_data.instance.brief_description,
+                description = workorder_data.instance.description,
+                status = workorder_status_data.instance.status,
+                priority = priority_object,
+                enter_device_id_manually = workorder_data.instance.enter_device_id_manually,
+                assigned_to = CustomUser.objects.get(id=int(self.request.POST.get("WorkOrderStatusForm-assigned_to"))),
+                timespent = int(timespent)
+            )
+        else:
+            workorder = WorkOrder.objects.create(
             facility = location_object.facility,
             location = location_object,
             category = category_object,
@@ -102,8 +121,8 @@ class WorkOrderWizardView(SessionWizardView):
             status = workorder_status_data.instance.status,
             priority = priority_object,
             enter_device_id_manually = workorder_data.instance.enter_device_id_manually,
-            assigned_to = CustomUser.objects.get(id=int(self.request.POST.get("WorkOrderStatusForm-assigned_to"))),
-            timespent = int(self.request.POST.get('WorkOrderStatusForm-timespent'))
+            timespent = int(timespent),
+            completed_at = self.request.POST.get('WorkOrderStatusForm-completed_at')
         )
 
         if assets == []:
