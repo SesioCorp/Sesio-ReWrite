@@ -57,11 +57,12 @@ class WorkOrderWizardView(SessionWizardView):
     
     def get_context_data(self, form, **kwargs):
         context = super(WorkOrderWizardView, self).get_context_data(form=form, **kwargs)
-        if self.steps.current == "WorkOrderForm":
+       
+        if self.steps.current == "WorkOrderStatusForm":
             user = CustomUser.objects.filter(is_dispatch=False, is_superuser=False).exclude(pk=self.request.user.pk)
-            dispatch_user = CustomUser.objects.filter(is_dispatch=True)
+            dispatch_user = CustomUser.objects.filter(is_dispatch=True, is_superuser=False).first()
             context.update({"users": user})
-            context.update({"dispatch_users": dispatch_user})
+            context.update({"dispatch_user": dispatch_user})
         return context
 
     def get_form_list(self):
@@ -98,6 +99,7 @@ class WorkOrderWizardView(SessionWizardView):
         else:
             timespent = timespent
         workorder_status = self.request.POST.get('WorkOrderStatusForm-status')
+        import pdb; pdb.set_trace()
         if workorder_status == "open":
             workorder = WorkOrder.objects.create(
                 facility = location_object.facility,
