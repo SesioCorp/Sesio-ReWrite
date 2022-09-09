@@ -21,7 +21,7 @@ class Asset(models.Model):
     attribute_set = models.ForeignKey(AssetAttributeSet, on_delete=models.CASCADE, related_name="assets")
     type = models.ForeignKey(AssetType, on_delete=models.CASCADE, related_name="assets")
     slug = models.SlugField(unique=True)
-    barcode = models.IntegerField()
+    device_id = models.CharField(max_length=100)
     question_set = models.ForeignKey(QuestionSet, on_delete=models.CASCADE, related_name="assets")
     is_demo = models.BooleanField(default=False)
 

@@ -42,7 +42,7 @@ class Question(models.Model):
     answer_type = models.CharField(choices=QUESTION_TYPES, max_length=50)
     choices = models.TextField(blank=True, null=True)
     order = models.IntegerField(blank=True, null=True)
-    parent = models.ForeignKey("self", on_delete=models.CASCADE, related_name="childs")
+    parent = models.ForeignKey("self", on_delete=models.CASCADE, related_name="childs", blank=True, null=True)
     parent_answer = models.TextField(blank=True, null=True)
     correct_answer = models.TextField(blank=True, null=True)
 
