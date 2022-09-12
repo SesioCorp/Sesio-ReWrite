@@ -47,7 +47,7 @@
                             </div>
                             {% endif %}
                             <div class="col">
-                                <input type="submit" name="wizard_goto_step" class="btn btn-block btn-primary btn-lg" value="Next">
+                                <input type="submit" name="wizard_goto_step" class="btn btn-block btn-primary btn-lg" id="next_btn" value="Next">
                             </div>
                         </div>
                     </div>
@@ -75,6 +75,10 @@
             document.getElementById("id_WorkOrderForm-enter_device_id_manually").style.display = "block";
         }
     })
+    if ($("#id_WorkOrderForm-work_orders_connected_to_an_asset").val() === "yes") {
+        $('label[for="id_WorkOrderForm-enter_device_id_manually"]').show()
+        document.getElementById("id_WorkOrderForm-enter_device_id_manually").style.display = "block";   
+    }
     $(document).on("keyup", "#id_WorkOrderForm-enter_device_id_manually", function(){
         function getCookie(name) {
             let cookieValue = null;
@@ -98,7 +102,20 @@
             dataType: "json",
             headers: {"X-CSRFToken": getCookie("csrftoken")},
             success: function(response){
-                alert("Device ID found.")
+                is_element_available = $('#validation')
+                
+                if (response.assets != null) {
+                    $("#id_WorkOrderForm-enter_device_id_manually").parent().after("<div class='text-success' id='validation'>"+response.assets.concat(" is available.")+"</div>")
+                    is_element_available.remove()
+                    $('#next_btn').prop("disabled", false)
+                }
+                else {
+                    $("#id_WorkOrderForm-enter_device_id_manually").parent().after("<div class='text-danger' id='validation'>No Device</div>")
+                    is_element_available.remove()
+                    $('#next_btn').prop("disabled", true)
+
+                }
+            
             }
         
         })    

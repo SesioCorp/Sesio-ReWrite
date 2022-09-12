@@ -141,6 +141,7 @@ class WorkOrderWizardView(SessionWizardView):
 class EnterDeviceIdView(View):
     def post(self, request, *args, **kwargs):
         if self.request.is_ajax:
+            #import pdb; pdb.set_trace()
             try:
                 asset = Asset.objects.get(device_id=self.request.POST.get("enter_device_id_manually")).asset_type.name
                 context = {"assets": asset}
