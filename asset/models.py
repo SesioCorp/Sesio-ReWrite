@@ -26,7 +26,7 @@ class Asset(models.Model):
     is_demo = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.type.name
+        return self.asset_type.name
 
 
 

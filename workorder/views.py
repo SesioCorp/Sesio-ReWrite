@@ -43,7 +43,7 @@ class WorkOrderListView(ListView):
     def get_context_data(self, **kwargs):
         context = super(WorkOrderListView, self).get_context_data(**kwargs)
         assigned_workorders_queryset = WorkOrder.objects.filter(
-            assigned_to__isnull = False
+            assigned_to = self.request.user
         )
         unassigned_workorders_queryset = WorkOrder.objects.filter(
             assigned_to__isnull = True
@@ -65,6 +65,7 @@ class WorkOrderWizardView(SessionWizardView):
             dispatch_user = CustomUser.objects.filter(is_dispatch=True, is_superuser=False).first()
             context.update({"users": user})
             context.update({"dispatch_user": dispatch_user})
+
         return context
 
     def get_form_list(self):
@@ -91,17 +92,16 @@ class WorkOrderWizardView(SessionWizardView):
             _device_id = []
         
         try:
-            assets = Asset.objects.get(barcode=_device_id)
+            asset = Asset.objects.get(device_id=_device_id)
         
         except ObjectDoesNotExist:
-            assets = []
+            asset = []
         timespent = self.request.POST.get('WorkOrderStatusForm-timespent')
         if timespent == '':
             timespent = 0
         else:
             timespent = timespent
         workorder_status = self.request.POST.get('WorkOrderStatusForm-status')
-        import pdb; pdb.set_trace()
         if workorder_status == "open":
             workorder = WorkOrder.objects.create(
                 facility = location_object.facility,
@@ -129,11 +129,11 @@ class WorkOrderWizardView(SessionWizardView):
             completed_at = self.request.POST.get('WorkOrderStatusForm-completed_at')
         )
 
-        if assets == []:
+        if asset == []:
             workorder.save()
 
         else:
-            workorder.assets.add(assets)
+            workorder.asset.add(asset)
             workorder.save()
 
         return HttpResponseRedirect("/")
@@ -141,7 +141,6 @@ class WorkOrderWizardView(SessionWizardView):
 class EnterDeviceIdView(View):
     def post(self, request, *args, **kwargs):
         if self.request.is_ajax:
-            #import pdb; pdb.set_trace()
             try:
                 asset = Asset.objects.get(device_id=self.request.POST.get("enter_device_id_manually")).asset_type.name
                 context = {"assets": asset}
@@ -150,3 +149,5 @@ class EnterDeviceIdView(View):
             except Asset.DoesNotExist:
                 context = {"assets": None}
                 return JsonResponse(context)
+
+
