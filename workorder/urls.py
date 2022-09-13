@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import Home, WorkOrderListView, WorkOrderWizardView, EnterDeviceIdView
+from .views import WorkOrderListView, WorkOrderWizardView, EnterDeviceIdView
 
 from systemandfacility.forms import LocationForm
 from workorder.forms import WorkOrderForm, WorkOrderStatusForm
@@ -11,8 +11,7 @@ Forms = [
 ]
 
 urlpatterns = [
-    path('', Home.as_view(), name='home'),
-    path('workorder/', WorkOrderListView.as_view(), name='work_order_list'),
-    path("create/", WorkOrderWizardView.as_view(Forms), name='work_order_create'),
+    path('list/', WorkOrderListView.as_view(), name='work_order_list'),
+    path("new/", WorkOrderWizardView.as_view(Forms), name='work_order_create'),
     path("enterdevice/", EnterDeviceIdView.as_view(), name='enter_device')
 ]

@@ -14,7 +14,7 @@
                 <div class="col-md-12 col-lg-6">
                     <div class="card homepage_card">
                         <div class="card-body homepage_body">
-                            <a href="{% url 'work_order_create' %}" class="btn btn-primary text-left btn__font-size btn__full__width">
+                            <a href="{% url 'workorder:work_order_create' %}" class="btn btn-primary text-left btn__font-size btn__full__width">
                                 <div>
                                     <i class="bi-pencil-square"></i>
                                     <span class="ml-2">Log New Work Order</span>
@@ -26,14 +26,14 @@
                 <div class="col-md-12 col-lg-6">
                     <div class="card homepage_card">
                         <div class="card-body homepage_body">
-                            <a href="{% url 'work_order_list' %}" class="btn btn-primary text-left btn__font-size btn__full__width">
+                            <a href="{% url 'workorder:work_order_list' %}" class="btn btn-primary text-left btn__font-size btn__full__width">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
                                         <i class="bi-card-checklist"></i>
                                         <span class="ml-2">View Work Order</span>
                                     </div>
                                     <div class="btn_def">
-                                        <button class="btn badge__btn_style btn-default">2</button>
+                                        <button class="btn badge__btn_style btn-default">{{work_order_count}}</button>
                                         <button class="btn btn-default exclamation">
                                             <i class="fas fa-exclamation"></i>
                                         </button>

@@ -33,9 +33,6 @@ TEMPLATES = {
 }
 
 
-class Home(TemplateView):
-    template_name = 'index.html'
-
 class WorkOrderListView(ListView):
     model = WorkOrder
     template_name = "workorder_listview.html"
@@ -43,9 +40,11 @@ class WorkOrderListView(ListView):
     def get_context_data(self, **kwargs):
         context = super(WorkOrderListView, self).get_context_data(**kwargs)
         assigned_workorders_queryset = WorkOrder.objects.filter(
+            status = "open",
             assigned_to = self.request.user
         )
         unassigned_workorders_queryset = WorkOrder.objects.filter(
+            status = "open",
             assigned_to__isnull = True
         )
         context["assigned_workorders"] = WorkOrderFilter(self.request.GET, queryset=assigned_workorders_queryset)
