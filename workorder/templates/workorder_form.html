@@ -96,7 +96,7 @@
         };
 
         $.ajax({
-            url: "{% url 'enter_device' %}",
+            url: "{% url 'workorder:enter_device' %}",
             type: "POST",
             data: {"enter_device_id_manually": document.getElementById("id_WorkOrderForm-enter_device_id_manually").value},
             dataType: "json",

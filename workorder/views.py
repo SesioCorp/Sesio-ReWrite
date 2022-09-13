@@ -19,6 +19,7 @@ from django.http import HttpResponseRedirect
 from asset.models import Asset
 from django.conf import settings
 from django.http import JsonResponse
+from django.db.models import Q
 
 FORMS = [
     ("LocationForm", LocationForm),
@@ -48,7 +49,15 @@ class WorkOrderListView(ListView):
             assigned_to__isnull = True
         )
         context["assigned_workorders"] = WorkOrderFilter(self.request.GET, queryset=assigned_workorders_queryset)
+        try:
+            context["urgent_count"] = WorkOrder.objects.filter(assigned_to__isnull=False, status="open", priority=Priority.objects.get(Q(name__startswith="U"))).count()
+        except Priority.DoesNotExist:
+            context["urgent_count"] = 0
 
+        try:
+            context["unassigned_urgent_count"] = WorkOrder.objects.filter(assigned_to__isnull=True, status="open", priority=Priority.objects.get(Q(name__startswith="U"))).count()
+        except Priority.DoesNotExist:
+            context["unassigned_urgent_count"] = 0
         context["unassigned_workorders"] = WorkOrderFilter(self.request.GET, queryset=unassigned_workorders_queryset)
         return context
 
