@@ -24,13 +24,13 @@ from django.db.models import Q
 FORMS = [
     ("LocationForm", LocationForm),
     ("WorkOrderForm", WorkOrderForm),
-    ("WorkOrderStatusForm", WorkOrderStatusForm)
+    ("WorkOrderStatusForm", WorkOrderStatusForm),
 ]
 
 TEMPLATES = {
     "LocationForm": "locationform.html",
     "WorkOrderForm": "workorder_form.html",
-    "WorkOrderStatusForm": "workorder_status.html"
+    "WorkOrderStatusForm": "workorder_status.html",
 }
 
 
@@ -41,36 +41,53 @@ class WorkOrderListView(ListView):
     def get_context_data(self, **kwargs):
         context = super(WorkOrderListView, self).get_context_data(**kwargs)
         assigned_workorders_queryset = WorkOrder.objects.filter(
-            status = "open",
-            assigned_to = self.request.user
+            status="open", assigned_to=self.request.user
         )
         unassigned_workorders_queryset = WorkOrder.objects.filter(
-            status = "open",
-            assigned_to__isnull = True
+            status="open", assigned_to=CustomUser.objects.get(is_dispatch=True)
         )
-        context["assigned_workorders"] = WorkOrderFilter(self.request.GET, queryset=assigned_workorders_queryset)
+        context["assigned_workorders"] = WorkOrderFilter(
+            self.request.GET, queryset=assigned_workorders_queryset
+        )
         try:
-            context["urgent_count"] = WorkOrder.objects.filter(assigned_to__isnull=False, status="open", priority=Priority.objects.get(Q(name__startswith="U"))).count()
+            context["urgent_count"] = WorkOrder.objects.filter(
+                assigned_to=self.request.user,
+                status="open",
+                priority=Priority.objects.get(Q(name__startswith="U")),
+            ).count()
         except Priority.DoesNotExist:
             context["urgent_count"] = 0
 
         try:
-            context["unassigned_urgent_count"] = WorkOrder.objects.filter(assigned_to__isnull=True, status="open", priority=Priority.objects.get(Q(name__startswith="U"))).count()
+            context["unassigned_urgent_count"] = WorkOrder.objects.filter(
+                assigned_to=CustomUser.objects.get(is_dispatch=True),
+                status="open",
+                priority=Priority.objects.get(Q(name__startswith="U")),
+            ).count()
         except Priority.DoesNotExist:
             context["unassigned_urgent_count"] = 0
-        context["unassigned_workorders"] = WorkOrderFilter(self.request.GET, queryset=unassigned_workorders_queryset)
+        context["unassigned_workorders"] = WorkOrderFilter(
+            self.request.GET, queryset=unassigned_workorders_queryset
+        )
         return context
 
+
 class WorkOrderWizardView(SessionWizardView):
-    file_storage = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, "uploads"))
+    file_storage = FileSystemStorage(
+        location=os.path.join(settings.MEDIA_ROOT, "uploads")
+    )
     form_list = FORMS
-    
+
     def get_context_data(self, form, **kwargs):
         context = super(WorkOrderWizardView, self).get_context_data(form=form, **kwargs)
-       
+
         if self.steps.current == "WorkOrderStatusForm":
-            user = CustomUser.objects.filter(is_dispatch=False, is_superuser=False).exclude(pk=self.request.user.pk)
-            dispatch_user = CustomUser.objects.filter(is_dispatch=True, is_superuser=False).first()
+            user = CustomUser.objects.filter(
+                is_dispatch=False, is_superuser=False
+            ).exclude(pk=self.request.user.pk)
+            dispatch_user = CustomUser.objects.filter(
+                is_dispatch=True, is_superuser=False
+            ).first()
             context.update({"users": user})
             context.update({"dispatch_user": dispatch_user})
 
@@ -78,64 +95,68 @@ class WorkOrderWizardView(SessionWizardView):
 
     def get_form_list(self):
         return self.form_list
-    
+
     def get_template_names(self):
         return [TEMPLATES[self.steps.current]]
 
     def process_step(self, form):
         return self.get_form_step_data(form)
 
-    def done(self, form_list, form_dict,**kwargs):
+    def done(self, form_list, form_dict, **kwargs):
         location_data = form_dict["LocationForm"]
         location_object = location_data.save()
         workorder_data = form_dict["WorkOrderForm"]
         workorder_status_data = form_dict["WorkOrderStatusForm"]
         category_object = Category.objects.get(id=workorder_data.instance.category_id)
-        priority_object = Priority.objects.get(id=workorder_status_data.instance.priority_id)
-        
+        priority_object = Priority.objects.get(
+            id=workorder_status_data.instance.priority_id
+        )
+
         try:
-            _device_id = (workorder_data.instance.enter_device_id_manually)
+            _device_id = workorder_data.instance.enter_device_id_manually
 
         except ObjectDoesNotExist:
             _device_id = []
-        
+
         try:
             asset = Asset.objects.get(device_id=_device_id)
-        
+
         except ObjectDoesNotExist:
             asset = []
-        timespent = self.request.POST.get('WorkOrderStatusForm-timespent')
-        if timespent == '':
+        timespent = self.request.POST.get("WorkOrderStatusForm-timespent")
+        if timespent == "":
             timespent = 0
         else:
             timespent = timespent
-        workorder_status = self.request.POST.get('WorkOrderStatusForm-status')
+        workorder_status = self.request.POST.get("WorkOrderStatusForm-status")
         if workorder_status == "open":
             workorder = WorkOrder.objects.create(
-                facility = location_object.facility,
-                location = location_object,
-                category = category_object,
-                brief_description = workorder_data.instance.brief_description,
-                description = workorder_data.instance.description,
-                status = workorder_status_data.instance.status,
-                priority = priority_object,
-                enter_device_id_manually = workorder_data.instance.enter_device_id_manually,
-                assigned_to = CustomUser.objects.get(id=int(self.request.POST.get("WorkOrderStatusForm-assigned_to"))),
-                timespent = int(timespent)
+                facility=location_object.facility,
+                location=location_object,
+                category=category_object,
+                brief_description=workorder_data.instance.brief_description,
+                description=workorder_data.instance.description,
+                status=workorder_status_data.instance.status,
+                priority=priority_object,
+                enter_device_id_manually=workorder_data.instance.enter_device_id_manually,
+                assigned_to=CustomUser.objects.get(
+                    id=int(self.request.POST.get("WorkOrderStatusForm-assigned_to"))
+                ),
+                timespent=int(timespent),
             )
         else:
             workorder = WorkOrder.objects.create(
-            facility = location_object.facility,
-            location = location_object,
-            category = category_object,
-            brief_description = workorder_data.instance.brief_description,
-            description = workorder_data.instance.description,
-            status = workorder_status_data.instance.status,
-            priority = priority_object,
-            enter_device_id_manually = workorder_data.instance.enter_device_id_manually,
-            timespent = int(timespent),
-            completed_at = self.request.POST.get('WorkOrderStatusForm-completed_at')
-        )
+                facility=location_object.facility,
+                location=location_object,
+                category=category_object,
+                brief_description=workorder_data.instance.brief_description,
+                description=workorder_data.instance.description,
+                status=workorder_status_data.instance.status,
+                priority=priority_object,
+                enter_device_id_manually=workorder_data.instance.enter_device_id_manually,
+                timespent=int(timespent),
+                completed_at=self.request.POST.get("WorkOrderStatusForm-completed_at"),
+            )
 
         if asset == []:
             workorder.save()
@@ -146,16 +167,17 @@ class WorkOrderWizardView(SessionWizardView):
 
         return HttpResponseRedirect("/")
 
+
 class EnterDeviceIdView(View):
     def post(self, request, *args, **kwargs):
         if self.request.is_ajax:
             try:
-                asset = Asset.objects.get(device_id=self.request.POST.get("enter_device_id_manually")).asset_type.name
+                asset = Asset.objects.get(
+                    device_id=self.request.POST.get("enter_device_id_manually")
+                ).asset_type.name
                 context = {"assets": asset}
                 return JsonResponse(context)
 
             except Asset.DoesNotExist:
                 context = {"assets": None}
                 return JsonResponse(context)
-
-
