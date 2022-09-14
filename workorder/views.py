@@ -6,7 +6,7 @@ from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
 from django.views.generic import View
 
-from workorder.forms import WorkOrderStatusForm, WorkOrderForm
+from workorder.forms import WorkOrderStatusForm, WorkOrderForm, WorkOrderAssignForm
 from systemandfacility.forms import LocationForm
 from .models import Category, WorkOrder, Priority
 from .filters import WorkOrderFilter
