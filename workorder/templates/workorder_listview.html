@@ -127,3 +127,15 @@
     </div>
 </div>
 {% endblock content %}
+
+{% block extra_js %}
+
+<script>
+    jQuery(document).ready(function($){
+        $(".clickable-row").click(function(){
+            window.location=$(this).data("href")
+        })
+    })
+</script>
+
+{% endblock extra_js %}
