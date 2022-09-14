@@ -20,6 +20,7 @@ from asset.models import Asset
 from django.conf import settings
 from django.http import JsonResponse
 from django.db.models import Q
+from django.views.generic.detail import DetailView
 
 FORMS = [
     ("LocationForm", LocationForm),
@@ -181,3 +182,28 @@ class EnterDeviceIdView(View):
             except Asset.DoesNotExist:
                 context = {"assets": None}
                 return JsonResponse(context)
+
+class WorkOrderDetailView(DetailView):
+    model = WorkOrder
+    template_name = "workorder_detail.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(WorkOrderDetailView, self).get_context_data(**kwargs)
+        context["workorder_location_form"] = LocationForm(
+            instance = self.get_object().location
+        )
+        context["workorder_assign_form"] = WorkOrderAssignForm(initial=self.workorder_assign_data())
+        return context
+
+    def workorder_assign_data(self):
+        if self.get_object().assigned_to:
+            data = {
+                "requester": self.get_object().assigned_to,
+                "req_email": self.get_object().assigned_to.email,
+                "req_phone_number": self.get_object().assigned_to.phone_number,
+                "type": "default",
+                "created_on": self.get_object().assigned_to.created_at
+            } 
+            return data
+
+

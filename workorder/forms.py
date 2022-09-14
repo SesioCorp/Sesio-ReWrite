@@ -1,6 +1,7 @@
 from django import forms
 from systemandfacility.models import Location
 from .models import WorkOrder
+from users.models import CustomUser
 
 class WorkOrderForm(forms.ModelForm):
     class Meta:
@@ -37,3 +38,6 @@ class WorkOrderStatusForm(forms.ModelForm):
             ),
 
         }
+
+class WorkOrderAssignForm(forms.Form):
+    requester = forms.ModelChoiceField(label="Requester", queryset=CustomUser.objects.filter(), required=False)
