@@ -1,3 +1,4 @@
+from datetime import datetime
 from email.policy import HTTP
 import http
 from http.client import HTTPResponse
@@ -132,6 +133,7 @@ class WorkOrderWizardView(SessionWizardView):
         workorder_status = self.request.POST.get("WorkOrderStatusForm-status")
         if workorder_status == "open":
             workorder = WorkOrder.objects.create(
+                created_at=datetime.now(),
                 facility=location_object.facility,
                 location=location_object,
                 category=category_object,
@@ -147,6 +149,7 @@ class WorkOrderWizardView(SessionWizardView):
             )
         else:
             workorder = WorkOrder.objects.create(
+                created_at=datetime.now(),
                 facility=location_object.facility,
                 location=location_object,
                 category=category_object,
@@ -202,7 +205,7 @@ class WorkOrderDetailView(DetailView):
                 "req_email": self.get_object().assigned_to.email,
                 "req_phone_number": self.get_object().assigned_to.phone_number,
                 "type": "default",
-                "created_on": self.get_object().assigned_to.created_at
+                "created_on": self.get_object().created_at
             } 
             return data
 

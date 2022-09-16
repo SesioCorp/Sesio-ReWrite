@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.db import models
 from systemandfacility.models import Facility, Location
 from asset.models import *
@@ -26,6 +27,7 @@ class Priority(models.Model):
 
 
 class WorkOrder(models.Model):
+    created_at = models.DateTimeField(blank=True, null=True, default=datetime.now())
     facility = models.ForeignKey(Facility, on_delete=models.CASCADE, related_name="work_orders")
     location = models.ForeignKey(Location, on_delete=models.CASCADE, related_name="work_orders")
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="work_orders")
