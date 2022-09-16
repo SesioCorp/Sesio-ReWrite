@@ -10,79 +10,98 @@
     <div class="container card_colomns">
         <div class="row">
             <div class="col-12">
-                <div class="card" id="assigned_workorders_div">
+                <div class="card" id="">
                     <div class="card-header">
-                        <h3 class="card-title float-left pm_details font-weight-bold">
-                            Work Order No.: <span class="text-info">{{object.id}}</span>
+                        <h3 class="card-title float-left pm_details text-primary font-weight-bold">
+                            Work Order No: <span class="text-info text-dark">{{object.id}}</span>
                         </h3>
-                        <h3 class="card-title float-right text-danger pm_details mr-5 font-weight-bold">
-                        Priority: <span class="">{{object.priority}}</span> 
+                        <h3 class="card-title float-right text-dark pm_details mr-5 font-weight-bold">
+                        Priority: <span class="text-danger">{{object.priority}}</span> 
                         </float-right>
                     </div>
-                    <div class="card card-body able-responsive">
-                        {% paginate assigned_workorders.qs as assigned_workorders_page %}
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th class="min-phone-l">Priority</th>
-                                    <th class="desktop">Building</th>
-                                    <th class="desktop">Floor</th>
-                                    <th class="desktop">W.O Title</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for wo in assigned_workorders_page %}
-                                    <tr class="clickable-row" data-href="">
-                                        <td>{{ wo.priority }}</td>
-                                        <td>{{ wo.location.building.name }}</td>
-                                        <td>{{ wo.location.floor }}</td>
-                                        <td>{{ wo.brief_description }}</td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="pagination_wo_list" id="assigned_workorders_page">
-                        {% show_pages %}
+                    <div class="card-body">
+                        <p class="form-group pm_details"><strong>Work Order Description: </strong>{{ object.brief_description }}</p>
+                        <p class="form-group pm_details"><strong>Comment: </strong>{{ object.description }}</p>
                     </div>
                 </div>
-                <div class="card" id="unassigned_workorders_div">
+                <div class="card">
                     <div class="card-header">
+                        <div class="d-flex align-items-center justify-content-between">
                         <h3 class="card-title float-left pm_details font-weight-bold">
-                            Unassigned Work Orders
+                            Location Details
                         </h3>
-                        <h3 class="card-title float-right text-danger pm_details mr-5 font-weight-bold">
-                            Critical/Urgent: {{unassigned_urgent_count}}
-                        </float-right>
+                        <button class="btn btn-primary btn-view">Edit</button>
+                        </div>
                     </div>
-                    <div class="card card-body able-responsive">
-                        {% paginate unassigned_workorders.qs as unassigned_workorders_page %}
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th class="min-phone-l">Priority</th>
-                                    <th class="desktop">Building</th>
-                                    <th class="desktop">Floor</th>
-                                    <th class="desktop">W.O Title</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for wo in unassigned_workorders_page %}
-                                    <tr class="clickable-row" data-href="">
-                                        <td>{{ wo.priority }}</td>
-                                        <td>{{ wo.location.building.name }}</td>
-                                        <td>{{ wo.location.floor }}</td>
-                                        <td>{{ wo.brief_description }}</td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="pagination_wo_list" id="unassigned_workorders_page">
-                        {% show_pages %}
+                    <div class="card-body table__ul">
+                        <ul>
+                            <li>Facility</li>
+                            <li>{{ object.facility }}</li>
+                        </ul>
+                        <ul>
+                            <li>Building</li>
+                            <li>{{ object.location.building }}</li>
+                        </ul>
+                        <ul>
+                            <li>Floor</li>
+                            <li>{{ object.location.floor }}</li>
+                        </ul>
+                        <ul>
+                            <li>Department</li>
+                            <li>{{ object.location.department }}</li>
+                        </ul>
+                        <ul>
+                            <li>Location</li>
+                            <li>{{ object.location.specific_location }}</li>
+                        </ul>
                     </div>
                 </div>
 
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center justify-content-between">
+                        <h3 class="card-title float-left pm_details font-weight-bold">
+                            Work Order Details
+                        </h3>
+                        </div>
+                    </div>
+                    <div class="card-body table__ul">
+                        <ul>
+                            <li>Requester</li>
+                            <li>{{ object.assigned_to.get_full_name }}</li>
+                        </ul>
+                        <ul>
+                            <li>Requester Email</li>
+                            <li>{{ object.assigned_to.email }}</li>
+                        </ul>
+                        <ul>
+                            <li>Requester Phone</li>
+                            {% if object.assigned_to.phone_number %}
+                                <li>{{ object.assigned_to.phone_number }}</li>
+                            {% else %}
+                                <li>No Phone Number Available</li>
+                            {% endif %}
+                        </ul>
+                        <ul>
+                            <li>Work Order Type</li>
+                            <li>{{ object.category }}</li>
+                        </ul>
+                        <ul>
+                            <li>Created On</li>
+                            <li>{{ object.created_at }}</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="row">
+                        <div class="col">
+                            <a href="{% url 'workorder:work_order_list' %}" class="btn pm_buttons btn-block btn-outline-primary btn-lg font-weight-bold">Previous</a>
+                        </div>
+                        <div class="col">
+                            <a href="#" class="btn pm_buttons btn-block btn-primary btn-lg font-weight-bold">Next</a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
