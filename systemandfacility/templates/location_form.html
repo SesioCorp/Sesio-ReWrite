@@ -41,13 +41,8 @@
                     {% endif %}
                     <div class="form-group">
                         <div class="row">
-                            <div class="col">
-                                <button name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}" class="btn btn-block btn-outline-primary btn-lg">
-                                    {% trans "Previous" %}
-                                </button>
-                            </div>
-                            <div class="col">
-                            <input type="submit" name="wizard_goto_step" class="btn btn-block btn-primary btn-lg" value="Next">
+                            <div class="col-6 ml-auto">
+                                <input type="submit" name="wizard_goto_step" class="btn btn-block btn-primary btn-lg" value="Next">
                             </div>
                         </div>  
                     </div>
