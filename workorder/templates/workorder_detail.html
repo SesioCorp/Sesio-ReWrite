@@ -24,74 +24,144 @@
                         <p class="form-group pm_details"><strong>Comment: </strong>{{ object.description }}</p>
                     </div>
                 </div>
-                <div class="card">
-                    <div class="card-header">
-                        <div class="d-flex align-items-center justify-content-between">
-                        <h3 class="card-title float-left pm_details font-weight-bold">
-                            Location Details
-                        </h3>
-                        <button class="btn btn-primary btn-view">Edit</button>
+                <form action="" id="editable_details" data-object-id="{{ object.id }}">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="d-flex align-items-center justify-content-between">
+                            <h3 class="card-title float-left pm_details font-weight-bold">
+                                Location Details
+                            </h3>
+                            <button class="btn btn-primary btn-view">Edit</button>
+                            </div>
+                        </div>
+                        <div class="card-body table__ul">
+                            <ul>
+                                <li>Facility</li>
+                                <li>{{ object.facility }}</li>
+                            </ul>
+                            <ul>
+                                <li>Building</li>
+                                <li>{{ object.location.building }}</li>
+                            </ul>
+                            <ul>
+                                <li>Floor</li>
+                                <li>{{ object.location.floor }}</li>
+                            </ul>
+                            <ul>
+                                <li>Department</li>
+                                <li>{{ object.location.department }}</li>
+                            </ul>
+                            <ul>
+                                <li>Location</li>
+                                <li>{{ object.location.specific_location }}</li>
+                            </ul>
+                        </div>
+                    </div>                        
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="d-flex align-items-center justify-content-between">
+                            <h3 class="card-title float-left pm_details font-weight-bold">
+                                Work Order Details
+                            </h3>
+                            </div>
+                        </div>
+                        <div class="card-body table__ul">
+                            <ul>
+                                <li>Requester</li>
+                                <li>{{ object.assigned_to.get_full_name }}</li>
+                            </ul>
+                            <ul>
+                                <li>Requester Email</li>
+                                <li>{{ object.assigned_to.email }}</li>
+                            </ul>
+                            <ul>
+                                <li>Requester Phone</li>
+                                {% if object.assigned_to.phone_number %}
+                                    <li>{{ object.assigned_to.phone_number }}</li>
+                                {% else %}
+                                    <li>No Phone Number Available</li>
+                                {% endif %}
+                            </ul>
+                            <ul>
+                                <li>Work Order Type</li>
+                                <li>{{ object.category }}</li>
+                            </ul>
+                            <ul>
+                                <li>Created On</li>
+                                <li>{{ object.created_at }}</li>
+                            </ul>
                         </div>
                     </div>
-                    <div class="card-body table__ul">
-                        <ul>
-                            <li>Facility</li>
-                            <li>{{ object.facility }}</li>
-                        </ul>
-                        <ul>
-                            <li>Building</li>
-                            <li>{{ object.location.building }}</li>
-                        </ul>
-                        <ul>
-                            <li>Floor</li>
-                            <li>{{ object.location.floor }}</li>
-                        </ul>
-                        <ul>
-                            <li>Department</li>
-                            <li>{{ object.location.department }}</li>
-                        </ul>
-                        <ul>
-                            <li>Location</li>
-                            <li>{{ object.location.specific_location }}</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-header">
-                        <div class="d-flex align-items-center justify-content-between">
-                        <h3 class="card-title float-left pm_details font-weight-bold">
-                            Work Order Details
-                        </h3>
+                </form>
+                <form action="" id="editable_fields" data-object-id="{{ object.id }}">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="d-flex align-items-center justify-content-between">
+                            <h3 class="card-title float-left pm_details font-weight-bold">
+                                Location Details
+                            </h3>
+                            <button class="btn btn-primary btn-view">Edit Details</button>
+                            </div>
+                        </div>
+                        <div class="card-body table__ul">
+                            <ul>
+                                <li>Facility</li>
+                                <li>{{ workorder_location_form.facility }}</li>
+                            </ul>
+                            <ul>
+                                <li>Building</li>
+                                <li>{{ workorder_location_form.building }}</li>
+                            </ul>
+                            <ul>
+                                <li>Floor</li>
+                                <li>{{ workorder_location_form.floor }}</li>
+                            </ul>
+                            <ul>
+                                <li>Department</li>
+                                <li>{{ workorder_location_form.department }}</li>
+                            </ul>
+                            <ul>
+                                <li>Location</li>
+                                <li>{{ workorder_location_form.specific_location }}</li>
+                            </ul>
+                        </div>
+                    </div>                        
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="d-flex align-items-center justify-content-between">
+                            <h3 class="card-title float-left pm_details font-weight-bold">
+                                Work Order Details
+                            </h3>
+                            </div>
+                        </div>
+                        <div class="card-body table__ul">
+                            <ul>
+                                <li>Requester</li>
+                                <li>{{ workorder_assign_form.requester }}</li>
+                            </ul>
+                            <ul>
+                                <li>Requester Email</li>
+                                <li>{{ workorder_assign_form.requester.email }}</li>
+                            </ul>
+                            <ul>
+                                <li>Requester Phone</li>
+                                {% if workorder_assign_form.requester.phone_number %}
+                                    <li>{{ workorder_assign_form.requester.phone_number }}</li>
+                                {% else %}
+                                    <li>No Phone Number Available</li>
+                                {% endif %}
+                            </ul>
+                            <ul>
+                                <li>Work Order Type</li>
+                                <li>{{ object.category }}</li>
+                            </ul>
+                            <ul>
+                                <li>Created On</li>
+                                <li>{{ object.created_at }}</li>
+                            </ul>
                         </div>
                     </div>
-                    <div class="card-body table__ul">
-                        <ul>
-                            <li>Requester</li>
-                            <li>{{ object.assigned_to.get_full_name }}</li>
-                        </ul>
-                        <ul>
-                            <li>Requester Email</li>
-                            <li>{{ object.assigned_to.email }}</li>
-                        </ul>
-                        <ul>
-                            <li>Requester Phone</li>
-                            {% if object.assigned_to.phone_number %}
-                                <li>{{ object.assigned_to.phone_number }}</li>
-                            {% else %}
-                                <li>No Phone Number Available</li>
-                            {% endif %}
-                        </ul>
-                        <ul>
-                            <li>Work Order Type</li>
-                            <li>{{ object.category }}</li>
-                        </ul>
-                        <ul>
-                            <li>Created On</li>
-                            <li>{{ object.created_at }}</li>
-                        </ul>
-                    </div>
-                </div>
+                </form>
                 <div class="card-footer">
                     <div class="row">
                         <div class="col">
@@ -107,3 +177,9 @@
     </div>
 </div>
 {% endblock content %}
+
+{% block extra_js %}
+<script>
+    document.getElementById('editable_fields').style.display="none"
+</script>
+{% endblock %}
