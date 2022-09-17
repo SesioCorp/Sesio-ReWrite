@@ -30,7 +30,7 @@ FORMS = [
 ]
 
 TEMPLATES = {
-    "LocationForm": "locationform.html",
+    "LocationForm": "location_form.html",
     "WorkOrderForm": "workorder_form.html",
     "WorkOrderStatusForm": "workorder_status.html",
 }
