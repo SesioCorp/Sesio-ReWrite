@@ -34,9 +34,11 @@
                                     </div>
                                     <div class="btn_def">
                                         <button class="btn badge__btn_style btn-default">{{work_order_count}}</button>
-                                        <button class="btn btn-default exclamation">
-                                            <i class="fas fa-exclamation"></i>
-                                        </button>
+                                        {% if urgent_assigned_wo %}
+                                            <button class="btn btn-default exclamation"><i class="fas fa-exclamation"></i></button>
+                                        {% else %}
+                                            <button class="btn btn-default invisible exclamation"><i class="fas fa-exclamation"></i></button>
+                                        {% endif %}
                                     </div>
                                 </div>
                                 
