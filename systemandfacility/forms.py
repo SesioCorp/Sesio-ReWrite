@@ -1,10 +1,15 @@
 from django import forms
 from .models import Location, Building, Floor, Department
+from django.utils.translation import gettext_lazy as _
+
 
 class LocationForm(forms.ModelForm):
     class Meta:
         model = Location
         fields = ["facility", "building", "floor", "department", "specific_location"]
+        labels = {
+            "specific_location": _("Specific Location")
+        }
 
     def __init__(self, *args, **kwargs):
         super(LocationForm, self).__init__(*args, **kwargs)
