@@ -41,13 +41,13 @@
                         <div class="row">
                             {% if wizard.steps.prev %}
                             <div class="col">
-                                <button name="wizard_goto_step" value="{{ wizard.steps.prev }}" class="btn btn-block btn-outline-primary btn-lg" formnovalidate="formnovalidate">
+                                <button name="wizard_goto_step" value="{{ wizard.steps.prev }}" class="btn pm_buttons btn-block btn-outline-primary btn-lg font-weight-bold" formnovalidate="formnovalidate">
                                     {% trans "Previous" %}
                                 </button>
                             </div>
                             {% endif %}
                             <div class="col">
-                                <input type="submit" name="wizard_goto_step" class="btn btn-block btn-primary btn-lg" id="next_btn" value="Next">
+                                <input type="submit" name="wizard_goto_step" class="btn pm_buttons btn-block btn-primary btn-lg font-weight-bold" id="next_btn" value="Next">
                             </div>
                         </div>
                     </div>
