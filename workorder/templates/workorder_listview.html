@@ -52,10 +52,10 @@
                 <div class="card" id="assigned_workorders_div">
                     <div class="card-header">
                         <h3 class="card-title float-left pm_details font-weight-bold">
-                            Your Work Orders
+                            Your Work Orders: <span class="text-info count_int">{{ assigned_workorders.qs.count }}</span>
                         </h3>
                         <h3 class="card-title float-right text-danger pm_details mr-5 font-weight-bold">
-                            Critical/Urgent: {{urgent_count}}
+                            Critical/Urgent: <span class="urgent_count">{{urgent_count}}</span>
                         </float-right>
                     </div>
                     <div class="card card-body able-responsive">
@@ -88,10 +88,10 @@
                 <div class="card" id="unassigned_workorders_div">
                     <div class="card-header">
                         <h3 class="card-title float-left pm_details font-weight-bold">
-                            Unassigned Work Orders
+                            Unassigned Work Orders: <span class="text-info count_int">{{ unassigned_workorders.qs.count }}</span>
                         </h3>
                         <h3 class="card-title float-right text-danger pm_details mr-5 font-weight-bold">
-                            Critical/Urgent: {{unassigned_urgent_count}}
+                            Critical/Urgent: <span class="urgent_count">{{unassigned_urgent_count}}</span>
                         </float-right>
                     </div>
                     <div class="card card-body able-responsive">
