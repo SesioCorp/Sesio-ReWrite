@@ -6,8 +6,9 @@ from unicodedata import category
 from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
 from django.views.generic import View
+from django.views.generic.edit import UpdateView
 
-from workorder.forms import WorkOrderStatusForm, WorkOrderForm, WorkOrderAssignForm
+from workorder.forms import WorkOrderStatusForm, WorkOrderForm, WorkOrderAssignForm, WorkOrderUpdateForm
 from systemandfacility.forms import LocationForm
 from .models import Category, WorkOrder, Priority
 from .filters import WorkOrderFilter
@@ -22,6 +23,7 @@ from django.conf import settings
 from django.http import JsonResponse
 from django.db.models import Q
 from django.views.generic.detail import DetailView
+from django.urls import reverse_lazy
 
 FORMS = [
     ("LocationForm", LocationForm),
@@ -209,4 +211,9 @@ class WorkOrderDetailView(DetailView):
             } 
             return data
 
+class WorkOrderUpdateView(UpdateView):
+    model = WorkOrder
+    form_class = WorkOrderUpdateForm
+    template_name = "workorder_update_form.html"
+    success_url = reverse_lazy("workorder:work_order_list")
 

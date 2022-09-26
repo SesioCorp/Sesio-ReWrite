@@ -49,3 +49,9 @@ class WorkOrderStatusForm(forms.ModelForm):
 
 class WorkOrderAssignForm(forms.Form):
     requester = forms.ModelChoiceField(label="Requester", queryset=CustomUser.objects.filter(), required=False)
+
+class WorkOrderUpdateForm(forms.ModelForm):
+    class Meta:
+        model = WorkOrder
+        fields = ["priority", "timespent", "status", "completed_at"]
+        
