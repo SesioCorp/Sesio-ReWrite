@@ -168,7 +168,7 @@
                             <a href="{% url 'workorder:work_order_list' %}" class="btn pm_buttons btn-block btn-outline-primary btn-lg font-weight-bold">Previous</a>
                         </div>
                         <div class="col">
-                            <a href="#" class="btn pm_buttons btn-block btn-primary btn-lg font-weight-bold">Next</a>
+                            <a href="{% url 'workorder:work_order_update' workorder.id %}" class="btn pm_buttons btn-block btn-primary btn-lg font-weight-bold">Next</a>
                         </div>
                     </div>
                 </div>
