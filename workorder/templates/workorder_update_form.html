@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load bootstrap4 %}
+{% load static %}
+{% load widget_tweaks %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+
+
+{% block content %}
+
+<section class="content">
+    <div class="container card_columns">
+        <div class="card">
+            <div class="card-header wo_header">
+                <h4 class="card-title font-weight-bold text-primary">
+                    Work Order Details
+                </h4>
+            </div>
+            <div class="card-body priority_form_body">
+                <form action="" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="priority_div">
+                        {% bootstrap_field form.description %}
+                    </div>
+                    <div class="form-group border-top border-bottom">
+                        <label class="label_text time_spent" for="id_WorkOrderStatusForm-time_spent">
+                            Time Spent
+                        </label>
+                            <input type="number" id="number" name="timespent" title="" value="{{form.timespent.value}}">
+                    </div>
+                    <div class="priority_div">
+                        {% bootstrap_field form.status %}
+                    </div>
+                    <div class="completed_at">
+                        {% bootstrap_field form.completed_at %}
+                    </div>
+                    <div class="form-group assign_to">
+                        <label class="label_text" for="id_WorkOrderStatusForm-assigned_to">Assigned To</label>
+                        <select name="assigned_to" class="form-control" title=""
+                            id="id_WorkOrderStatusForm-assigned_to">
+                        <option value="{{request.user.pk}}" selected="">Self</option>
+                        <option value="{{dispatch_user.pk}}">Dispatch</option>
+                        {% for user in users %}
+                        <option value="{{user.pk}}">{{user.get_full_name}}</option>
+                        {% endfor %}
+                        </select>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock content %}

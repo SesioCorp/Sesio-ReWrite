@@ -53,5 +53,5 @@ class WorkOrderAssignForm(forms.Form):
 class WorkOrderUpdateForm(forms.ModelForm):
     class Meta:
         model = WorkOrder
-        fields = ["priority", "timespent", "status", "completed_at"]
+        fields = ["priority", "timespent", "status", "completed_at", "description", "assigned_to"]
         
