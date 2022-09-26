@@ -217,3 +217,12 @@ class WorkOrderUpdateView(UpdateView):
     template_name = "workorder_update_form.html"
     success_url = reverse_lazy("workorder:work_order_list")
 
+    def get_context_data(self, **kwargs):
+        context = super(WorkOrderUpdateView, self).get_context_data(**kwargs)
+        users = CustomUser.objects.filter(
+            is_dispatch=False, is_superuser=False
+            ).exclude(pk=self.request.user.pk)
+        context["users"] = users
+        dispatch_user = CustomUser.objects.filter(is_dispatch=True).first()
+        context["dispatch_user"] = dispatch_user
+        return context
