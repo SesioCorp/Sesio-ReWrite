@@ -53,5 +53,13 @@ class WorkOrderAssignForm(forms.Form):
 class WorkOrderUpdateForm(forms.ModelForm):
     class Meta:
         model = WorkOrder
-        fields = ["priority", "timespent", "status", "completed_at", "description", "assigned_to"]
-        
+        fields = ["timespent", "status", "completed_at", "description", "assigned_to"]
+        widgets = {
+            "status": forms.RadioSelect(),
+            "completed_at": forms.DateInput(
+                attrs = {
+                    "class": "form-control",
+                    "type": "date"
+                }
+            )
+        }
