@@ -52,3 +52,28 @@
 </section>
 
 {% endblock content %}
+
+{% block extra_js %}
+<script>
+
+    $('#id_completed_at').parent().css('display', 'none');
+    $('input[type=radio][name=status]').change(function (e) {
+        e.preventDefault();
+        if (this.value === 'closed') {
+            $('#id_completed_at').parent().css('display', 'block');
+        } else {
+            $('#id_completed_at').parent().css('display', 'none');
+        } 
+    }) 
+
+    $('input[type=radio][name=status]').change(function (e) {
+        e.preventDefault();
+        if (this.value === 'open') {
+            $('#id_WorkOrderStatusForm-assigned_to').parent().css('display', 'block');
+        } else {
+            $('#id_WorkOrderStatusForm-assigned_to').parent().css('display', 'none');
+        }
+    })
+</script>
+
+{% endblock extra_js %}
