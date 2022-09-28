@@ -22,12 +22,22 @@
                     <div class="priority_div">
                         {% bootstrap_field form.description %}
                     </div>
+
                     <div class="form-group border-top border-bottom">
                         <label class="label_text time_spent" for="id_WorkOrderStatusForm-time_spent">
                             Time Spent
-                        </label>
-                            <input type="number" id="number" name="timespent" title="" value="{{form.timespent.value}}">
+                        </label><br>
+                        <div class="d-flex radio_btn">
+                            <div class="value-button" id="decrease" onclick="decreaseValue()" value="Decrease Value">
+                                <i class="fas fa-minus-circle"></i>
+                            </div>
+                            <input type="text" id="number" name="timespent" title="" value="{{form.timespent.value}}">
+                            <div class="value-button" id="increase" onclick="increaseValue()" value="Increase Value">
+                                <i class="fas fa-plus-circle"></i>
+                            </div>
+                        </div>
                     </div>
+
                     <div class="priority_div">
                         {% bootstrap_field form.status %}
                     </div>
@@ -55,6 +65,25 @@
 
 {% block extra_js %}
 <script>
+
+    $('#number').click(function () {
+        $('#number').prop('disabled', true);
+    });
+
+    function increaseValue(){
+        var value = parseInt(document.getElementById('number').value, 10);
+        value = isNaN(value)? 0:value;
+        value += 15;
+        document.getElementById('number').value=value;
+    }
+    
+    function decreaseValue(){
+        var value = parseInt(document.getElementById('number').value, 10);
+        value = isNaN(value)? 0:value;
+        value < 15? value=15:'';
+        value -= 15;
+        document.getElementById('number').value=value;
+    }
 
     $('#id_completed_at').parent().css('display', 'none');
     $('input[type=radio][name=status]').change(function (e) {
