@@ -55,6 +55,15 @@
                             </select>
                         </div>
                     </div>
+                    <div class="row form-group priority_btn">
+                        <div class="col completed_at">
+                            <a href="{% url 'workorder:work_order_detail' object.id %}"
+                                class="btn btn-block btn-outline-primary btn-lg font-weight-bold pm_buttons">Previous</a>
+                        </div>
+                        <div class="col completed_at">
+                            <input class="btn btn-block btn-primary btn-lg pm_buttons font-weight-bold pm_buttons" type="submit" value="{% trans 'Submit' %}">
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>
