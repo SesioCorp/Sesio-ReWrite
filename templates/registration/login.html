@@ -1,1 +1,31 @@
-Hello World
+{% extends 'layouts/design/no_header_footer_base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% load crispy_forms_tags %}
+{% load bootstrap4 %}
+
+{% block extra_css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/custom_dev.css' %}">
+{% endblock extra_css %}
+
+{% block page_title %}
+    Login
+{% endblock page_title %}
+
+{% block content %}
+
+<div class="login-box">
+    <div class="card card-outline card-primary card__style_redesign">
+        <div class="card-body">
+            <div class="login_logo">
+                <a class="navbar-brand" href="#">
+                    <img src="https://sesio.s3.amazonaws.com/dev/static/img/logo/logo.png"
+                        class="d-inline-block align-top" alt="">
+                </a>
+            </div>
+            <h1 class="text-primary mt-5 sesio_heading">Because quality doesn't stop with patient care</h1>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
