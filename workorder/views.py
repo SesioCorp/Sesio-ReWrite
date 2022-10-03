@@ -24,6 +24,7 @@ from django.http import JsonResponse
 from django.db.models import Q
 from django.views.generic.detail import DetailView
 from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 FORMS = [
     ("LocationForm", LocationForm),
@@ -38,7 +39,7 @@ TEMPLATES = {
 }
 
 
-class WorkOrderListView(ListView):
+class WorkOrderListView(LoginRequiredMixin, ListView):
     model = WorkOrder
     template_name = "workorder_listview.html"
 
@@ -76,7 +77,7 @@ class WorkOrderListView(ListView):
         return context
 
 
-class WorkOrderWizardView(SessionWizardView):
+class WorkOrderWizardView(LoginRequiredMixin, SessionWizardView):
     file_storage = FileSystemStorage(
         location=os.path.join(settings.MEDIA_ROOT, "uploads")
     )
@@ -174,7 +175,7 @@ class WorkOrderWizardView(SessionWizardView):
         return HttpResponseRedirect("/")
 
 
-class EnterDeviceIdView(View):
+class EnterDeviceIdView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         if self.request.is_ajax:
             try:
@@ -188,7 +189,7 @@ class EnterDeviceIdView(View):
                 context = {"assets": None}
                 return JsonResponse(context)
 
-class WorkOrderDetailView(DetailView):
+class WorkOrderDetailView(LoginRequiredMixin, DetailView):
     model = WorkOrder
     template_name = "workorder_detail.html"
 
@@ -211,7 +212,7 @@ class WorkOrderDetailView(DetailView):
             } 
             return data
 
-class WorkOrderUpdateView(UpdateView):
+class WorkOrderUpdateView(LoginRequiredMixin, UpdateView):
     model = WorkOrder
     form_class = WorkOrderUpdateForm
     template_name = "workorder_update_form.html"

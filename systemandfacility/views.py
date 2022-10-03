@@ -2,8 +2,9 @@ from django.shortcuts import render
 from django.views.generic.list import ListView
 from .models import Building, Department, Floor
 from .filters import *
+from django.contrib.auth.mixins import LoginRequiredMixin
 
-class BuildingListView(ListView):
+class BuildingListView(LoginRequiredMixin, ListView):
     model = Building
 
     def get_queryset(self):
@@ -20,7 +21,7 @@ class BuildingListView(ListView):
         if self.request.is_ajax():
             return "drop_down.html"
 
-class FloorListView(ListView):
+class FloorListView(LoginRequiredMixin, ListView):
     model = Floor
 
     def get_queryset(self):
@@ -37,7 +38,7 @@ class FloorListView(ListView):
         if self.request.is_ajax():
             return "drop_down.html"
 
-class DepartmentListView(ListView):
+class DepartmentListView(LoginRequiredMixin, ListView):
     model = Department
 
     def get_queryset(self):

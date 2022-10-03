@@ -2,8 +2,9 @@ from django.shortcuts import render
 from django.views.generic import TemplateView
 from workorder.models import WorkOrder, Priority
 from django.db.models import Q
+from django.contrib.auth.mixins import LoginRequiredMixin
 
-class Home(TemplateView):
+class Home(LoginRequiredMixin, TemplateView):
     template_name = 'index.html'
 
     def get_context_data(self, **kwargs):
