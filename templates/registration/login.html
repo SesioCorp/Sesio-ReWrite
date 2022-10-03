@@ -24,6 +24,39 @@
                 </a>
             </div>
             <h1 class="text-primary mt-5 sesio_heading">Because quality doesn't stop with patient care</h1>
+            <form class="box" method="post">
+                {% csrf_token %}
+                <div class="form-row mt-5">
+                    <div class="col-12">
+                        <label for="id_username" class="label_text">Email</label>
+                        <div class="input-group input-group-lg mb-3">
+                            {{form.username|add_class:"input form-control"|attr:"placeholder:Email"}}
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <label for="id_password" class="label_text">{{form.password.label}}</label>
+                        <div class="input-group input-group-lg mb-3">
+                            {{form.password|add_class:"input form-control"|attr:"placeholder:Password"}}
+                            <div class="input-group-append">
+                                <span class="input-group-text" onclick="password_show_hide('id_password');">
+                                    <i class="fas fa-eye" id="id_password_show_eye"></i>
+                                    <i class="fas fa-eye-slash d-none" id="id_password_hide_eye"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 mt-5 mb-5 form__footer_btn_design">
+                        <div class="row">
+                            <div class="col-6 col-md-6 col-lg-6 col-sm-6 col-xl-6">
+                                <a href="#"><button class="btn btn-primary-outline w-100 btn__font_style text-primary">Forgot Password?</button></a>
+                            </div>
+                            <div class="col-6 col-md-6 col-lg-6 col-sm-6 col-xl-6">
+                                <button class="btn btn-primary w-100 btn__font_style font-weight-bold" type="submit" name="signin">Log In</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 </div>
