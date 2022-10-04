@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load static %}
+{% load bootstrap4 %}
+{% load widget_tweaks %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+
+{% block head %}
+{{ wizard.form.media }}
+{% endblock head %}
+
+{% block extra_css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/custom_dev.css' %}">
+    <style>
+        canvas.drawing, canvas.drawingBuffer {position: absolute; left: 0; top: 0;}
+    </style>
+{% endblock extra_css %}
+
+{% block content %}
+    <section class="content">
+        <div class="container card_columns">
+            <div class="row">
+                <div class="col-12">
+                    <div class="filters">
+                        <form method="GET" class="filter-form" id="id-filter-form">
+                            <div class="card">
+                                <div class="card-body">
+                                    {% if request.GET.order_by %}
+                                    <input type="hidden" name="order_by" value="{{ request.GET.order_by }}">
+                                    {% endif %}
+                                    <input type="hidden" name="page" value="{{ request.GET.page }}">
+                                    <input type="hidden" name="page_size" value="{{ request.GET.page_size }}">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                                </div>
+                                                {% render_field object_list.form.custom_search class+="form-control" placeholder="Search Work Orders" bound_css_class="cls_filter" %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+{% endblock content %}

@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from .models import PreventiveMaintenance
 from .filters import PreventiveMaintenanceFilter
+from django.views.generic.list import ListView
 
 class PreventiveMaintenanceListView(ListView):
     model = PreventiveMaintenance
@@ -10,7 +11,7 @@ class PreventiveMaintenanceListView(ListView):
             filtered_queryset = PreventiveMaintenanceFilter(self.request.GET, queryset=queryset)
             return filtered_queryset.qs
 
-        queryset = self.model.objects.all().order_by('-updated_at')
+        queryset = self.model.objects.all()
         filtered_queryset = PreventiveMaintenanceFilter(self.request.GET, queryset=queryset)
         return filtered_queryset.qs
 
