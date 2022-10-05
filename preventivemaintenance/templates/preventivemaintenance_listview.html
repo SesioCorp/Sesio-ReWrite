@@ -42,8 +42,24 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-sm-4">
+                                            {% bootstrap_field object_list.form.building bound_css_class="cls_filter" %}
+                                        </div>
+                                        <div class="col-sm-4">
+                                            {% bootstrap_field object_list.form.floor bound_css_class="cls_filter" %}
+                                        </div>
+                                        <div class="col-sm-4">
+                                            {% bootstrap_field object_list.form.department bound_css_class="cls_filter" %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </form>
                     </div>
+
                 </div>
             </div>
         </div>
