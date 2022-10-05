@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 {% load static %}
 {% load bootstrap4 %}
+{% load bootstrap_pagination %}
 {% load widget_tweaks %}
 {% load crispy_forms_tags %}
 {% load i18n %}
 
 {% block head %}
-{{ wizard.form.media }}
 {% endblock head %}
 
 {% block extra_css %}
@@ -36,7 +36,7 @@
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text"><i class="fas fa-search"></i></span>
                                                 </div>
-                                                {% render_field object_list.form.custom_search class+="form-control" placeholder="Search Work Orders" bound_css_class="cls_filter" %}
+                                                {% render_field object_list.form.custom_search class+="form-control" placeholder="Search PMs" bound_css_class="cls_filter" %}
                                             </div>
                                         </div>
                                     </div>

@@ -4,16 +4,19 @@ from .filters import PreventiveMaintenanceFilter
 from django.views.generic.list import ListView
 
 class PreventiveMaintenanceListView(ListView):
+   
     model = PreventiveMaintenance
+   
     def get_queryset(self):
-        queryset = self.model.objects.all()
+
         if self.request.is_ajax():
+            queryset = self.model.objects.all()
             filtered_queryset = PreventiveMaintenanceFilter(self.request.GET, queryset=queryset)
             return filtered_queryset.qs
 
         queryset = self.model.objects.all()
         filtered_queryset = PreventiveMaintenanceFilter(self.request.GET, queryset=queryset)
-        return filtered_queryset.qs
+        return filtered_queryset
 
     def get_template_names(self):
         if self.request.is_ajax():
