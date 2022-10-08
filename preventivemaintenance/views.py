@@ -2,6 +2,7 @@ from django.shortcuts import render
 from .models import PreventiveMaintenance
 from .filters import PreventiveMaintenanceFilter
 from django.views.generic.list import ListView
+from django.views.generic.detail import DetailView
 
 class PreventiveMaintenanceListView(ListView):
    
@@ -23,3 +24,6 @@ class PreventiveMaintenanceListView(ListView):
         #     return 'workorder/partials/dropdown_list.html'
         return 'preventivemaintenance_listview.html'
 
+class PreventiveMaintenanceDetailView(DetailView):
+    model = PreventiveMaintenance
+    template_name = "preventivemaintenance_detail.html"
