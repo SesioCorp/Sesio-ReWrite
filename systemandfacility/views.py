@@ -19,7 +19,7 @@ class BuildingListView(LoginRequiredMixin, ListView):
         
     def get_template_names(self):
         if self.request.is_ajax():
-            return "drop_down.html"
+            return "preventivemaintenance/partials/dropdown_list.html"
 
 class FloorListView(LoginRequiredMixin, ListView):
     model = Floor
@@ -36,7 +36,7 @@ class FloorListView(LoginRequiredMixin, ListView):
         
     def get_template_names(self):
         if self.request.is_ajax():
-            return "drop_down.html"
+            return "preventivemaintenance/partials/dropdown_list.html"
 
 class DepartmentListView(LoginRequiredMixin, ListView):
     model = Department
@@ -53,4 +53,4 @@ class DepartmentListView(LoginRequiredMixin, ListView):
        
     def get_template_names(self):
         if self.request.is_ajax():
-            return "drop_down.html"
+            return "preventivemaintenance/partials/dropdown_list.html"

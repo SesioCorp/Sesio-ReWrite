@@ -100,3 +100,37 @@
     </section>
 
 {% endblock content %}
+
+{% block extra_js %}
+
+<script>
+    $("#id_building").change(function(){
+        var url = "{% url 'systemandfacility:building-list' %}"
+        var building = $(this).val();
+        $.ajax({
+            url:url,
+            data:{
+                'building':building
+            },
+            success: function(data){
+                $('#id_floor').html(data);
+            }
+        });
+    });
+
+    $("#id_floor").change(function(){
+        var url = "{% url 'systemandfacility:floor-list' %}"
+        var floor = $(this).val();
+        $.ajax({
+            url:url,
+            data:{
+                'floor':floor
+            },
+            success: function(data){
+                $('#id_department').html(data);
+            }
+        });
+    });
+</script>
+
+{% endblock %}
