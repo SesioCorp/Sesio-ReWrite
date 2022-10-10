@@ -21,7 +21,7 @@ class PreventiveMaintenanceListView(ListView):
 
     def get_template_names(self):
         # if self.request.is_ajax():
-        #     return 'workorder/partials/dropdown_list.html'
+        #     return 'preventivemaintenance/partials/dropdown_list.html'
         return 'preventivemaintenance_listview.html'
 
 class PreventiveMaintenanceDetailView(DetailView):

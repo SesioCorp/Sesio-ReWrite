@@ -1,5 +1,5 @@
 from django.db import models
-from systemandfacility.models import Facility
+from systemandfacility.models import Facility, Location
 from question.models import QuestionSet
 
 class AssetAttributeSet(models.Model):
@@ -23,6 +23,7 @@ class Asset(models.Model):
     slug = models.SlugField(unique=True)
     device_id = models.CharField(max_length=100)
     question_set = models.ForeignKey(QuestionSet, on_delete=models.CASCADE, related_name="assets")
+    location = models.ForeignKey(Location, on_delete=models.CASCADE, blank=True, null=True, related_name="assets")
     is_demo = models.BooleanField(default=False)
 
     def __str__(self):

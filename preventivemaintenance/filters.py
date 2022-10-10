@@ -20,14 +20,14 @@ class PreventiveMaintenanceFilter(django_filters.FilterSet):
         method="method_department_filter"
     )
     view = django_filters.ModelChoiceFilter(
-        label="View", queryset=Asset.objects.all(), method="method_assets_filter"
+        label="View", queryset=Asset.objects.all(), method="method_asset_filter"
     )
 
     class Meta:
         model = PreventiveMaintenance
         fields = ['slug', 'facility', 'asset', 'status', 'frequency', 'started_at', 'expired_at']
     
-    def method_assets_filter(self, queryset, name, value):
+    def method_asset_filter(self, queryset, name, value):
         if value:
             queryset = queryset.filter(self, queryset, name, value)
         return queryset
