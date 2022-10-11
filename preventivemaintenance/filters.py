@@ -53,7 +53,7 @@ class PreventiveMaintenanceFilter(django_filters.FilterSet):
                 Q(slug__icontains=value)
                 | Q(facility__name__icontains=value)
                 | Q(asset__location__building__name__icontains=value)
-                | Q(asset__location__floor__floor_no__icontains=value)
-                | Q(asset__location__deparment__name__icontains=value)
+                | Q(asset__location__floor__number__icontains=value)
+                | Q(asset__location__department__name__icontains=value)
             )
         return queryset
