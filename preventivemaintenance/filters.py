@@ -27,6 +27,31 @@ class PreventiveMaintenanceFilter(django_filters.FilterSet):
         model = PreventiveMaintenance
         fields = ['slug', 'facility', 'asset', 'status', 'frequency', 'started_at', 'expired_at']
     
+    def __init__(self, *args, **kwargs):
+        super(PreventiveMaintenanceFilter, self).__init__(*args, **kwargs)
+        self.filters['floor'].queryset = Floor.objects.none()
+        self.filters['department'].queryset = Department.objects.none()
+
+        if "building" in self.data:
+            try:
+                building_id = int(self.data.get("building"))
+                self.filters['floor'].queryset = Floor.objects.filter(building_id=building_id) 
+            except:
+                pass
+        
+        elif self.instance.pk:
+            self.filters['floor'].queryset = Floor.objects.filter(id=self.instance.pk)
+
+        if "floor" in self.data:
+            try:
+                floor_id = int(self.data.get("floor"))
+                self.filters['department'].queryset = Department.objects.filter(floor_id=floor_id)
+            except:
+                pass
+
+        elif self.instance.pk:
+            self.filters['department'].queryset = Department.objects.filter(id=self.instance.pk)
+
     def method_asset_filter(self, queryset, name, value):
         if value:
             queryset = queryset.filter(self, queryset, name, value)
