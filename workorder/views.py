@@ -41,7 +41,6 @@ TEMPLATES = {
 
 class WorkOrderListView(LoginRequiredMixin, ListView):
     model = WorkOrder
-    template_name = "workorder_listview.html"
 
     def get_context_data(self, **kwargs):
         context = super(WorkOrderListView, self).get_context_data(**kwargs)
@@ -76,6 +75,10 @@ class WorkOrderListView(LoginRequiredMixin, ListView):
         )
         return context
 
+    def get_template_names(self):
+        if self.request.is_ajax():
+            return 'partials/dropdown_list.html'
+        return 'workorder_listview.html'
 
 class WorkOrderWizardView(LoginRequiredMixin, SessionWizardView):
     file_storage = FileSystemStorage(

@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load bootstrap4 %}
+{% load static %}
 {% load bootstrap_pagination %}
 {% load el_pagination_tags %}
 {% load widget_tweaks %}
@@ -12,7 +13,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="filters">
-                    <form action="GET" class="filters">
+                    <form method="GET" class="filter-form" id="id-filter-form">
                         <div class="card">
                             <div class="card-body">
                                 <div class="row">
@@ -26,7 +27,7 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text"><i class="fas fa-search"></i></span>
                                             </div>
-                                            {% render_field assigned_workorders.form.custom_search class="form-control" placeholder="Search Work Orders" %}
+                                            {% render_field assigned_workorders.form.custom_search class="form-control" placeholder="Search Work Orders" bound_css_class="cls_filter"%}
                                         </div>
                                     </div>
                                 </div>
@@ -36,13 +37,13 @@
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-sm-4">
-                                        {% bootstrap_field assigned_workorders.form.building %}
+                                        {% bootstrap_field assigned_workorders.form.building bound_css_class="cls_filter" %}
                                     </div>
                                     <div class="col-sm-4">
-                                        {% bootstrap_field assigned_workorders.form.floor %}
+                                        {% bootstrap_field assigned_workorders.form.floor bound_css_class="cls_filter" %}
                                     </div>
                                     <div class="col-sm-4">
-                                        {% bootstrap_field assigned_workorders.form.department %}
+                                        {% bootstrap_field assigned_workorders.form.department bound_css_class="cls_filter" %}
                                     </div>
                                 </div>
                             </div>
@@ -136,6 +137,34 @@
 {% block extra_js %}
 
 <script>
+    $("#id_building").change(function(){
+        var url = "{% url 'systemandfacility:building-list' %}"
+        var building = $(this).val();
+        $.ajax({
+            url:url,
+            data:{
+                'building':building
+            },
+            success: function(data){
+                $('#id_floor').html(data);
+            }
+        });
+    });
+
+    $("#id_floor").change(function(){
+        var url = "{% url 'systemandfacility:floor-list' %}"
+        var floor = $(this).val();
+        $.ajax({
+            url:url,
+            data:{
+                'floor':floor
+            },
+            success: function(data){
+                $('#id_department').html(data);
+            }
+        });
+    })
+
     jQuery(document).ready(function($){
         $(".clickable-row").click(function(){
             window.location=$(this).data("href")

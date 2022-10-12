@@ -32,6 +32,25 @@ class WorkOrderFilter(django_filters.FilterSet):
         model = WorkOrder
         fields = ["building", "floor", "department", "custom_search"]
 
+    def __init__(self, *args, **kwargs):
+        super(WorkOrderFilter, self).__init__(*args, **kwargs)
+        self.filters['floor'].queryset = Floor.objects.none()
+        self.filters['department'].queryset = Department.objects.none()
+
+        if "building" in self.data:
+            try:
+                building_id = int(self.data.get("building"))
+                self.filters['floor'].queryset = Floor.objects.filter(building_id=building_id) 
+            except:
+                pass
+        
+        if "floor" in self.data:
+            try:
+                floor_id = int(self.data.get("floor"))
+                self.filters['department'].queryset = Department.objects.filter(floor_id=floor_id)
+            except:
+                pass
+
     def building_filter(self, queryset, name, value):
         if value:
             queryset = queryset.filter(location__building=value)
@@ -47,10 +66,11 @@ class WorkOrderFilter(django_filters.FilterSet):
             queryset = queryset.filter(location__department=value)
         return queryset
 
-    def custom_filter(self, queryset, name, value):
+    def custom_search_filter(self, queryset, name, value):
         if value:
             queryset = queryset.filter(
-                Q(facility__name__icontains=value)
+                Q(brief_description__icontains=value)
+                |Q(facility__name__icontains=value)
                 |Q(asset__slug__icontains=value)
                 |Q(location__specific_location__icontains=value)
                 |Q(location__building__name__icontains=value)
