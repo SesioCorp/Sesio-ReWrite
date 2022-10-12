@@ -77,7 +77,7 @@
                                 <tbody>
                                     {% for pm in page.object_list %}
                                     <tr class="clickable-row click_td" 
-                                        data-href="#">
+                                        data-href="{% url 'preventivemaintenance:preventive_maintenance_detail' pm.id %}">
                                         <td>{{pm.slug}}</td>
                                         <td>{{pm.asset.slug}}</td>
                                         <td>Custom Tag</td>
@@ -131,6 +131,12 @@
             }
         });
     });
+
+    jQuery(document).ready(function($){
+        $(".clickable-row").click(function(){
+            window.location=$(this).data("href")
+        })
+    })
 </script>
 
 {% endblock %}
