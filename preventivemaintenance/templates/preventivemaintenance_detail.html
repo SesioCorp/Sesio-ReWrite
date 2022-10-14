@@ -5,37 +5,101 @@
 {% load crispy_forms_tags %}
 {% load i18n %}
 
+{% block extra_css %}
+
+{% endblock extra_css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/custom_dev.css' %}">
+    <style>
+        canvas.drawing, canvas.drawingBuffer {position: absolute; left: 0; top: 0;}
+    </style>
 {% block content %}
 
 <section class="content">
     <div class="container">
         <div class="row">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Asset ID: <span class="text-info">{{object.asset.slug}}</span></h3>  
-                </div>
-                <div class="card-body">
-                    <div>
-                        {% if object.image %}
-                            <img src="{{ object.image.url }}" class="table-avatar" height="200" width="200" alt="avatar">
-                        {% else %}
-                            <img src="https://sesio.s3.amazonaws.com/dev/static/img/logo/logo.png" class="table-avatar" alt="avatar">
-                        {% endif%}
-                        <button class="btn btn-primary btn-lg btn-block">Update Photo 1</button>
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Asset ID: <span class="text-info">{{object.asset.slug}}</span></h3>  
                     </div>
-                    &nbsp;
-                    &nbsp;
-                    <div>
-                        {% if object.image %}
-                            <img src="{{ object.image.url }}" class="table-avatar" alt="avatar">
-                        {% else %}
-                            <img src="https://sesio.s3.amazonaws.com/dev/static/img/logo/logo.png" class="table-avatar" alt="avatar">
-                        {% endif%}
-                        <button class="btn btn-primary btn-lg btn-block">Update Photo 2</button>
-                    </div>                    
+                    <div class="card-body d-flex justify-content-center">
+                        <div class="pm_image">
+                            {% if object.image %}
+                                <img src="{{ object.image.url }}" class="table-avatar" height="200" width="200" alt="avatar">
+                            {% else %}
+                                <img src="https://sesio.s3.amazonaws.com/dev/static/img/logo/logo.png" class="table-avatar" alt="avatar">
+                            {% endif%}
+                            <button class="btn btn-primary btn-lg btn-block">Update Photo 1</button>
+                        </div>
+                        &nbsp;
+                        &nbsp;
+                        <div class="pm_image">
+                            {% if object.image %}
+                                <img src="{{ object.image.url }}" class="table-avatar" height="200" width="200" alt="avatar">
+                            {% else %}
+                                <img src="https://sesio.s3.amazonaws.com/dev/static/img/logo/logo.png" class="table-avatar" alt="avatar">
+                            {% endif%}
+                            <button class="btn btn-primary btn-lg btn-block">Update Photo 2</button>
+                        </div>                    
+                    </div>
                 </div>
             </div>
         </div>
+        <form action="" id="location_details" data-object-id="{{ object.id }}">
+            {% csrf_token %}
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="pm_details card-title font-weight-bold text-primary">Location Details</h3>
+                    <button class="btn btn-primary btn-view font-weight-bold pm_details card-title float-right">Update Location Details</button>
+                </div>
+                <div class="card-body table__ul">
+                    <ul class="pm_details">
+                        <li>Facility</li>
+                        <li>{{ object.facility }}</li>
+                    </ul>
+                    <ul class="pm_details">
+                        <li>Building</li>
+                        <li>{{ object.asset.location.building }}</li>
+                    </ul>
+                    <ul class="pm_details">
+                        <li>Floor</li>
+                        <li>{{ object.asset.location.floor.number }}</li>
+                    </ul>
+                    <ul class="pm_details">
+                        <li>Department</li>
+                        <li>{{ object.asset.location.department }}</li>
+                    </ul>
+                    <ul class="pm_details">
+                        <li>Location</li>
+                        <li>{{ object.asset.location }}</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title pm_details font-weight-bold text-primary">Asset Details</h3>
+                    <button class="btn btn-primary btn-view font-weight-bold pm details card-title float-right">Update Asset Details</button>
+                </div>
+                <div class="card-body table__ul">
+                    <ul class="pm_details">
+                        <li>Type</li>
+                        <li>{{ object.asset.asset_type }}</li>
+                    </ul>
+                    <ul class="pm_details">
+                        <li>Weight</li>
+                        <li>{{ object.asset.attribute_set.weight }}</li>
+                    </ul>
+                    <ul class="pm_details">
+                        <li>Brand</li>
+                        <li>{{ object.asset.attribute_set.brand }}</li>
+                    </ul>
+                </div>
+                <div class="card-footer">
+                    <a href="#" class="btn btn-primary btn-lg btn-block font-weight-bold pm_buttons">Next</a>
+                    <a href="{% url 'preventivemaintenance:preventive_maintenance_list' %}" class="btn btn-block btn-view font-weight-bold pm_buttons">Save and Exit</a>
+                </div>
+            </div>
+        </form>
     </div>
 </section>
 
