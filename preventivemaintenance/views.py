@@ -27,3 +27,7 @@ class PreventiveMaintenanceListView(ListView):
 class PreventiveMaintenanceDetailView(DetailView):
     model = PreventiveMaintenance
     template_name = "preventivemaintenance_detail.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(PreventiveMaintenanceDetailView, self).get_context_data(**kwargs)
+        return context

@@ -1,6 +1,8 @@
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib import admin
+from django.conf.urls.static import static
+from django.conf import settings
 
 admin.autodiscover()
 admin.site.enable_nav_sidebar = False
@@ -13,3 +15,5 @@ urlpatterns = [
     path('systemandfacility/', include(('systemandfacility.urls', 'systemandfacility'), namespace="systemandfacility")),
     path('preventivemaintenance/', include(('preventivemaintenance.urls', 'preventivemaintenance'), namespace="preventivemaintenance"))
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
