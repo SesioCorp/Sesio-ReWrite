@@ -45,12 +45,14 @@
                 </div>
             </div>
         </div>
+
+<!-- This is the initial Location Details table. When you click the Update Location button, this is hidden.-->
         <form action="" id="location_details" data-object-id="{{ object.id }}">
             {% csrf_token %}
             <div class="card">
                 <div class="card-header">
                     <h3 class="pm_details card-title font-weight-bold text-primary">Location Details</h3>
-                    <button class="btn btn-primary btn-view font-weight-bold pm_details card-title float-right">Update Location Details</button>
+                    <button class="btn btn-primary btn-view font-weight-bold pm_details card-title float-right" id="location_update_button" type="button">Update Location Details</button>
                 </div>
                 <div class="card-body table__ul">
                     <ul class="pm_details">
@@ -75,10 +77,47 @@
                     </ul>
                 </div>
             </div>
+        </form>
+
+<!-- This is the Location Update Form. This is shown when you click the Update Location button -->
+        <form action="" method="post" id="location_update" enctype="multipart/form-data" style="display:none;">
+            {% csrf_token %}
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="pm_details card-title font-weight-bold text-primary">Location Details</h3>
+                </div>
+                <div class="card-body table__ul">
+                    <ul class="pm_details">
+                        <li>Facility</li>
+                        <li>{{ location_form.facility }}</li>
+                    </ul>
+                    <ul class="pm_details">
+                        <li>Building</li>
+                        <li>{{ location_form.building }}</li>
+                    </ul>
+                    <ul class="pm_details">
+                        <li>Floor</li>
+                        <li>{{ location_form.floor }}</li>
+                    </ul>
+                    <ul class="pm_details">
+                        <li>Department</li>
+                        <li>{{ location_form.department }}</li>
+                    </ul>
+                    <ul class="pm_details">
+                        <li>Location</li>
+                        <li>{{ location_form.specific_location }}</li>
+                    </ul>
+                </div>
+            </div>
+        </form>
+
+<!-- This is the initial Asset Details table. When you click the Update Asset button, this is hidden.-->
+        <form action="" id="asset_details" data-object-id="{{ object.id }}">
+            {% csrf_token %}
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title pm_details font-weight-bold text-primary">Asset Details</h3>
-                    <button class="btn btn-primary btn-view font-weight-bold pm details card-title float-right">Update Asset Details</button>
+                    <button class="btn btn-primary btn-view font-weight-bold pm details card-title float-right" id="asset_update_button" type="button">Update Asset Details</button>
                 </div>
                 <div class="card-body table__ul">
                     <ul class="pm_details">
@@ -100,7 +139,52 @@
                 </div>
             </div>
         </form>
+
+<!-- This is the Asset Update Form. This is shown when you click the Update Asset button -->
+        <form action="" method="post" id="asset_update" enctype="multipart/form-data" style="display: none;">
+            {% csrf_token %}
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title pm_details font-weight-bold text-primary">Asset Details</h3>
+                </div>
+                <div class="card-body table__ul">
+                    <ul class="pm_details">
+                        <li>Type</li>
+                        <li>{{ asset_update.asset_type }}</li>
+                    </ul>
+                    <ul class="pm_details">
+                        <li>Weight</li>
+                        <li>{{ asset_update.weight }}</li>
+                    </ul>
+                    <ul class="pm_details">
+                        <li>Brand</li>
+                        <li>{{ asset_update.brand }}</li>
+                    </ul>
+                </div>
+                <div class="card-footer">
+                    <a href="#" class="btn btn-primary btn-lg btn-block font-weight-bold pm_buttons">Next</a>
+                    <a href="{% url 'preventivemaintenance:preventive_maintenance_list' %}" class="btn btn-block btn-view font-weight-bold pm_buttons">Save and Exit</a>
+                </div>
+            </div>
+        </form>
     </div>
 </section>
 
 {% endblock content %}
+
+{% block extra_js %}
+
+<script>
+    $('#location_update_button').click(function(){
+        $('#location_details').hide();
+        $('#location_update').show()
+    });
+
+    $('#asset_update_button').click(function(){
+        $('#asset_details').hide();
+        $('#asset_update').show()
+    });
+
+</script>
+
+{% endblock extra_js %}
