@@ -11,7 +11,7 @@ class PreventiveMaintenanceForm(forms.ModelForm):
 
 class PreventiveMaintenanceAssetDetailsForm(forms.Form):
     asset_type = forms.ModelChoiceField(label="Type", queryset=AssetType.objects.all())
-    weight = forms.IntegerField(label="Weight", required=False)
-    brand = forms.CharField(label="Brand", required=False, max_length=100)
+    weight = forms.IntegerField(label="Weight")
+    brand = forms.CharField(label="Brand", max_length=100)
     
 

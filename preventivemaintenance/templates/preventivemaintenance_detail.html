@@ -134,14 +134,14 @@
                     </ul>
                 </div>
                 <div class="card-footer">
-                    <a href="#" class="btn btn-primary btn-lg btn-block font-weight-bold pm_buttons">Next</a>
-                    <a href="{% url 'preventivemaintenance:preventive_maintenance_list' %}" class="btn btn-block btn-view font-weight-bold pm_buttons">Save and Exit</a>
+                    <a href="#" type="submit" class="btn btn-primary btn-lg btn-block font-weight-bold pm_buttons">Next</a>
+                    <a href="{% url 'preventivemaintenance:preventive_maintenance_list' %}" type="submit" class="btn btn-block btn-view font-weight-bold pm_buttons">Save and Exit</a>
                 </div>
             </div>
         </form>
 
 <!-- This is the Asset Update Form. This is shown when you click the Update Asset button -->
-        <form action="" method="post" id="asset_update" enctype="multipart/form-data" style="display: none;">
+        <form action="" method="POST" id="asset_update" enctype="multipart/form-data" style="display: none;">
             {% csrf_token %}
             <div class="card">
                 <div class="card-header">
@@ -162,8 +162,8 @@
                     </ul>
                 </div>
                 <div class="card-footer">
-                    <a href="#" class="btn btn-primary btn-lg btn-block font-weight-bold pm_buttons">Next</a>
-                    <a href="{% url 'preventivemaintenance:preventive_maintenance_list' %}" class="btn btn-block btn-view font-weight-bold pm_buttons">Save and Exit</a>
+                    <a href="#" type="submit" class="btn btn-primary btn-lg btn-block font-weight-bold pm_buttons">Next</a>
+                    <a href="{% url 'preventivemaintenance:preventive_maintenance_list' %}" onclick="document.getElementById('asset_update').submit();" class="btn btn-block btn-view font-weight-bold pm_buttons">Save and Exit</a>
                 </div>
             </div>
         </form>
