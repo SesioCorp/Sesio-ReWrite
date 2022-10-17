@@ -163,10 +163,13 @@
                 </div>
                 <div class="card-footer">
                     <a href="#" type="submit" class="btn btn-primary btn-lg btn-block font-weight-bold pm_buttons">Next</a>
-                    <a href="{% url 'preventivemaintenance:preventive_maintenance_list' %}" onclick="document.getElementById('asset_update').submit();" class="btn btn-block btn-view font-weight-bold pm_buttons">Save and Exit</a>
+                    <button type="submit" form="asset_update">Submit</button>
                 </div>
             </div>
         </form>
+        <button type="submit" form="location_update">Location Submit</button>
+
+        <button type="submit" form="asset_update">Submit</button>
     </div>
 </section>
 

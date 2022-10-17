@@ -1,4 +1,4 @@
-from audioop import reverse
+from django.urls import reverse
 from django.shortcuts import render
 from .models import PreventiveMaintenance
 from .filters import PreventiveMaintenanceFilter
@@ -60,6 +60,7 @@ class PreventiveMaintenanceDetailView(DetailView):
         location_form = LocationForm(self.request.POST)
         asset_form = PreventiveMaintenanceAssetDetailsForm(self.request.POST)
 
+        import pdb; pdb.set_trace()
         if location_form.is_valid():
             object_data = self.get_object()
             if object_data.asset.location:
@@ -68,15 +69,16 @@ class PreventiveMaintenanceDetailView(DetailView):
                 object_data.asset.floor = location_form.cleaned_data['floor']
                 object_data.asset.department = location_form.cleaned_data['department']
                 object_data.asset.location.specific_location = location_form.cleaned_data['specific_location']
-                object_data.save()
+                object_data.asset.location.save()
+                object_data.facility.save()
         
         if asset_form.is_valid():
-            import pdb; pdb.set_trace()
             object_data = self.get_object()
             if object_data.asset:
                 object_data.asset.asset_type = asset_form.cleaned_data['asset_type']
                 object_data.asset.attribute_set.weight = asset_form.cleaned_data['weight']
                 object_data.asset.attribute_set.brand = asset_form.cleaned_data['brand']
-                object_data.save()
+                object_data.asset.asset_type.save()
+                object_data.asset.attribute_set.save()
 
         return HttpResponseRedirect(reverse("preventivemaintenance:preventive_maintenance_list"))
