@@ -1,8 +1,4 @@
 from datetime import datetime
-from email.policy import HTTP
-import http
-from http.client import HTTPResponse
-from unicodedata import category
 from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
 from django.views.generic import View
@@ -25,6 +21,7 @@ from django.db.models import Q
 from django.views.generic.detail import DetailView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse
 
 FORMS = [
     ("LocationForm", LocationForm),
@@ -197,6 +194,7 @@ class WorkOrderDetailView(LoginRequiredMixin, DetailView):
     template_name = "workorder_detail.html"
 
     def get_context_data(self, **kwargs):
+        import pdb; pdb.set_trace()
         context = super(WorkOrderDetailView, self).get_context_data(**kwargs)
         context["workorder_location_form"] = LocationForm(
             instance = self.get_object().location
@@ -214,6 +212,29 @@ class WorkOrderDetailView(LoginRequiredMixin, DetailView):
                 "created_on": self.get_object().created_at
             } 
             return data
+
+    def post(self, request, *args, **kwargs):
+        location_form = LocationForm(self.request.POST)
+        workorder_assigned_form = WorkOrderAssignForm(self.request.POST)
+        object_data = self.get_object()
+
+        import pdb; pdb.set_trace()
+        if location_form.is_valid():
+            object_data.facility = location_form.cleaned_data['facility']
+            object_data.location.building = location_form.cleaned_data['building']
+            object_data.location.floor = location_form.cleaned_data['floor']
+            object_data.location.department = location_form.cleaned_data['department']
+            object_data.location.specific_location = location_form.cleaned_data['specific_location']
+            object_data.save()
+
+        if not workorder_assigned_form.data['requester']:
+            object_data.save()
+
+        else:
+            object_data.assigned_to = CustomUser.objects.get(pk=int(workorder_assigned_form.data['requester']))
+            object_data.save()
+
+        return HttpResponseRedirect(reverse("workorder:work_order_update", kwargs={"pk":self.get_object().pk}))
 
 class WorkOrderUpdateView(LoginRequiredMixin, UpdateView):
     model = WorkOrder

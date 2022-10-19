@@ -27,6 +27,9 @@ class LocationForm(forms.ModelForm):
         elif self.instance.pk:
             self.fields["building"].queryset = Building.objects.filter(id=self.instance.pk)
 
+        else:
+            self.fields["building"].queryset = Building.objects.all()
+
         if "LocationForm-building" in self.data:
             try:
                 _building_id = int(self.data.get("LocationForm-building"))

@@ -60,7 +60,6 @@ class PreventiveMaintenanceDetailView(DetailView):
         location_form = LocationForm(self.request.POST)
         asset_form = PreventiveMaintenanceAssetDetailsForm(self.request.POST)
 
-        import pdb; pdb.set_trace()
         if location_form.is_valid():
             object_data = self.get_object()
             if object_data.asset.location:

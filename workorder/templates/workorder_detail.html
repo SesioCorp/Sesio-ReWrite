@@ -24,14 +24,14 @@
                         <p class="form-group pm_details"><strong>Comment: </strong>{{ object.description }}</p>
                     </div>
                 </div>
-                <form action="" id="editable_details" data-object-id="{{ object.id }}">
+                <form action="" id="uneditable_fields" data-object-id="{{ object.id }}">
                     <div class="card">
                         <div class="card-header">
                             <div class="d-flex align-items-center justify-content-between">
                             <h3 class="card-title float-left pm_details font-weight-bold">
                                 Location Details
                             </h3>
-                            <button class="col-3 btn btn-block btn-outline-primary btn-lg font-weight-bold" style="font-size: 25px">Edit</button>
+                            <button id="edit_button" type="button" class="col-3 btn btn-block btn-outline-primary btn-lg font-weight-bold" style="font-size: 25px">Edit</button>
                             </div>
                         </div>
                         <div class="card-body table__ul">
@@ -93,14 +93,16 @@
                         </div>
                     </div>
                 </form>
-                <form action="" id="editable_fields" data-object-id="{{ object.id }}">
+
+                <!-- Edit Location/Work Order Details -->
+                <form action="" method="POST" id="editable_fields" style="display:none">
+                    {% csrf_token %}
                     <div class="card">
                         <div class="card-header">
                             <div class="d-flex align-items-center justify-content-between">
                             <h3 class="card-title float-left pm_details font-weight-bold">
                                 Location Details
                             </h3>
-                            <button class="btn btn-primary btn-view">Edit Details</button>
                             </div>
                         </div>
                         <div class="card-body table__ul">
@@ -168,7 +170,7 @@
                             <a href="{% url 'workorder:work_order_list' %}" class="btn pm_buttons btn-block btn-outline-primary btn-lg font-weight-bold">Previous</a>
                         </div>
                         <div class="col">
-                            <a href="{% url 'workorder:work_order_update' workorder.id %}" class="btn pm_buttons btn-block btn-primary btn-lg font-weight-bold">Next</a>
+                            <button form="editable_fields" class="btn pm_buttons btn-block btn-primary btn-lg font-weight-bold" type="submit">Next</button>
                         </div>
                     </div>
                 </div>
@@ -180,6 +182,55 @@
 
 {% block extra_js %}
 <script>
-    document.getElementById('editable_fields').style.display="none"
+
+// Hide and show editable fields
+
+    $('#edit_button').click(function(){
+        $('#uneditable_fields').hide();
+        $('#editable_fields').show();
+    })
+
+    $("#id_facility").change(function(){
+        var url = "{% url 'systemandfacility:building-list' %}"
+        var facility = $(this).val();
+        $.ajax({
+            url:url,
+            data:{
+                'facility':facility
+            },
+            success: function(data){
+                $('#id_building').html(data);
+            }
+        });
+    });
+
+    $("#id_building").change(function(){
+        var url = "{% url 'systemandfacility:floor-list' %}"
+        var building = $(this).val();
+        $.ajax({
+            url:url,
+            data:{
+                'building':building
+            },
+            success: function(data){
+                $('#id_floor').html(data);
+            }
+        });
+    });
+
+    $("#id_floor").change(function(){
+        var url = "{% url 'systemandfacility:department-list' %}"
+        var floor = $(this).val();
+        $.ajax({
+            url:url,
+            data:{
+                'floor':floor
+            },
+            success: function(data){
+                $('#id_department').html(data);
+            }
+        });
+    })
+
 </script>
 {% endblock %}
