@@ -23,7 +23,7 @@ class Asset(models.Model):
     slug = models.SlugField(unique=True)
     device_id = models.CharField(max_length=100)
     question_set = models.ForeignKey(QuestionSet, on_delete=models.CASCADE, related_name="assets")
-    location = models.ForeignKey(Location, on_delete=models.CASCADE, related_name="assets")
+    location = models.ForeignKey(Location, on_delete=models.CASCADE, related_name="assets", null=True, blank=True)
     is_demo = models.BooleanField(default=False)
 
     def __str__(self):
