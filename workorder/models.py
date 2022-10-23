@@ -27,7 +27,7 @@ class Priority(models.Model):
 
 
 class WorkOrder(models.Model):
-    created_at = models.DateTimeField(blank=True, null=True, default=datetime.now())
+    created_at = models.DateTimeField(blank=True, null=True)
     facility = models.ForeignKey(Facility, on_delete=models.CASCADE, related_name="work_orders")
     location = models.ForeignKey(Location, on_delete=models.CASCADE, related_name="work_orders")
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="work_orders")
@@ -37,7 +37,7 @@ class WorkOrder(models.Model):
     assigned_to = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="work_orders", blank=True, null=True)
     completed_at = models.DateTimeField(blank=True, null=True)
     enter_device_id_manually = models.CharField(max_length=100, blank=True, null=True)
-    asset = models.ManyToManyField(Asset, related_name="work_orders", blank=True, null=True)
+    asset = models.ManyToManyField(Asset, related_name="work_orders", blank=True)
     repair_images = models.ImageField(upload_to="uploads/", blank=True)
     status = models.CharField(max_length=50, choices=Choices, blank=False, default="open")
     scan_bar_code = models.CharField(max_length=50, blank=True)

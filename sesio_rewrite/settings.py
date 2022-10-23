@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'users',
     "asset",
     "question",
+    "answer",
     "map",
     "preventivemaintenance",
     'bootstrap_pagination',

@@ -194,7 +194,6 @@ class WorkOrderDetailView(LoginRequiredMixin, DetailView):
     template_name = "workorder_detail.html"
 
     def get_context_data(self, **kwargs):
-        # import pdb; pdb.set_trace()
         context = super(WorkOrderDetailView, self).get_context_data(**kwargs)
         context["workorder_location_form"] = LocationForm(
             instance = self.get_object().location
@@ -218,7 +217,6 @@ class WorkOrderDetailView(LoginRequiredMixin, DetailView):
         workorder_assigned_form = WorkOrderAssignForm(self.request.POST)
         object_data = self.get_object()
 
-        import pdb; pdb.set_trace()
         if location_form.is_valid():
             object_data.facility = location_form.cleaned_data['facility']
             object_data.location.building = location_form.cleaned_data['building']
