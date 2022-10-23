@@ -1,6 +1,6 @@
 asgiref==3.5.2
 beautifulsoup4==4.11.1
-Django==3.2.14
+Django==3.2.16
 django-bootstrap-pagination==1.7.1
 django-bootstrap4==22.2
 django-crispy-forms==1.14.0
