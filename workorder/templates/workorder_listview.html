@@ -138,7 +138,7 @@
 
 <script>
     $("#id_building").change(function(){
-        var url = "{% url 'systemandfacility:building-list' %}"
+        var url = "{% url 'systemandfacility:floor-list' %}"
         var building = $(this).val();
         $.ajax({
             url:url,
@@ -152,7 +152,7 @@
     });
 
     $("#id_floor").change(function(){
-        var url = "{% url 'systemandfacility:floor-list' %}"
+        var url = "{% url 'systemandfacility:department-list' %}"
         var floor = $(this).val();
         $.ajax({
             url:url,
@@ -164,6 +164,9 @@
             }
         });
     })
+
+    $(".invalid-feedback").hide()
+    $(".invalid-feedback").remove()
 
     jQuery(document).ready(function($){
         $(".clickable-row").click(function(){
