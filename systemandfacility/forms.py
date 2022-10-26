@@ -21,12 +21,10 @@ class LocationForm(forms.ModelForm):
             try:
                 facility_id = int(self.data.get("LocationForm-facility"))
                 self.fields["building"].queryset = Building.objects.filter(facility_id=facility_id)
-            except:
+            except (ValueError, TypeError):
                 pass
-
         elif self.instance.pk:
             self.fields["building"].queryset = Building.objects.filter(id=self.instance.building.id)
-
         else:
             self.fields["building"].queryset = Building.objects.all()
 
@@ -34,21 +32,20 @@ class LocationForm(forms.ModelForm):
             try:
                 building_id = int(self.data.get("LocationForm-building"))
                 self.fields["floor"].queryset = Floor.objects.filter(building_id=building_id)
-            except:
+            except (ValueError, TypeError):
                 pass
-
         elif self.instance.pk:
             self.fields["floor"].queryset = Floor.objects.filter(id=self.instance.floor.id)
-
+        else:
+            self.fields["floor"].queryset = Floor.objects.all()
+            
         if "LocationForm-floor" in self.data:
             try:
                 floor_id = int(self.data.get("LocationForm-floor"))
                 self.fields["department"].queryset = Department.objects.filter(floor_id=floor_id)
-            except:
+            except (ValueError, TypeError):
                 pass
-        
         elif self.instance.pk:
             self.fields["department"].queryset = Department.objects.filter(id=self.instance.department.id)
-
         else:
             self.fields["department"].queryset = Department.objects.all()

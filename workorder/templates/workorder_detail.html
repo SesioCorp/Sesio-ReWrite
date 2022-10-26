@@ -25,6 +25,7 @@
                     </div>
                 </div>
                 <form action="" id="uneditable_fields" data-object-id="{{ object.id }}">
+                    {% csrf_token %}
                     <div class="card">
                         <div class="card-header">
                             <div class="d-flex align-items-center justify-content-between">
@@ -37,23 +38,23 @@
                         <div class="card-body table__ul">
                             <ul>
                                 <li>Facility</li>
-                                <li>{{ object.facility }}</li>
+                                <li id="facility">{{ object.facility }}</li>
                             </ul>
                             <ul>
                                 <li>Building</li>
-                                <li>{{ object.location.building }}</li>
+                                <li id="building" data-id="building-{{object.location.building.id}}" data-old_value='{{object.location.building}}'>{{ object.location.building }}</li>
                             </ul>
                             <ul>
                                 <li>Floor</li>
-                                <li>{{ object.location.floor }}</li>
+                                <li id="floor_no" data-id="floor_no-{{object.location.floor.id}}" data-old_value='{{object.location.floor.fllor_no}}'>{{ object.location.floor }}</li>
                             </ul>
                             <ul>
                                 <li>Department</li>
-                                <li>{{ object.location.department }}</li>
+                                <li id="department_name" data-id="department-{{object.location.department.id}}" data-old_value='{{object.location.department.name}}'>{{ object.location.department }}</li>
                             </ul>
                             <ul>
                                 <li>Location</li>
-                                <li>{{ object.location.specific_location }}</li>
+                                <li id="location" data-id="location-{{object.location.id}}" data-old_value='{{object.location}}'>{{ object.location.specific_location }}</li>
                             </ul>
                         </div>
                     </div>                        
@@ -68,34 +69,36 @@
                         <div class="card-body table__ul">
                             <ul>
                                 <li>Requester</li>
-                                <li>{{ object.assigned_to.get_full_name }}</li>
+                                <li id="created_by" data-id="created_by-{{object.created_by.id}}"
+                                data-old_value='{{object.created_by}}'>{{ object.assigned_to.get_full_name }}</li>
                             </ul>
                             <ul>
                                 <li>Requester Email</li>
-                                <li>{{ object.assigned_to.email }}</li>
+                                <li id="email" data-id="email-{{object.assigned_to.id}}" data-old_value='{{object.assigned_to.email}}'>{{ object.assigned_to.email }}</li>
                             </ul>
                             <ul>
                                 <li>Requester Phone</li>
                                 {% if object.assigned_to.phone_number %}
-                                    <li>{{ object.assigned_to.phone_number }}</li>
+                                    <li id="phone" data-id="phone-{{object.assigned_to.id}}" data-old_value='{{object.assigned_to.phone}}'>{{ object.assigned_to.phone_number }}</li>
                                 {% else %}
                                     <li>No Phone Number Available</li>
                                 {% endif %}
                             </ul>
                             <ul>
                                 <li>Work Order Type</li>
-                                <li>{{ object.category }}</li>
+                                <li id="default" data-id="category-{{ object.category.id }}" data-old_value='{{ object.category }}'>{{ object.category }}</li>
                             </ul>
                             <ul>
                                 <li>Created On</li>
-                                <li>{{ object.created_at }}</li>
+                                <li id="created_at" data-id="created_at-{{object.assigned_to.id}}"
+                                data-old_value='{{object.assigned_to.created_at}}'>{{ object.created_at }}</li>
                             </ul>
                         </div>
                     </div>
                 </form>
 
                 <!-- Edit Location/Work Order Details -->
-                <form action="" method="POST" id="editable_fields" style="display:none">
+                <form action="" method="post" id="editable_fields" style="display:none">
                     {% csrf_token %}
                     <div class="card">
                         <div class="card-header">
@@ -103,12 +106,11 @@
                             <h3 class="card-title float-left pm_details font-weight-bold">
                                 Location Details
                             </h3>
-                            </div>
                         </div>
                         <div class="card-body table__ul">
                             <ul>
                                 <li>Facility</li>
-                                <li>{{ workorder_location_form.facility }}</li>
+                                <li >{{ workorder_location_form.facility }}</li>
                             </ul>
                             <ul>
                                 <li>Building</li>
@@ -163,17 +165,17 @@
                             </ul>
                         </div>
                     </div>
-                </form>
-                <div class="card-footer">
-                    <div class="row">
-                        <div class="col">
-                            <a href="{% url 'workorder:work_order_list' %}" class="btn pm_buttons btn-block btn-outline-primary btn-lg font-weight-bold">Previous</a>
-                        </div>
-                        <div class="col">
-                            <button form="editable_fields" class="btn pm_buttons btn-block btn-primary btn-lg font-weight-bold" type="submit">Next</button>
+                    <div class="card-footer">
+                        <div class="row">
+                            <div class="col">
+                                <a href="{% url 'workorder:work_order_list' %}" class="btn pm_buttons btn-block btn-outline-primary btn-lg font-weight-bold">Previous</a>
+                            </div>
+                            <div class="col">
+                                <input id="save_contents" type="submit" class="btn btn-block btn-primary save pm_buttons font-weight-bold" value="Next">
+                            </div>
                         </div>
                     </div>
-                </div>
+                </form>
             </div>
         </div>
     </div>
@@ -182,7 +184,10 @@
 
 {% block extra_js %}
 <script>
-
+    function getUsername() {
+        var username = $.session.getUsername();
+        return username;
+    };
 // Hide and show editable fields
 
     $('#edit_button').click(function(){
@@ -198,7 +203,8 @@
             data:{
                 'facility':facility
             },
-            success: function(data){
+            success: function(data) {
+                debugger
                 $('#id_building').html(data);
             }
         });
