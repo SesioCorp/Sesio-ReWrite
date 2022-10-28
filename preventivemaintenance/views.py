@@ -70,7 +70,6 @@ class PreventiveMaintenanceDetailView(DetailView):
                 object_data.asset.location.specific_location = location_form.cleaned_data['specific_location']
                 object_data.asset.location.save()
                 object_data.facility.save()
-                object_data.asset.location.save()
                 object_data.save()
         
         if asset_form.is_valid():
