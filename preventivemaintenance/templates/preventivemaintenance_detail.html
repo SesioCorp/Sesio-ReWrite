@@ -46,13 +46,13 @@
             </div>
         </div>
 
-<!-- This is the initial Location Details table. When you click the Update Location button, this is hidden.-->
-        <form action="" id="location_details" data-object-id="{{ object.id }}">
+<!-- This is the initial Details table. When you click the Update button, this is hidden.-->
+        <form action="" id="pm_details" data-object-id="{{ object.id }}">
             {% csrf_token %}
             <div class="card">
                 <div class="card-header">
                     <h3 class="pm_details card-title font-weight-bold text-primary">Location Details</h3>
-                    <button class="btn btn-primary btn-view font-weight-bold pm_details card-title float-right" id="location_update_button" type="button">Update Location Details</button>
+                    <button class="btn btn-primary btn-view font-weight-bold pm_details card-title float-right" id="update_button" type="button">Update Details</button>
                 </div>
                 <div class="card-body table__ul">
                     <ul class="pm_details">
@@ -77,10 +77,34 @@
                     </ul>
                 </div>
             </div>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title pm_details font-weight-bold text-primary">Asset Details</h3>
+                </div>
+                <div class="card-body table__ul">
+                    <ul class="pm_details">
+                        <li>Type</li>
+                        <li>{{ object.asset.asset_type }}</li>
+                    </ul>
+                    <ul class="pm_details">
+                        <li>Weight</li>
+                        <li>{{ object.asset.attribute_set.weight }}</li>
+                    </ul>
+                    <ul class="pm_details">
+                        <li>Brand</li>
+                        <li>{{ object.asset.attribute_set.brand }}</li>
+                    </ul>
+                </div>
+                <div class="card-footer">
+                    <a href="#" type="submit" class="btn btn-primary btn-lg btn-block font-weight-bold pm_buttons">Next</a>
+                    <a href="{% url 'preventivemaintenance:preventive_maintenance_list' %}" type="submit" class="btn btn-block btn-view font-weight-bold pm_buttons">Save and Exit</a>
+                </div>
+            </div>
+
         </form>
 
-<!-- This is the Location Update Form. This is shown when you click the Update Location button -->
-        <form action="" method="post" id="location_update" enctype="multipart/form-data" style="display:none;">
+<!-- This is the Update Form. This is shown when you click the Update button -->
+        <form action="" method="post" id="pm_update" enctype="multipart/form-data" style="display:none;">
             {% csrf_token %}
             <div class="card">
                 <div class="card-header">
@@ -109,40 +133,6 @@
                     </ul>
                 </div>
             </div>
-        </form>
-
-<!-- This is the initial Asset Details table. When you click the Update Asset button, this is hidden.-->
-        <form action="" id="asset_details" data-object-id="{{ object.id }}">
-            {% csrf_token %}
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title pm_details font-weight-bold text-primary">Asset Details</h3>
-                    <button class="btn btn-primary btn-view font-weight-bold pm details card-title float-right" id="asset_update_button" type="button">Update Asset Details</button>
-                </div>
-                <div class="card-body table__ul">
-                    <ul class="pm_details">
-                        <li>Type</li>
-                        <li>{{ object.asset.asset_type }}</li>
-                    </ul>
-                    <ul class="pm_details">
-                        <li>Weight</li>
-                        <li>{{ object.asset.attribute_set.weight }}</li>
-                    </ul>
-                    <ul class="pm_details">
-                        <li>Brand</li>
-                        <li>{{ object.asset.attribute_set.brand }}</li>
-                    </ul>
-                </div>
-                <div class="card-footer">
-                    <a href="#" type="submit" class="btn btn-primary btn-lg btn-block font-weight-bold pm_buttons">Next</a>
-                    <a href="{% url 'preventivemaintenance:preventive_maintenance_list' %}" type="submit" class="btn btn-block btn-view font-weight-bold pm_buttons">Save and Exit</a>
-                </div>
-            </div>
-        </form>
-
-<!-- This is the Asset Update Form. This is shown when you click the Update Asset button -->
-        <form action="" method="POST" id="asset_update" enctype="multipart/form-data" style="display: none;">
-            {% csrf_token %}
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title pm_details font-weight-bold text-primary">Asset Details</h3>
@@ -163,13 +153,10 @@
                 </div>
                 <div class="card-footer">
                     <a href="#" type="submit" class="btn btn-primary btn-lg btn-block font-weight-bold pm_buttons">Next</a>
-                    <button type="submit" form="asset_update">Submit</button>
+                    <button type="submit" class="btn btn-block btn-view font-weight-bold pm_buttons">Save and Exit</button>
                 </div>
             </div>
         </form>
-        <button type="submit" form="location_update">Location Submit</button>
-
-        <button type="submit" form="asset_update">Submit</button>
     </div>
 </section>
 
@@ -178,14 +165,9 @@
 {% block extra_js %}
 
 <script>
-    $('#location_update_button').click(function(){
-        $('#location_details').hide();
-        $('#location_update').show()
-    });
-
-    $('#asset_update_button').click(function(){
-        $('#asset_details').hide();
-        $('#asset_update').show()
+    $('#update_button').click(function(){
+        $('#pm_details').hide();
+        $('#pm_update').show()
     });
 
 </script>

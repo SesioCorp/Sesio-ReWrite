@@ -42,7 +42,7 @@ class PreventiveMaintenanceDetailView(DetailView):
     def pm_asset_details(self):
         try:
             data = {
-                "type": self.get_object().asset.asset_type,
+                "type": self.get_object().asset.asset_type.id,
                 "weight": self.get_object().asset.attribute_set.weight,
                 "brand": self.get_object().asset.attribute_set.brand
             }
@@ -64,12 +64,14 @@ class PreventiveMaintenanceDetailView(DetailView):
             object_data = self.get_object()
             if object_data.asset.location:
                 object_data.facility = location_form.cleaned_data['facility']
-                object_data.asset.building = location_form.cleaned_data['building']
-                object_data.asset.floor = location_form.cleaned_data['floor']
-                object_data.asset.department = location_form.cleaned_data['department']
+                object_data.asset.location.building = location_form.cleaned_data['building']
+                object_data.asset.location.floor = location_form.cleaned_data['floor']
+                object_data.asset.location.department = location_form.cleaned_data['department']
                 object_data.asset.location.specific_location = location_form.cleaned_data['specific_location']
                 object_data.asset.location.save()
                 object_data.facility.save()
+                object_data.asset.location.save()
+                object_data.save()
         
         if asset_form.is_valid():
             object_data = self.get_object()
@@ -79,5 +81,6 @@ class PreventiveMaintenanceDetailView(DetailView):
                 object_data.asset.attribute_set.brand = asset_form.cleaned_data['brand']
                 object_data.asset.asset_type.save()
                 object_data.asset.attribute_set.save()
+                object_data.save()
 
         return HttpResponseRedirect(reverse("preventivemaintenance:preventive_maintenance_list"))
