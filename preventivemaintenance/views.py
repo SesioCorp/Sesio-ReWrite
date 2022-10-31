@@ -36,20 +36,21 @@ class PreventiveMaintenanceDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(PreventiveMaintenanceDetailView, self).get_context_data(**kwargs)
         context["location_form"] = LocationForm(instance=self.get_object().asset.location)
+        import pdb; pdb.set_trace()
         context["asset_update"] = PreventiveMaintenanceAssetDetailsForm(initial=self.pm_asset_details())
         return context
 
     def pm_asset_details(self):
         try:
             data = {
-                "type": self.get_object().asset.asset_type.id,
+                "asset_type": self.get_object().asset.asset_type,
                 "weight": self.get_object().asset.attribute_set.weight,
                 "brand": self.get_object().asset.attribute_set.brand
             }
 
         except Asset.DoesNotExist: 
             data = {
-                "type": None,
+                "asset_type": None,
                 "weight": None,
                 "brand": None
             }
