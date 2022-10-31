@@ -36,7 +36,6 @@ class PreventiveMaintenanceDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(PreventiveMaintenanceDetailView, self).get_context_data(**kwargs)
         context["location_form"] = LocationForm(instance=self.get_object().asset.location)
-        import pdb; pdb.set_trace()
         context["asset_update"] = PreventiveMaintenanceAssetDetailsForm(initial=self.pm_asset_details())
         return context
 
