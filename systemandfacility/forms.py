@@ -25,7 +25,7 @@ class LocationForm(forms.ModelForm):
                 pass
 
         elif self.instance.pk:
-            self.fields["building"].queryset = Building.objects.filter(id=self.instance.building.id)
+            self.fields["building"].queryset = Building.objects.filter(facility=self.instance.facility)
 
         else:
             self.fields["building"].queryset = Building.objects.all()
@@ -38,7 +38,7 @@ class LocationForm(forms.ModelForm):
                 pass
 
         elif self.instance.pk:
-            self.fields["floor"].queryset = Floor.objects.filter(id=self.instance.floor.id)
+            self.fields["floor"].queryset = Floor.objects.filter(building=self.instance.building)
 
         else:
             self.fields['floor'].queryset = Floor.objects.all()
@@ -51,7 +51,7 @@ class LocationForm(forms.ModelForm):
                 pass
         
         elif self.instance.pk:
-            self.fields["department"].queryset = Department.objects.filter(id=self.instance.department.id)
+            self.fields["department"].queryset = Department.objects.filter(floor=self.instance.floor)
 
         else:
             self.fields["department"].queryset = Department.objects.all()

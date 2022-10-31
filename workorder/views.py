@@ -223,6 +223,8 @@ class WorkOrderDetailView(LoginRequiredMixin, DetailView):
             object_data.location.floor = location_form.cleaned_data['floor']
             object_data.location.department = location_form.cleaned_data['department']
             object_data.location.specific_location = location_form.cleaned_data['specific_location']
+            object_data.facility.save()
+            object_data.location.save()
             object_data.save()
 
         if not workorder_assigned_form.data['requester']:
