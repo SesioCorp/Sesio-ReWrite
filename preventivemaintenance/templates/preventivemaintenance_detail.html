@@ -7,11 +7,11 @@
 
 {% block extra_css %}
 
+<link rel="stylesheet" type="text/css" href="{% static 'css/custom_dev.css' %}">
+<style>
+    canvas.drawing, canvas.drawingBuffer {position: absolute; left: 0; top: 0;}
+</style>
 {% endblock extra_css %}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/custom_dev.css' %}">
-    <style>
-        canvas.drawing, canvas.drawingBuffer {position: absolute; left: 0; top: 0;}
-    </style>
 {% block content %}
 
 <section class="content">
@@ -75,6 +75,30 @@
                         <li>Location</li>
                         <li>{{ object.asset.location }}</li>
                     </ul>
+                </div>
+                
+            
+                <div class="card-header">
+                    <h3 class="card-title pm_details font-weight-bold text-primary">Asset Details</h3>
+                    {% comment %} <button class="btn btn-primary btn-view font-weight-bold pm details card-title float-right" id="asset_update_button" type="button">Update Asset Details</button> {% endcomment %}
+                </div>
+                <div class="card-body table__ul">
+                    <ul class="pm_details">
+                        <li>Type</li>
+                        <li>{{ object.asset.asset_type }}</li>
+                    </ul>
+                    <ul class="pm_details">
+                        <li>Weight</li>
+                        <li>{{ object.asset.attribute_set.weight }}</li>
+                    </ul>
+                    <ul class="pm_details">
+                        <li>Brand</li>
+                        <li>{{ object.asset.attribute_set.brand }}</li>
+                    </ul>
+                </div>
+                <div class="card-footer">
+                    <a href="#" type="submit" class="btn btn-primary btn-lg btn-block font-weight-bold pm_buttons">Next</a>
+                    <a href="{% url 'preventivemaintenance:preventive_maintenance_list' %}" type="submit" class="btn btn-block btn-view font-weight-bold pm_buttons">Save and Exit</a>
                 </div>
             </div>
             <div class="card">

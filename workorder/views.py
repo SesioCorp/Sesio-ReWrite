@@ -195,9 +195,7 @@ class WorkOrderDetailView(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(WorkOrderDetailView, self).get_context_data(**kwargs)
-        context["workorder_location_form"] = LocationForm(
-            instance = self.get_object().location
-        )
+        context["workorder_location_form"] = LocationForm(instance=self.get_object().location)
         context["workorder_assign_form"] = WorkOrderAssignForm(initial=self.workorder_assign_data())
         return context
 
@@ -214,6 +212,7 @@ class WorkOrderDetailView(LoginRequiredMixin, DetailView):
 
     def post(self, request, *args, **kwargs):
         location_form = LocationForm(self.request.POST)
+        import pdb; pdb.set_trace()
         workorder_assigned_form = WorkOrderAssignForm(self.request.POST)
         object_data = self.get_object()
 
@@ -223,6 +222,7 @@ class WorkOrderDetailView(LoginRequiredMixin, DetailView):
             object_data.location.floor = location_form.cleaned_data['floor']
             object_data.location.department = location_form.cleaned_data['department']
             object_data.location.specific_location = location_form.cleaned_data['specific_location']
+            object_data.location.save()
             object_data.save()
 
         if not workorder_assigned_form.data['requester']:

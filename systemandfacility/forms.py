@@ -23,10 +23,8 @@ class LocationForm(forms.ModelForm):
                 self.fields["building"].queryset = Building.objects.filter(facility_id=facility_id)
             except (ValueError, TypeError):
                 pass
-
         elif self.instance.pk:
             self.fields["building"].queryset = Building.objects.filter(id=self.instance.building.id)
-
         else:
             self.fields["building"].queryset = Building.objects.all()
 
@@ -36,7 +34,6 @@ class LocationForm(forms.ModelForm):
                 self.fields["floor"].queryset = Floor.objects.filter(building_id=building_id)
             except (ValueError, TypeError):
                 pass
-
         elif self.instance.pk:
             self.fields["floor"].queryset = Floor.objects.filter(id=self.instance.floor.id)
 
@@ -49,9 +46,7 @@ class LocationForm(forms.ModelForm):
                 self.fields["department"].queryset = Department.objects.filter(floor_id=floor_id)
             except (ValueError, TypeError):
                 pass
-        
         elif self.instance.pk:
             self.fields["department"].queryset = Department.objects.filter(id=self.instance.department.id)
-
         else:
             self.fields["department"].queryset = Department.objects.all()

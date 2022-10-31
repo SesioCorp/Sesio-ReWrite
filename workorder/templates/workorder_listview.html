@@ -14,6 +14,7 @@
             <div class="col-12">
                 <div class="filters">
                     <form method="GET" class="filter-form" id="id-filter-form">
+                        {% csrf_token %}
                         <div class="card">
                             <div class="card-body">
                                 <div class="row">
@@ -40,10 +41,10 @@
                                         {% bootstrap_field assigned_workorders.form.building bound_css_class="cls_filter" %}
                                     </div>
                                     <div class="col-sm-4">
-                                        {% bootstrap_field assigned_workorders.form.floor bound_css_class="cls_filter" %}
+                                        {% bootstrap_field assigned_workorders.form.floor bound_css_class="cls_filter"  %}
                                     </div>
                                     <div class="col-sm-4">
-                                        {% bootstrap_field assigned_workorders.form.department bound_css_class="cls_filter" %}
+                                        {% bootstrap_field assigned_workorders.form.department bound_css_class="cls_filter"%}
                                     </div>
                                 </div>
                             </div>
@@ -138,15 +139,22 @@
 
 <script>
     $("#id_building").change(function(){
-        var url = "{% url 'systemandfacility:floor-list' %}"
+        var url = "{% url 'systemandfacility:floor-list' %}";
         var building = $(this).val();
         $.ajax({
             url:url,
+            type: "GET",
             data:{
-                'building':building
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                'building':building,
             },
-            success: function(data){
-                $('#id_floor').html(data);
+            success: function(data) {
+                debugger
+                let html_data = '<option value="">-------</option>';
+                data.models.forEach(function (data) {
+                    html_data += `<option value="${data}">${data}</option>`
+                })
+                $('#id_floor').html(html_data);
             }
         });
     });
@@ -156,13 +164,20 @@
         var floor = $(this).val();
         $.ajax({
             url:url,
+            type: "GET",
             data:{
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
                 'floor':floor
             },
-            success: function(data){
-                $('#id_department').html(data);
+            success: function(data) {
+                debugger
+                let html_data = '<option value="">-------</option>';
+                data.models.forEach(function (data) {
+                    html_data += `<option value="${data}">${data}</option>`
+                })
+                $('#id_department').html(html_data);
             }
-        });
+        })
     })
 
     $(".invalid-feedback").hide()
@@ -173,6 +188,12 @@
             window.location=$(this).data("href")
         })
     })
+
+    $(".invalid-feedback").hide()
+    $(".invalid-feedback").remove()
+
+    $("#id_building").val
+
 </script>
 
 {% endblock extra_js %}
