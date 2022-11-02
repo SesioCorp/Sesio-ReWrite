@@ -165,11 +165,78 @@
 {% block extra_js %}
 
 <script>
+
+//Hide or show update fields
+
     $('#update_button').click(function(){
         $('#pm_details').hide();
         $('#pm_update').show()
     });
 
+//
+
+    $('#id_facility').change(function(){
+        var url = "{% url 'systemandfacility:building-list' %}"
+        var facility = $(this).val();
+        if (facility){
+            $.ajax({
+                url:url,
+                data:{
+                    'facility':facility
+                },
+                success: function(data){
+                    $('#id_building').html(data);
+                    $('#id_floor').html('<option value="">----</option>')
+                    $('#id_department').html('<option value="">----</option>')
+                }
+            });
+        }
+        else {
+            $('#id_building').html('<option value="">----</option>')
+            $('#id_floor').html('<option value="">----</option>')
+            $('#id_department').html('<option value="">----</option>')
+        }
+    })
+
+    $('#id_building').change(function(){
+        var url = "{% url 'systemandfacility:floor-list' %}"
+        var building = $(this).val();
+        if (building){
+            $.ajax({
+                url:url,
+                data:{
+                    'building':building
+                },
+                success: function(data){
+                    $('#id_floor').html(data);
+                    $('#id_department').html('<option value="">----</option>')
+                }
+            })
+        }
+        else {
+            $('#id_floor').html('<option value="">----</option>')
+            $('#id_department').html('<option value="">----</option>')
+        }
+    })
+
+    $('#id_floor').change(function(){
+        var url = "{% url 'systemandfacility:department-list' %}"
+        var floor=$(this).val();
+        if (floor){
+            $.ajax({
+                url:url,
+                data:{
+                    'floor':floor
+                },
+                success: function(data){
+                    $('#id_department').html(data);
+                }
+            })
+        }
+        else {
+            $('#id_department').html('<option value="">----</option>')
+        }
+    })
 </script>
 
 {% endblock extra_js %}
