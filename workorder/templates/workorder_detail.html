@@ -190,46 +190,70 @@
         $('#editable_fields').show();
     })
 
+//
+
     $("#id_facility").change(function(){
         var url = "{% url 'systemandfacility:building-list' %}"
         var facility = $(this).val();
-        $.ajax({
-            url:url,
-            data:{
-                'facility':facility
-            },
-            success: function(data){
-                $('#id_building').html(data);
-            }
-        });
+        if (facility){
+            $.ajax({
+                url:url,
+                data:{
+                    'facility':facility
+                },
+                success: function(data){
+                    $('#id_building').html(data);
+                    $('#id_floor').html('<option value="">-----</option>')
+                    $('#id_department').html('<option value="">-----</option>')
+                }
+            });
+        }
+        else {
+            $('#id_building').html('<option value="">-----</option>')
+            $('#id_floor').html('<option value="">-----</option>')
+            $('#id_department').html('<option value="">-----</option>')
+        }
     });
 
     $("#id_building").change(function(){
         var url = "{% url 'systemandfacility:floor-list' %}"
         var building = $(this).val();
-        $.ajax({
-            url:url,
-            data:{
-                'building':building
-            },
-            success: function(data){
-                $('#id_floor').html(data);
-            }
-        });
+        if (building){
+            $.ajax({
+                url:url,
+                data:{
+                    'building':building
+                },
+                success: function(data){
+                    $('#id_floor').html(data);
+                    $('#id_department').html('<option value="">-----</option>')        
+                }
+            });
+        }
+        else {
+            $('#id_floor').html('<option value="">-----</option>')
+            debugger
+            $('#id_department').html('<option value="">-----</option>')
+        } 
     });
 
     $("#id_floor").change(function(){
         var url = "{% url 'systemandfacility:department-list' %}"
         var floor = $(this).val();
-        $.ajax({
-            url:url,
-            data:{
-                'floor':floor
-            },
-            success: function(data){
-                $('#id_department').html(data);
-            }
-        });
+        if (floor){
+            $.ajax({
+                url:url,
+                data:{
+                    'floor':floor
+                },
+                success: function(data){
+                    $('#id_department').html(data);
+                }
+            });
+        }
+        else {
+            $('#id_department').html('<option value="">----</option>')
+        }
     })
 
 </script>
