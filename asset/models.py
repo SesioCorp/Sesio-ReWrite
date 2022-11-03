@@ -28,7 +28,7 @@ class Asset(BaseModel):
     is_demo = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.asset_type.name
+        return self.asset_type.name + " " + self.device_id
 
 
 

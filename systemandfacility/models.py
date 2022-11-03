@@ -38,7 +38,7 @@ class Floor(BaseModel):
     name = models.CharField(max_length=50)
 
     def __str__(self):
-        return self.name
+        return self.building.name + " Floor Number: " + self.name
 
 class Department(BaseModel):
     facility = models.ForeignKey(Facility, on_delete=models.CASCADE, related_name="departments")
