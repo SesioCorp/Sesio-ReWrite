@@ -2,8 +2,9 @@ from django.db import models
 from question.models import Question
 from django.conf import settings
 from preventivemaintenance.models import PreventiveMaintenance
+from common.models import BaseModel
 
-class Answer(models.Model):
+class Answer(BaseModel):
     question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name="answer", blank=True, null=True)
     answer_type_text = models.TextField(blank=True, null=True)
     answer_type_integer = models.IntegerField(blank=True, null=True)

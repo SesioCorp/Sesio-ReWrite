@@ -3,11 +3,12 @@ from django.db import models
 from systemandfacility.models import Facility, Location
 from asset.models import *
 from django.conf import settings
+from common.models import BaseModel
 
 AssetChoices = (("no", "No"), ("yes", "Yes"))
 Choices =(("open", "Open"), ("closed", "Closed"))
 
-class Category(models.Model):
+class Category(BaseModel):
     name = models.CharField(max_length=50)
     slug = models.SlugField(max_length=50, unique=True)
     parent = models.ForeignKey("self", on_delete=models.CASCADE, related_name='child', null=True, blank=True)
@@ -17,7 +18,7 @@ class Category(models.Model):
         return self.name
 
 
-class Priority(models.Model):
+class Priority(BaseModel):
     name = models.CharField(max_length=50)
     slug = models.SlugField(max_length=50, unique=True)
 
@@ -26,7 +27,7 @@ class Priority(models.Model):
 
 
 
-class WorkOrder(models.Model):
+class WorkOrder(BaseModel):
     created_at = models.DateTimeField(blank=True, null=True)
     facility = models.ForeignKey(Facility, on_delete=models.CASCADE, related_name="work_orders")
     location = models.ForeignKey(Location, on_delete=models.CASCADE, related_name="work_orders")
@@ -47,12 +48,12 @@ class WorkOrder(models.Model):
     def __str__(self):
         return self.brief_description
 
-class Comment(models.Model):
+class Comment(BaseModel):
     comment = models.TextField()
     workorder = models.ForeignKey(WorkOrder, on_delete=models.CASCADE, related_name="comments")
 
 
-class TimeSpent(models.Model):
+class TimeSpent(BaseModel):
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
     workorder = models.OneToOneField(WorkOrder, on_delete=models.CASCADE, related_name="time_spent")

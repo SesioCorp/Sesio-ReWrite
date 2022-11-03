@@ -1,7 +1,8 @@
 from django.db import models
+from common.models import BaseModel
 
 
-class System(models.Model):
+class System(BaseModel):
     name = models.CharField(max_length=50)
     description = models.TextField()
     short_description = models.CharField(max_length=150)
@@ -11,7 +12,7 @@ class System(models.Model):
         return self.name
 
 
-class Facility(models.Model):
+class Facility(BaseModel):
     name = models.CharField(max_length=50)
     description = models.TextField()
     short_description = models.CharField(max_length=150)
@@ -22,7 +23,7 @@ class Facility(models.Model):
         return self.name
 
 
-class Building(models.Model):
+class Building(BaseModel):
     facility = models.ForeignKey(Facility, on_delete=models.CASCADE, related_name="buildings")
     name = models.CharField(max_length=50)
 
@@ -30,7 +31,7 @@ class Building(models.Model):
         return self.name
 
 
-class Floor(models.Model):
+class Floor(BaseModel):
     facility = models.ForeignKey(Facility, on_delete=models.CASCADE, related_name="floors")
     building = models.ForeignKey(Building, on_delete=models.CASCADE, related_name="floors")
     number = models.IntegerField()
@@ -39,7 +40,7 @@ class Floor(models.Model):
     def __str__(self):
         return self.name
 
-class Department(models.Model):
+class Department(BaseModel):
     facility = models.ForeignKey(Facility, on_delete=models.CASCADE, related_name="departments")
     building = models.ForeignKey(Building, on_delete=models.CASCADE, related_name="departments")
     floor = models.ForeignKey(Floor, on_delete=models.CASCADE, related_name="departments")
@@ -48,7 +49,7 @@ class Department(models.Model):
     def __str__(self):
         return self.name
 
-class Location(models.Model):
+class Location(BaseModel):
     facility = models.ForeignKey(Facility, on_delete=models.CASCADE, related_name="locations")
     building = models.ForeignKey(Building, on_delete=models.CASCADE, related_name="locations")
     floor = models.ForeignKey(Floor, on_delete=models.CASCADE, related_name="locations")

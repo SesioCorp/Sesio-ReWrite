@@ -3,6 +3,7 @@ from django.conf import settings
 
 from systemandfacility.models import Facility, Location
 from asset.models import Asset
+from common.models import BaseModel
 
 PREVENTIVE_MAINTAINENCE_STATUS = (
     ("ready_to_start", "Ready to start"),
@@ -22,7 +23,7 @@ FREQUENCY = (
 )
 
 
-class PreventiveMaintenance(models.Model):
+class PreventiveMaintenance(BaseModel):
     slug = models.SlugField(unique=True)
     facility = models.ForeignKey(Facility, on_delete=models.CASCADE, related_name="preventive_maintenances")
     asset = models.ForeignKey(Asset, on_delete=models.CASCADE, related_name="preventive_maintenance")

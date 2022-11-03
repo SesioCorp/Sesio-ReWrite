@@ -1,22 +1,23 @@
 from django.db import models
 from systemandfacility.models import Facility, Location
 from question.models import QuestionSet
+from common.models import BaseModel
 
-class AssetAttributeSet(models.Model):
+class AssetAttributeSet(BaseModel):
     weight = models.IntegerField()
     brand = models.CharField(max_length=50)
 
     def __str__(self):
         return self.brand
 
-class AssetType(models.Model):
+class AssetType(BaseModel):
     name = models.CharField(max_length=50)
     slug = models.SlugField(unique=True)
 
     def __str__(self):
         return self.name
 
-class Asset(models.Model):
+class Asset(BaseModel):
     facility = models.ForeignKey(Facility, on_delete=models.CASCADE, related_name="assets")
     attribute_set = models.ForeignKey(AssetAttributeSet, on_delete=models.CASCADE, related_name="assets")
     asset_type = models.ForeignKey(AssetType, on_delete=models.CASCADE, related_name="assets")

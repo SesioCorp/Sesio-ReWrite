@@ -1,5 +1,6 @@
 from django.db import models
 from systemandfacility.models import Facility
+from common.models import BaseModel
  
 
 TEXT = "text"
@@ -24,7 +25,7 @@ QUESTION_TYPES = (
     (DATE,("date")),
 )
 
-class QuestionCategory(models.Model):
+class QuestionCategory(BaseModel):
     facility = models.ForeignKey(Facility, on_delete=models.CASCADE, related_name="categories")
     title = models.CharField(max_length=50)
     slug = models.SlugField(unique=True)
@@ -35,7 +36,7 @@ class QuestionCategory(models.Model):
     def __str__(self):
         return self.title
 
-class Question(models.Model):
+class Question(BaseModel):
     facility = models.ForeignKey(Facility, on_delete=models.CASCADE, related_name="questions")
     category = models.ForeignKey(QuestionCategory, on_delete=models.CASCADE, related_name="questions")
     question = models.TextField()
@@ -53,7 +54,7 @@ class Question(models.Model):
             text = self.question
         return text
 
-class QuestionSet(models.Model):
+class QuestionSet(BaseModel):
     name = models.CharField(max_length=50)
     question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name="questionsets")
     slug = models.SlugField(unique=True)
