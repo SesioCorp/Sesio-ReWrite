@@ -80,8 +80,9 @@ class PreventiveMaintenanceQuestionAnswerForm(forms.models.ModelForm):
 
         super(PreventiveMaintenanceQuestionAnswerForm, self).__init__(*args, **kwargs)
         self.categories = self.asset.get_question_categories()
+        self.steps_count = len(self.categories)
         self.question_step_count = 0
-        self.answer = False
+        self.answers = False
         self.add_questions()
         self.__add_extra_fields()
 
@@ -167,8 +168,10 @@ class PreventiveMaintenanceQuestionAnswerForm(forms.models.ModelForm):
 
         field.widget.attrs["category_id"] = (question.category.pk if question.category else "")
         
-        field.widget.attrs["comment_category_id"] = (self.asset.question_set.question.filter(category__is_comments=True).first().category.pk
-        if self.asset.question_set.question.filter(category__is_comments=True).exists() else "")
+        field.widget.attrs["comment_category_id"] = (
+            self.asset.question_set.question.filter(category__is_comments=True).first().category.pk
+            if self.asset.question_set.question.filter(category__is_comments=True).exists() else ""
+        )
 
         field.widget.attrs["fail_condition_answer"] = (
             question.parent_question.filter(category=question.category).first().parent_answer
@@ -193,6 +196,76 @@ class PreventiveMaintenanceQuestionAnswerForm(forms.models.ModelForm):
             self.asset.pk if self.asset else ""
         )
 
+        field.widget.attrs["parent_id"] = (
+            "id_parent_" + str(question.parent.id) if question.parent else ""
+        )
+
+        field.widget.attrs["question_text"] = question.question_text
+
+        field.widget.attrs["question_child_count"] = (
+            len(question.parent.get_all_child_questions(include_self=False))
+        )
+
+        field.widget.attrs["question_parent_child_count"] = (
+            len(question.parent.get_all_child_questions(include_self=False)) 
+            if question.parent else ""
+        )
+
+        field.widget.attrs["child_questions"] = ",".join(
+            [
+                str(obj.pk) for obj in question.get_all_child_questions(include_self=False)
+            ]
+        )
+
+        field.widget.attrs["parent_question_ids"] = ",".join(
+            [
+                str(obj.parent.pk) for obj in question.get_all_child_questions(include_self=False)
+            ]
+        )
+
+        if question.answer_type == RADIO:
+            field.widget.attrs["required"] = True
+        
+        if question.answer_type == SELECT_IMAGE:
+            field.widget.attrs["class"] = "form-control"
+
+        if question.answer_type == DATE:
+            field.widget.attrs["class"] = "date"
+
+        self.fields["question_%d" % question.pk] = field
+
+    def __add_extra_fields(self):
+
+        existing_fields_keys = self.fields.keys()
+        form_data = self.data.copy()
+
+        if len(form_data) - 1 > len(existing_fields_keys):
+            form_data.pop("csrfmiddlewaretoken", None)
+            form_data.pop("save_and_exit", None)
+            
+            if self.files:
+                files_data = self.files.copy()
+                self.append_question_by_extra_field_keys(files_data.keys(), existing_fields_keys)
+            
+            self.append_question_by_extra_field_keys(form_data.keys(), existing_fields_keys)
+        
+        elif len(form_data) < len(existing_fields_keys) and len(form_data) != 0:
+            delete_fields = []
+            
+            for field_key in existing_fields_keys:
+                if field_key not in form_data.keys():
+                    delete_fields.append(field_key)
+            
+            for field in delete_fields:
+                self.fields.pop(field)
+            
+    def append_question_by_extra_field_keys(self, field_dict_keys, existing_field_keys):
+
+        for field_name in field_dict_keys:
+            if field_name not in existing_field_keys:
+                question_id = field_name.split("_")[1]
+                question = Question.objects.get(pk=question_id)
+                self.add_question(question)
 
 
     def add_questions(self):
@@ -207,5 +280,77 @@ class PreventiveMaintenanceQuestionAnswerForm(forms.models.ModelForm):
                     self.get_comment_questions()
 
     
+    def get_question_widget(self, question):
+        try:
+            return self.WIDGETS[question.answer_type]
+
+        except KeyError:
+            return None
+
+    
+    @staticmethod
+    def get_question_choices(question):
+        question_choices = None
+
+        if question.answer_type not in [TEXT, SHORT_TEXT, INTEGER, FLOAT, DATE]:
+            question_choices = question.get_choices()
+
+            if question.answer_type in [SELECT]:
+                question_choices = tuple([("", "----")]) + question_choices
+        
+        return question_choices
+
+    
+    def current_categories(self):
+
+        if self.step is not None and self.step < len(self.categories):
+            return [self.categories[self.step]]
+
+        return [QuestionCategory(title="NO category", description="NO cat desc")]
+
+    
+    def has_next_step(self):
+        
+        if self.step < self.steps_count - 1:
+            return True
+        
+        return False
+
+    def next_step_url(self):
+
+        if self.has_next_step():
+            context = {
+                "slug": self.slug,
+                "pk": self.asset.id,
+                "step": self.step + 1
+            }
+
+            return reverse("preventivemaintenance:preventive-maintenance-question-answer-form-step", kwargs=context)
+        
+    
+    def _get_preexisting_answers(self):
+        
+        if self.answers:
+            return self.answers
+
+        try:
+            answers = Answer.objects.filter(preventive_maintenance=self.preventivemaintenance).prefetch_related("question")
+            self.answers = {
+                answer.question.id: answer for answer in answers.all()
+            }
+
+        except Answer.DoesNotExist:
+            self.answers = None
+        
+        return self.answers
+    
+
+    def _get_preexisting_answer(self, question):
+        answers = self._get_preexisting_answers()
+        return answers.get(question.id, None)
+
+        
+        
+        
         
                         
