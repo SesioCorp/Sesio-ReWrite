@@ -1,3 +1,4 @@
+from ast import Pass
 from genericpath import exists
 from socket import fromshare
 from tkinter.tix import Form
@@ -8,8 +9,9 @@ from django.urls import reverse
 from django.utils import timezone
 from answer.models import Answer
 from preventivemaintenance.models import PreventiveMaintenance
-from question.models import SHORT_TEXT, Question, QuestionCategory
+from question.models import SHORT_TEXT, Question, QuestionCategory, QuestionSet
 from users.models import CustomUser
+from django.utils.text import slugify
 
 
 TEXT = "text"
@@ -130,7 +132,7 @@ class PreventiveMaintenanceQuestionAnswerForm(forms.models.ModelForm):
             if question.category.is_comments is True and question.parent:
                 answer = Answer.objects.filter(
                     question=question,
-                    preventivemaintenance = self.preventivemaintenance
+                    preventive_maintenance = self.preventivemaintenance
                 )
                 parent_answer = self._get_preexisting_answer(question.parent)
                 parent_child_question = (
@@ -234,6 +236,7 @@ class PreventiveMaintenanceQuestionAnswerForm(forms.models.ModelForm):
 
         self.fields["question_%d" % question.pk] = field
 
+
     def __add_extra_fields(self):
 
         existing_fields_keys = self.fields.keys()
@@ -259,6 +262,7 @@ class PreventiveMaintenanceQuestionAnswerForm(forms.models.ModelForm):
             for field in delete_fields:
                 self.fields.pop(field)
             
+
     def append_question_by_extra_field_keys(self, field_dict_keys, existing_field_keys):
 
         for field_name in field_dict_keys:
@@ -348,6 +352,154 @@ class PreventiveMaintenanceQuestionAnswerForm(forms.models.ModelForm):
     def _get_preexisting_answer(self, question):
         answers = self._get_preexisting_answers()
         return answers.get(question.id, None)
+
+
+    def get_question_initial(self, question, data):
+        initial = None
+        answer = self._get_preexisting_answer(question)
+
+        if answer:
+            if question.answer_type == SELECT_MULTIPLE:
+                initial = []
+
+                if answer.answer_type_text_number == "[]":
+                    pass
+                
+                elif ("[" in answer.answer_type_text_number and "]" in answer.answer_type_text_number):
+                    initial = []
+                    unformatted_choices = answer.answer_type_text_number[1:-1].strip()
+
+                    for unformatted_choice in unformatted_choices.split(settings.CHOICES_SEPARATOR):
+                        choice = unformatted_choice.split("'")[1]
+                        initial.append(slugify(choice))
+
+                else:
+                    initial.append(slugify(answer.answer_type_text_number))
+            
+            elif question.answer_type == SELECT_IMAGE:
+                initial = answer.answer_type_image
+
+            elif question.answer_type == INTEGER:
+                initial = answer.answer_type_integer
+
+            elif question.answer_type == FLOAT:
+                initial = answer.answer_type_float
+
+            else:
+                initial = answer.answer_type_text_number
+
+        if data:
+            initial = data.get("question_%d" % question.pk)
+
+        return initial
+
+    
+    def get_answer_by_preventive_maintenance(question, preventivemaintenance):
+
+        if Answer.objects.filter(
+            question=question,
+            preventive_maintenance=preventivemaintenance,
+            is_active=True
+        ).exists():
+            answer = Answer.objects.filter(
+                question=question,
+                preventive_maintenance=preventivemaintenance
+            ).last()
+            answer_dict = {
+                "parent_answer": "",
+                "image": ""
+            }
+
+            if question.answer_type in ["select", "radio"]:
+                parent_question_answer = (
+                    question.parent_question.filter(category=question.category).first().parent_answer
+                    if question.parent_question.filter(category=question.category).exists() else ""
+                )
+
+                if answer.answer_type_text_number in parent_question_answer:
+                    try:
+                        child_answer = Answer.objects.get(
+                            question=question.parent_question.filter(category=question.category).first(),
+                            preventive_maintenance=preventivemaintenance,
+                            is_active=True
+                        )
+                        image_url = child_answer.answer_type_image.url
+                    
+                    except Exception:
+                        image_url = None
+                
+                else:
+                    image_url = None
+                
+                answer_dict["answer"] = answer.answer_type_text_number
+
+                return answer_dict
+
+            elif question.answer_type in ["select_image"]:
+                parent_question_answer = (
+                    question.parent_question.filter(category=question.category).first().parent_answer
+                    
+                    if question.parent_question.filter(category=question.category).exists() else "":
+                )
+
+                if answer.answer_type_text_number == parent_question_answer:
+                    try:
+                        child_answer = Answer.objects.get(
+                            question = question,
+                            preventive_maintenance=preventivemaintenance,
+                            is_active=True
+                        )
+                        image_url = child_answer.answer_type_image.url
+
+                    except Exception:
+                        image_url = None
+            
+                else:
+                    image_url = None
+                
+                answer_dict["parent_answer"] = "pass" if image_url is None else "fail"
+                answer_dict["image"] = image_url
+
+                return answer_dict
+
+            answer_dict["parent_answer"] = "pass"
+            
+            return answer_dict
+
+        else:
+            return None
+
+        
+    def save(self, commit=True, *args, **kwargs):
+
+        response = super(PreventiveMaintenanceQuestionAnswerForm, self).save(commit=False)
+        preventivemaintenance = kwargs.pop("preventivemaintenance", None)
+
+        for field_name, field_value in list(self.cleaned_data.items()):
+            
+            if field_name.startswith("question_"):
+                question_id = int(field_name.split("_")[1])
+
+                try:
+                    question = Question.objects.get(pk=question_id)
+                    answer = self._get_preexisting_answer(question)
+
+                except Exception:
+                    answer = None
+
+                if answer is None:
+                    answer = Answer(questions=question)
+                
+                if question.answer_type in [TEXT]:
+
+        
+
+
+
+
+
+
+
 
         
         

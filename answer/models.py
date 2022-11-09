@@ -6,6 +6,7 @@ from common.models import BaseModel
 
 class Answer(BaseModel):
     question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name="answer", blank=True, null=True)
+    answer_type_text_number = models.TextField(blank=True, null=True)
     answer_type_text = models.TextField(blank=True, null=True)
     answer_type_integer = models.IntegerField(blank=True, null=True)
     answer_type_float = models.FloatField(blank=True, null=True)
