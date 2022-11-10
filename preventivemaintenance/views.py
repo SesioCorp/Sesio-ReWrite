@@ -8,6 +8,7 @@ from systemandfacility.forms import LocationForm
 from .forms import PreventiveMaintenanceAssetDetailsForm
 from asset.models import *
 from django.http import HttpResponseRedirect
+from .questionanswerform import PreventiveMaintenanceQuestionAnswerForm
 
 class PreventiveMaintenanceListView(ListView):
    
@@ -83,3 +84,36 @@ class PreventiveMaintenanceDetailView(DetailView):
                 object_data.save()
 
         return HttpResponseRedirect(reverse("preventivemaintenance:preventive_maintenance_list"))
+
+
+class PreventiveMaintenanceQuestionAnswerView(View):
+    template_name = "preventive_maintenance_question_answer.html"
+
+    def get(self, request, *args, **kwargs):
+        asset = Asset.objects.get(pk=int(kwargs.get("pk")))
+        step_number = kwargs.get("step", 0)
+        question_step_number = kwargs.get("question_step", 0)
+        slug = kwargs.get("slug", 0)
+        preventivemaintenance = PreventiveMaintenance.objects.get(slug=slug)
+        forms = PreventiveMaintenanceQuestionAnswerForm(
+            slug=slug, asset=asset, user=request.user, step=step_number
+        )
+        categories = forms.categories
+        comment_category = ""
+        for category in categories:
+            if category.is_comment:
+                comment_category = category
+        
+        context = {
+            "forms": forms,
+            "categories": categories,
+            "question_set": self.get_question_and_categroy_by_question_set(asset),
+            "preventivemaintenance_slug": slug,
+            "asset": asset,
+            "pk": asset.pk,
+            "preventivemaintenance": preventivemaintenance,
+            "step": step_number,
+            "question_step": question_step_number,
+            "question_id": request.GET.get("question_id", 0),
+            "kwargs": kwargs 
+        }
