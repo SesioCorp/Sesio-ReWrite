@@ -304,6 +304,12 @@ class PreventiveMaintenanceQuestionAnswerForm(forms.models.ModelForm):
         
         return question_choices
 
+    def get_question_field(self, question, **kwargs):
+        try:
+            return self.FIELDS[question.answer_type](**kdwargs)
+        except KeyError:
+            return forms.ChoiceField(**kwargs)
+
     
     def current_categories(self):
 
@@ -490,19 +496,26 @@ class PreventiveMaintenanceQuestionAnswerForm(forms.models.ModelForm):
                 if answer is None:
                     answer = Answer(questions=question)
                 
-                if question.answer_type in [TEXT]:
+                if question.answer_type in [TEXT, SHORT_TEXT, SELECT, RADIO, DATE]:
+                    answer.answer_type_text_number = field_value
+                elif question.answer_type in [FLOAT]:
+                    answer.answer_type_float = field_value
+                elif question.answer_type in [INTEGER]:
+                    answer.answer_type_integer = field_value
+                elif question.answer_type in [SELECT_IMAGE]:
+                    answer.answer_type_image = field_value
+                
+                answer.user = CustomUser.objects.all().last()
+                answer.preventive_maintenance = preventivemaintenance
+                answer.is_active = True
+                status = get_answer_by_preventive_maintenance(question, preventivemaintenance)["parent_answer"]
 
-        
-
-
-
-
-
-
-
-
-        
-        
-        
-        
-                        
+                if status.lower() == "fail":
+                    answer.is_fail = True
+                    answer.repair_due_date = (
+                        answer.preventive_maintenance.updated_at + timezone.timedelta(days = 45))
+                    answer.save()
+                else:
+                    answer.is_fail = False
+                    answer.save()
+        return response
