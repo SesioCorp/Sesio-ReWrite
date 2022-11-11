@@ -10,6 +10,18 @@ from asset.models import *
 from django.http import HttpResponseRedirect
 from .questionanswerform import PreventiveMaintenanceQuestionAnswerForm
 
+
+TEXT = "text"
+SHORT_TEXT = "short_text"
+RADIO = "radio"
+SELECT = "select"
+SELECT_IMAGE = "select_image"
+SELECT_MULTIPLE = "select_multiple"
+INTEGER = "integer"
+FLOAT = "float"
+DATE = "date"
+
+
 class PreventiveMaintenanceListView(ListView):
    
     model = PreventiveMaintenance
@@ -117,3 +129,58 @@ class PreventiveMaintenanceQuestionAnswerView(View):
             "question_id": request.GET.get("question_id", 0),
             "kwargs": kwargs 
         }
+        if request.is_ajax():
+            try:
+                parent_question = asset.question_set.question.get(
+                    pk=request.GET.get("question_id", 0)
+                )
+                if parent_question.answer_type in [TEXT, SHORT_TEXT, INTEGER, FLOAT, DATE]:
+                    child_question = parent_question.get_all_child_questions(include_self=False)[0]
+                else:
+                    child_question = asset.question_set.question.filter(
+                        parent=parent_question.pk,
+                        parent_answer__contains=request.GET.get("answer", 0)
+                    ).get()
+            except Exception:
+                child_question = None
+            
+            ctx = {
+                "question": child_question,
+                "answer": get_answer_by_preventive_maintenance(child_question, preventivemaintenance),
+                "slug": slug,
+                "asset": asset,
+                "question_set": self.get_question_and_categroy_by_question_set(asset),
+                "comment_question_id": asset.question_set.question.filter(
+                    parent=child_question, category__is_comments=True, deleted=True
+                ).first().pk if asset.question_set.question.filter(
+                    parent=child_question, category__is_comments=True, deleted=True
+                ).exists() else "",
+                "comment_catagory": comment_catagory,
+                "preventivemaintenance": preventivemaintenance,
+                "parent_question_text": child_question.parent.question_text if child_question and child_question.parent
+                and len(child_question.parent.get_all_child_questions(include_self=False)) == 2 else "",
+                "question_child_count": len(
+                    child_question.get_all_child_questions(include_self=False)
+                ) if child_question else "",
+                "question_parent_child_count": len(
+                    child_question.parent.get_all_child_questions(include_self=False)
+                ) if child_question and child_question.parent else "",
+                "child_questions": ",".join(
+                    [
+                        str(obj.pk) for obj in child_question.get_all_child_questions(include_self=False)
+                    ]
+                ) if child_question else "",
+                "parent_question_ids": ",".join(
+                    [
+                        str(obj.pk) for obj in child_question.get_all_child_questions(include_self=False)
+                    ]
+                ) if child_question else "",
+                "fail_condition_answer": child_question.parent_question.filter(
+                    category=child_question.category
+                ).first().parent_answer if child_question.parent_question.filter(
+                    category=child_question.category
+                ).exists() else ""
+            }
+            render_template = "preventivemaintenance/partials/form_render.html"
+            return render(request, render_template, ctx)
+        return render(request, self.template_name, context)
