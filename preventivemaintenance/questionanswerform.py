@@ -1,8 +1,3 @@
-from ast import Pass
-from genericpath import exists
-from socket import fromshare
-from tkinter.tix import Form
-from unicodedata import category
 from django import forms
 from django.conf import settings
 from django.urls import reverse
@@ -445,7 +440,7 @@ class PreventiveMaintenanceQuestionAnswerForm(forms.models.ModelForm):
                 parent_question_answer = (
                     question.parent_question.filter(category=question.category).first().parent_answer
                     
-                    if question.parent_question.filter(category=question.category).exists() else "":
+                    if question.parent_question.filter(category=question.category).exists() else ""
                 )
 
                 if answer.answer_type_text_number == parent_question_answer:

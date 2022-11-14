@@ -22,8 +22,58 @@
                     <h3 class="card-title text-secondary font-weight-bold float-right">Code: {{preventivemaintenance_slug}}</h3>
                 </div>
                 <div class="card-body">
-                    <div class="stepwizard"></div>
+                    <div class="stepwizard">
+                        <div class="stepwizard-row setup-panel">
+                            {% for category in categories %}
+                            <div class="stepwizard-step col-xs-3">
+                                <a href="#step-{{forloop counter}}" type="button" class="btn {% if forloop.counter ==1 %} btn-success {% endif %} btn-circle {% if forloop.counter != 1 %} disabled {% endif %}">{{forloop.counter}}</a>
+                                <p><label for="" class="text-capitalize">{{category.title}}</label></p>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
                 </div>
+            </div>
+            <div class="card card-primary">
+                <form action="{% url 'preventivemaintenance:preventive-maintenance-question-answer-form-step' preventivemaintenance_slug pk step %}{{request.get_full_path|cut:request.path}}"
+                method="post" class="form-horizontal" id="question_answer_form" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {% for category in categories %}
+                        <div class="panel panel-primary setup-content" data-cat_name="{{category.title}}" id="step-{{ forloop.counter }}">
+                            <div class="card-header wo_header">
+                                <h3 class="card-title font-weight-bold text-capitalize pm_details">{{ category.title }}</h3>
+                            </div>
+                            <div class="card-body text-capitalize pm_card_body" id="{{ category.slug }}" data-step="step-{{ forloop.counter }}" data-step_last="step-{{ categories|length }}">
+                                {% get_preventivemaintenance_form preventivemaintenance_slug request.user forloop.counter0 as form %}
+                                {% bootstrap_form form %}
+                            </div>
+                            <div class="card-footer text-center preventivemaintenance-form-btn">
+                                {% if form.has_next_step %}
+                                    <div class="row">
+                                        <button class="btn btn-primary btn-block nextBtn mt-2 mb-2 pm_buttons font-weight-bold" type="button">Submit</button>
+                                    </div>
+                                    <div class="row">
+                                        <a href="{% url 'preventivemaintenance:preventive_maintenance_details' pk %}" class="btn btn-outline-primary btn-block mt-2 mb-2 prevBtn pm_buttons fort-wieght-bold" type="button">Previous</a>
+                                    </div>
+                                    <div class="row">
+                                        <button class="btn btn-outline-primary btn-block mt-2 save_and_exit pm_buttons font-weight-bold">Save and Exit</button>
+                                    </div>
+                                {% else %}
+                                    <div class="row">
+                                        <button class="btn btn-primary btn-block nextBtn mt-2 mb-2 pm_buttons font-weight-bold" type="button"
+                                        onclick="javescript=this.disabled = true; form.submit();">Submit</button>
+                                    </div>
+                                    <div class="row">
+                                        <button class="btn btn-outline-primary btn-block mt-2 mb-2 prevBtn pm_buttons fort-wieght-bold" type="button">Previous</button>
+                                    </div>
+                                    <div class="row">
+                                        <button class="btn btn-outline-primary btn-block mt-2 save_and_exit pm_buttons font-weight-bold">Save and Exit</button>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </form>
             </div>
         </div>
     </div>
