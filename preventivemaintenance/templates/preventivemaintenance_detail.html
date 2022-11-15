@@ -96,7 +96,7 @@
                     </ul>
                 </div>
                 <div class="card-footer">
-                    <a href="#" type="submit" class="btn btn-primary btn-lg btn-block font-weight-bold pm_buttons">Next</a>
+                    <a href="{% url 'preventivemaintenance:preventive-maintenance-question-answer-form' object.slug object.asset.pk %}" type="submit" class="btn btn-primary btn-lg btn-block font-weight-bold pm_buttons">Next</a>
                     <a href="{% url 'preventivemaintenance:preventive_maintenance_list' %}" type="submit" class="btn btn-block btn-view font-weight-bold pm_buttons">Save and Exit</a>
                 </div>
             </div>
@@ -152,7 +152,7 @@
                     </ul>
                 </div>
                 <div class="card-footer">
-                    <a href="#" type="submit" class="btn btn-primary btn-lg btn-block font-weight-bold pm_buttons">Next</a>
+                    <a href="{% url 'preventivemaintenance:preventive-maintenance-question-answer-form' object.slug object.asset.pk %}" type="submit" class="btn btn-primary btn-lg btn-block font-weight-bold pm_buttons">Next</a>
                     <button type="submit" class="btn btn-block btn-view font-weight-bold pm_buttons">Save and Exit</button>
                 </div>
             </div>

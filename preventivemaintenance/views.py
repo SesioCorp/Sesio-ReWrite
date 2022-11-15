@@ -3,7 +3,7 @@ from django.shortcuts import render
 from .models import PreventiveMaintenance
 from .filters import PreventiveMaintenanceFilter
 from django.views.generic.list import ListView
-from django.views.generic.detail import DetailView
+from django.views.generic import DetailView, View
 from systemandfacility.forms import LocationForm
 from .forms import PreventiveMaintenanceAssetDetailsForm
 from asset.models import *

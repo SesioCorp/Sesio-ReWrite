@@ -1,6 +1,6 @@
 from django.db import models
 from systemandfacility.models import Facility, Location
-from question.models import QuestionSet
+from question.models import QuestionCategory, QuestionSet
 from common.models import BaseModel
 
 class AssetAttributeSet(BaseModel):
@@ -30,7 +30,19 @@ class Asset(BaseModel):
     def __str__(self):
         return self.asset_type.name + " " + self.device_id
 
+    def get_question_categories(self):
+        categories = []
+        cat_dict = (
+            self.question_set.question.order_by("category__order").values("category").distinct()
+        )
 
+        for category in cat_dict:
+            try:
+                categories.append(QuestionCategory.objects.get(pk=category["category"]))
+            except Exception:
+                categories.append(QuestionCategory.objects.get(pk=category["category"]))
+
+        return categories
 
 
     

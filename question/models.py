@@ -1,6 +1,9 @@
+from xml.dom import ValidationErr
 from django.db import models
 from systemandfacility.models import Facility
 from common.models import BaseModel
+from django.conf import settings
+from django.core.exceptions import ValidationError
  
 
 TEXT = "text"
@@ -54,9 +57,55 @@ class Question(BaseModel):
             text = self.question
         return text
 
+    def save(self, *args, **kwargs):
+        if self.answer_type in [RADIO, SELECT, SELECT_MULTIPLE]:
+            self.validate_choices(self.choices)
+        super(Question, self).save(*args, **kwargs)
+
+    def validate_choices(self, choices):
+        values = choices.split(settings.CHOICES_SEPARATOR)
+        empty = 0
+
+        for value in values:
+            if value.replace(" ", "") == "":
+                empty += 1
+
+        if len(values) < 2 + empty:
+            message = "Selected field requires an associated list of choices."
+            raise ValidationError(message)
+    
+    def get_all_child_questions(self, include_self=True, category_is_comment=True):
+        child_questions = []
+        if include_self:
+            child_questions.append(self)
+        
+        for child_question in Question.objects.filter(parent=self).exclude(
+            category__is_comment=category_is_comment
+        ):
+            _child_questions = child_question.get_all_child_questions(include_self=True)
+
+            if len(_child_questions) > 0:
+                child_questions.extend(_child_questions)
+
+        return child_questions
+
+    def get_all_child_questions_by_category(self, include_self=True):
+        child_questions = []
+        if include_self:
+            child_questions.append(self)
+
+        for child_question in Question.objects.filter(parent=self, category=self.category):
+            _child_questions = child_question.get_all_child_questio_by_category(include_self=True)
+
+            if len(_child_questions) > 0:
+                child_questions.extend(_child_questions)
+
+        return child_questions    
+
+
 class QuestionSet(BaseModel):
     name = models.CharField(max_length=50)
-    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name="questionsets")
+    question = models.ManyToManyField(Question, related_name="questionsets")
     slug = models.SlugField(unique=True)
 
     def __str__(self):
