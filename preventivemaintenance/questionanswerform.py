@@ -301,7 +301,7 @@ class PreventiveMaintenanceQuestionAnswerForm(forms.models.ModelForm):
 
     def get_question_field(self, question, **kwargs):
         try:
-            return self.FIELDS[question.answer_type](**kdwargs)
+            return self.FIELDS[question.answer_type](**kwargs)
         except KeyError:
             return forms.ChoiceField(**kwargs)
 
