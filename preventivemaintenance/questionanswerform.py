@@ -84,26 +84,26 @@ class PreventiveMaintenanceQuestionAnswerForm(forms.models.ModelForm):
         self.__add_extra_fields()
 
 
-    def question_step(self):
+    def qs_step(self):
         if self.step == len(self.categories):
-            question_step = (
+            qs_step = (
                 self.asset.question_set.question.filter(
                     category__isnull=True, category_id=self.categories[self.step]
                     ).prefetch_related("question").order_by("order", "id")
             )
-        elif self.categories[self.step].is_comments:
-            question_step = self.asset.question_set.filter(
+        elif self.categories[self.step].is_comment:
+            qs_step = self.asset.question_set.question.filter(
                 category_id = self.categories[self.step],
                 deleted = False
             ).order_by("order", "id")
 
         else:
-            question_step = self.asset.question_set.filter(
+            qs_step = self.asset.question_set.question.filter(
                 category_id = self.categories[self.step],
                 parent__isnull = True
             ).order_by("order", "id")
 
-        return question_step
+        return qs_step
 
     def get_child_questions(self):
         child_questions = self.questions.get_all_child_question_by_category(include_self=False)
@@ -124,7 +124,7 @@ class PreventiveMaintenanceQuestionAnswerForm(forms.models.ModelForm):
 
     def get_comment_questions(self):
         for question in self.questions:
-            if question.category.is_comments is True and question.parent:
+            if question.category.is_comment is True and question.parent:
                 answer = Answer.objects.filter(
                     question=question,
                     preventive_maintenance = self.preventivemaintenance
@@ -166,8 +166,8 @@ class PreventiveMaintenanceQuestionAnswerForm(forms.models.ModelForm):
         field.widget.attrs["category_id"] = (question.category.pk if question.category else "")
         
         field.widget.attrs["comment_category_id"] = (
-            self.asset.question_set.question.filter(category__is_comments=True).first().category.pk
-            if self.asset.question_set.question.filter(category__is_comments=True).exists() else ""
+            self.asset.question_set.question.filter(category__is_comment=True).first().category.pk
+            if self.asset.question_set.question.filter(category__is_comment=True).exists() else ""
         )
 
         field.widget.attrs["fail_condition_answer"] = (
@@ -270,7 +270,7 @@ class PreventiveMaintenanceQuestionAnswerForm(forms.models.ModelForm):
     def add_questions(self):
 
         if self.step is not None:
-            for question in self.question_step():
+            for question in self.qs_step():
                 self.questions.append(question)
                 answer = self._get_preexisting_answer(question)
 

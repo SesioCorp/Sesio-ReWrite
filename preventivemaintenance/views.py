@@ -146,7 +146,7 @@ class PreventiveMaintenanceQuestionAnswerView(View):
             
             ctx = {
                 "question": child_question,
-                "answer": get_answer_by_preventive_maintenance(child_question, preventivemaintenance),
+                "answer": self.get_answer_by_preventive_maintenance(child_question, preventivemaintenance),
                 "slug": slug,
                 "asset": asset,
                 "question_set": self.get_question_and_categroy_by_question_set(asset),
