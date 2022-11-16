@@ -5,6 +5,8 @@
 {% load crispy_forms_tags %}
 {% load i18n %}
 
+{% load utils_tags %}
+
 {% block extra_css %}
 
 {% endblock extra_css %}
@@ -26,7 +28,7 @@
                         <div class="stepwizard-row setup-panel">
                             {% for category in categories %}
                             <div class="stepwizard-step col-xs-3">
-                                <a href="#step-{{forloop counter}}" type="button" class="btn {% if forloop.counter ==1 %} btn-success {% endif %} btn-circle {% if forloop.counter != 1 %} disabled {% endif %}">{{forloop.counter}}</a>
+                                <a href="#step-{{forloop.counter}}" type="button" class="btn {% if forloop.counter == 1 %} btn-success {% endif %} btn-circle {% if forloop.counter != 1 %} disabled {% endif %}">{{forloop.counter}}</a>
                                 <p><label for="" class="text-capitalize">{{category.title}}</label></p>
                             </div>
                             {% endfor %}
@@ -78,3 +80,4 @@
         </div>
     </div>
 </section>
+{% endblock content %}

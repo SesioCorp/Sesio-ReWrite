@@ -2,6 +2,7 @@ from urllib import request
 from django import template
 from django.conf import settings
 from django.core.paginator import Paginator
+from preventivemaintenance.questionanswerform import PreventiveMaintenanceQuestionAnswerForm
 
 register = template.Library()
 
@@ -24,5 +25,10 @@ def qs_paginator(context, qs):
     page_number = request.GET.get(settings.PAGINATION_PAGE_PARAM)
     page = paginator.get_page(page_number)
     return page
+
+@register.simple_tag()
+def get_preventivemaintenance_form(slug, asset, user, step):
+    form = PreventiveMaintenanceQuestionAnswerForm(slug=slug, asset=asset, user=user, step=step)
+    return form
 
 
