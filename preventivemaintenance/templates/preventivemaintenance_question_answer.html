@@ -44,7 +44,7 @@
                                 <h3 class="card-title font-weight-bold text-capitalize pm_details">{{ category.title }}</h3>
                             </div>
                             <div class="card-body text-capitalize pm_card_body" id="{{ category.slug }}" data-step="step-{{ forloop.counter }}" data-step_last="step-{{ categories|length }}">
-                                {% get_preventivemaintenance_form preventivemaintenance_slug request.user forloop.counter0 as form %}
+                                {% get_preventivemaintenance_form preventivemaintenance_slug request.user forloop.counter 0 as form %}
                                 {% bootstrap_form form %}
                             </div>
                             <div class="card-footer text-center preventivemaintenance-form-btn">

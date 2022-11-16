@@ -99,7 +99,7 @@ class PreventiveMaintenanceDetailView(DetailView):
 
 
 class PreventiveMaintenanceQuestionAnswerView(View):
-    template_name = "preventive_maintenance_question_answer.html"
+    template_name = "preventivemaintenance_question_answer.html"
 
     def get(self, request, *args, **kwargs):
         asset = Asset.objects.get(pk=int(kwargs.get("pk")))
@@ -119,7 +119,7 @@ class PreventiveMaintenanceQuestionAnswerView(View):
         context = {
             "forms": forms,
             "categories": categories,
-            "question_set": self.get_question_and_categroy_by_question_set(asset),
+            "question_set": self.get_question_and_category_by_question_set(asset),
             "preventivemaintenance_slug": slug,
             "asset": asset,
             "pk": asset.pk,
@@ -183,4 +183,21 @@ class PreventiveMaintenanceQuestionAnswerView(View):
             }
             render_template = "preventivemaintenance/partials/form_render.html"
             return render(request, render_template, ctx)
+        return render(request, self.template_name, context)
+
+    def get_question_and_category_by_question_set(self, asset):
+        data = {}
+        categories = asset.question_set.question.values("category").distinct()
+        for category_id in categories:
+            try:
+                category = QuestionCategory.objects.get(pk=category_id["category"])
+                data[category.title] = 0
+            except Exception:
+                category = category_id
+                data[category["category"]] = 0
+            questions = asset.question_set.question.filter(category_id=category_id["category"])
+            data[category.title] = questions
+        return data
+    
+    def handle_invalid_form(self, context, form, request, survey):
         return render(request, self.template_name, context)
