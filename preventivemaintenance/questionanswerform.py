@@ -219,6 +219,13 @@ class PreventiveMaintenanceQuestionAnswerForm(forms.models.ModelForm):
                 str(obj.parent.pk) for obj in question.get_all_child_questions(include_self=False)
             ]
         )
+        field.widget.attrs["parent_question_text"] = (
+            question.parent.question_text
+            if question.parent and 
+            len(question.parent.get_all_child_questions(include_self=False)) ==2
+            else ""
+        )
+        field.widget.attrs["question_set_id"] = self.asset.question_set.pk
 
         if question.answer_type == RADIO:
             field.widget.attrs["required"] = True
