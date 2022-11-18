@@ -82,3 +82,57 @@
     </div>
 </section>
 {% endblock content %}
+
+{% block extra_js %}
+    <script type="text/javascript"> 
+        $(function (){
+            var navListItems = $("div.setup-panel div a"),
+                allWells = $(".setup-content"),
+                allNextBtn = $(".nextBtn");
+            allPrevBtn = $(".prevBtn"),
+            navListItems.click(function(e){
+                e.preventDefault();
+                var $target = $($(this).attr("href")),
+                    $item = $(this);
+                if (!$item.hasClass("disabled")) {
+                    navListItems.removeClass("btn-success").addClass("btn-default")
+                    $item.removeClass("btn-default").addClass("btn-success");
+                    allWells.hide();
+                }
+                $target.show()
+            });
+            allNextBtn.click(function (){
+                var curStep = $(this).closest(".setup-content"),
+                    curStepBtn = curStep.attr("id"),
+                    nextStepWizard = $('div.setup-panel div a[href="#' + curStepBtn + '"]').parent().next().children("a"),
+                    curInputs = curStep.find("input[type='text'], input[type='number'], input[type='url'], input[type='file'], select, textarea"),
+                    isValid = true
+                $("input").removeClass("is-invalid");
+                var delay = 0;
+                var offset = 200;
+                for (var i=0; i < curInputs.length; i++) {
+                    if (!curInputs[i].validity.valid || curInputs[i].value == '') {
+                        if (curInputs[i].closest('div').children[3] == null) {
+                            isValid = false;
+                            $(curInputs[i]).addClass("is-invalid");
+                            $('html, body').animate({scrollTop: $($(".is-invalid")[0]).offset().top - offset }, delay);
+                        }
+                    }
+                    else {
+                        if ($(curInputs[i]).hasClass("is-invalid")) {
+                            $(curInputs[i]).removeClass("is-invalid");
+                        }
+                        $(curInputs[i]).addClass("is-valid")
+                    }
+                }
+                if (isValid) nextStepWizard.removeClass("disabled").trigger("click");
+            });
+            allPrevBtn.click(function (){
+                var curStep = $(this).closest(".setup-content"),
+                    curStepBtn = curStep.attr("id"),
+                    nextStepWizard = $('div.setup-panel div a[href="#' + curStepBtn +'"]').parent().prev().children("a") 
+            })
+
+        })
+    </script>
+{% endblock estra_js %}
