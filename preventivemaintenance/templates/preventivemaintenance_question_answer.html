@@ -130,9 +130,88 @@
             allPrevBtn.click(function (){
                 var curStep = $(this).closest(".setup-content"),
                     curStepBtn = curStep.attr("id"),
-                    nextStepWizard = $('div.setup-panel div a[href="#' + curStepBtn +'"]').parent().prev().children("a") 
-            })
+                    nextStepWizard = $('div.setup-panel div a[href="#' + curStepBtn +'"]').parent().prev().children("a"),
+                    curInputs = curStep.find("input[type='text'], input[type='url'], input[type='file'], input[type='radio'], select, textarea"),
+                    isValid = true;
+                $("input").removeClass("is-invalid");
+                if (isValid) nextStepWizard.removeClass('disabled').trigger('click');
+            });
+            $('div.setup-panel div a.btn-success').trigger('click');
+        })
+    </script>
+    <script type="text/javascript">
+        $(document).on('change', 'select', function (){
+            obj = $(this);
+            ele = document.getElementById($(this).attr('id'));
+            step = this.parentElement.parentElement.dataset['step']
+            if (obj.attr('warning_options') != 'None'){
+                if (obj.attr('warning_options').toLocaleLowerCase() == this.value.toLocaleLowerCase()) {
+                    is_element_available = document.getElementById('warning-' + $(this).attr('id'))
 
+                    if (is_element_available) {
+                        is_element_available.remove()
+                        warning_ele = document.createElement('div')
+                        warning_ele.className = "text-warning warning-msg";
+                        warning_ele.id = "warning-" + $(this).attr('id');
+                        warning_ele.innerHTML = obj.attr("warnings");
+                        ele.after(warning_ele);
+                        $('#continue-' + step).prop('disabled', true);
+                    }
+                    else {
+                        warning_ele = document.createElement('div');
+                        warning_ele.className = "text-warning warning-msg";
+                        warning_ele.id = "warning-" + $(this).attr('id');
+                        warning_ele.innerHTML = obj.attr('warnings');
+                        ele.after(warning_ele);
+                        $('#continue-' + step).prop('disabled', true);
+                    }
+                    return false
+                }
+                else {
+                    is_element_available = document.getElementById('warning-' + $(this).attr('id'))
+                    if (is_element_available) {
+                        is_element_available.remove()
+                        $('#continue-' + step).prop('disabled', false)
+                    }
+                }
+            }
+        });
+        $("input[type='radio']").on('change', function (){
+            clearTimeout(radiochangetimer);
+            obj = $(this);
+            ele = document.getElementById($(this).attr('id'));
+            
+            if (obj.attr('warning_options') != 'None') {
+                if (obj.attr('warning_options').toLocaleLowerCase() == this.value.toLocaleLowerCase()) {
+                    is_element_available = document.getElementById('warning-' + $(this).attr('id'))
+                    if (is_element_available) {
+                        is_element_available.remove()
+                        warning_ele = document.createElement('div');
+                        warning_ele.className = "text-warning warning-msg";
+                        warning_ele.id = "warning-" + $(this).attr('id');
+                        warning_ele.innerHTML = obj.attr('warnings');
+                        ele.after(warning_ele);
+                        $('#continue-' + step).prop('disable', true);
+                    }
+                    else {
+                        warning_ele = document.createElement('div');
+                        warning_ele.className = "text-warning warning-msg";
+                        warning_ele.id = "warning-" + $(this).attr('id');
+                        warning_ele.innerHTML = obj.attr('warnings');
+                        ele.after(warning_ele);
+                        $('#continue-' + step).prop('disable', true);
+
+                    }
+                    return false
+                }
+                else {
+                    is_element_available = document.getElementById('warning-' + $(this).attr('id'))
+                    if (is_element_available) {
+                        is_element_available.remove()
+                        $('#continue-' + step).prop('disable', true);
+                    }
+                }
+            }
         })
     </script>
 {% endblock estra_js %}
