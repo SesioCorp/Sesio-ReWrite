@@ -212,6 +212,100 @@
                     }
                 }
             }
-        })
+            if (obj){
+                radiochecktimer = setTimeout(() => {
+                    parent_answer_arr = obj.attr('fail_condition_answer').toLocaleLowerCase().split(',');
+                    if (parent_answer_arr.includes(obj.val().toLocaleLowerCase())) {
+                        append_obj(obj);
+                    }
+                    else {
+                        children_ids = obj.attr('parent_question_ids').split(',')
+                        $.each(children_ids, (i, val) => {
+                            parent_id_attr =(i==0) ? obj.attr('id'): "id_question_" + val;
+                            child_get_attr = "[parent_id=id_parent_" + val + "]"
+                            child_ele = $(child_get_attr)
+                            $.each(child_ele, (index, element) => {
+                                if (element.type == 'textarea') {
+                                    element.parentElement.remove()
+                                    comment_question_id = element.getAttribute('name').split('_')[1]
+                                    post_data = {
+                                        'csrfmiddlewaretoken': '{{ csrf_token }}',
+                                        'pk': comment_question_id,
+                                        'preventivemaintenance_id': obj.attr('preventivemaintenance_id'),
+                                        'answer': child_ele.val()
+                                    }
+                                }
+                                else {
+                                    element.parentElement.remove()
+                                }
+                            })
+                        });
+                    }
+                }, 200);
+            }
+        });
+
+        $("input[type='number']").on('keyup', function(){
+            obj = $(this);
+            if (obj) {
+                ele = document.getElementById($(this).attr('id'));
+                question_id = parseInt($(this).attr('id').split('_')[2]);
+                asset_id = parseInt($(this).attr('asset_id'));
+                preventivemaintenance_id = parseInt($(this).attr('preventivemaintenance_id'));
+                data = { 'value': obj.val()}
+
+                $.get(url, data, function (response){
+                    is_element_available = document.getElementById('warning-' + obj.attr('id'))
+                    if (response.status == 'fail') {
+                        if (is_element_available){
+                            is_element_available.remove()
+                            warning_ele = document.createElement('div');
+                            warning_ele.className = "text-warning warning-codes";
+                            warning_ele.id = "warning-" + obj.attr('id');
+                            warning_ele.innerHTML = response.warning;
+                            ele.after(warning_ele);
+                            append_obj(obj)
+                        }
+                        else {
+                            warning_ele = document.createElement('div');
+                            warning_ele.className = "text-warning warning-codes";
+                            warning_ele.id = "warning-" + obj.attr('id');
+                            warning_ele.innerHTML = response.warning;
+                            ele.after(warning_ele);
+                            append_obj(obj)   
+                        }
+                    }
+                    else {
+                        is_element_available = document.getElementById('warning-' + obj.attr('id'))
+                        is_element_available ? is_element_available.remove() : ''
+                        child_get_attr = "[parent_id=id_parent_" + obj.attr('id').split('_')[2] + "]"
+                        comment_element = document.getElementById(obj.attr('name') + "_" + obj.attr('asset_id'));
+                        if (comment_element) {
+                            comment_element.remove()
+                            comment_question_id = comment_element.getAttribute('comment_question_id').split('_')[2]
+                            post_data = {
+                                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                                'pk': comment_question_id
+                            }
+                        }
+                        else {
+                            ques_id = "id_question_" + obj.attr('comment_question_id')
+                            ques_ele = document.getElementById(ques_id)
+                            if (ques_ele) {
+                                ques_ele.parentElement.remove()
+                                post_data = {
+                                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                                    'pk': obj.attr('comment_question_id')
+                                }
+                            }
+                        }
+                        child_ele = $(child_get_attr)
+                        if (child_ele) {
+                            child_ele.parent().remove()
+                        }
+                    }
+                })
+            }
+        });
     </script>
 {% endblock estra_js %}
