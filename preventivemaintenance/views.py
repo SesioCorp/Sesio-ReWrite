@@ -151,11 +151,11 @@ class PreventiveMaintenanceQuestionAnswerView(View):
                 "asset": asset,
                 "question_set": self.get_question_and_categroy_by_question_set(asset),
                 "comment_question_id": asset.question_set.question.filter(
-                    parent=child_question, category__is_comments=True, deleted=True
+                    parent=child_question, category__is_comment=True, deleted=True
                 ).first().pk if asset.question_set.question.filter(
-                    parent=child_question, category__is_comments=True, deleted=True
+                    parent=child_question, category__is_comment=True, deleted=True
                 ).exists() else "",
-                "comment_catagory": comment_catagory,
+                "comment_catagory": comment_category,
                 "preventivemaintenance": preventivemaintenance,
                 "parent_question_text": child_question.parent.question_text if child_question and child_question.parent
                 and len(child_question.parent.get_all_child_questions(include_self=False)) == 2 else "",

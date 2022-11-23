@@ -307,5 +307,84 @@
                 })
             }
         });
+        $("input[type='number']").on('keydown', function (){
+            return event.keyCode === 8 || event.keyCode === 46 ? true: ! isNaN(Number(event.key))
+        });
+
+        function append_obj(obj) {
+            children_ids = obj.attr('parent_question_ids').split(',')
+            $.each(children_ids, (i, val) => {
+                child_get_attr = "[parent_id=id_parent_" + val + "]"
+                child_ele = $(child_get_attr)
+                if (child_ele.length ==0) {
+                    id_attr = (i == 0) ? obj.attr('id') : "id_question_" + val;
+                    question_id = (i == 0) ? parseInt(obj.attr('id').split('_')[2]) : val;
+                    preventivemaintenance_slug = obj.attr('preventivemaintenance_slug');
+                    asset_name = obj.attr('asset_name');
+                    asset_id = parseInt(obj.attr('asset_id'));
+                    step = '{{ step }}';
+                    parent_answer_arr = $('#' + id_attr).attr('fail_condition_answer').toLocaleLowerCase().split(',')
+
+                    if (parent_answer_arr.includes($('#' + id_attr).val().toLocaleLowerCase())) {
+                        kwargs = {
+                            'question_id': question_id,
+                            'answer': obj.val(),
+                            'preventivemaintenance_slug': preventivemaintenance_slug,
+                            'asset_name': asset_name,
+                            'asset_id': asset_id,
+                            'step': step
+                        };
+                        url = "{% url 'preventivemaintenance:preventive-maintenance-question-answer-form' slug='str' pk=0 %}".replace('/str/0/', "/" + preventivemaintenance_slug + "/" + asset_id + "/");
+                        $.ajax({
+                            method: 'GET',
+                            url: url,
+                            data: kwargs,
+                            async: false,
+                            success: function () {
+                                $('#loading').hide();
+                            },
+                            beforeSend: function () {
+                                $('#loading').show();
+                            },
+                            complete: function () {
+                                $('#loading').hide();
+                            }
+                        }).done((response) => {
+                            ele = document.createElement('div');
+                            ele.innerHTML = response;
+                            parent_element = document.getElementsById(id_attr);
+                            parent_element.parentElement.after(ele);
+                            question_child_count = (i == 0) ? obj.attr("question_child_count") : $('#' + id_attr).attr("quetion_child_count");
+                            quetion_parent_child_count = (i == 0) ? obj.attr("question_parent_child_count") : $('#' + id_attr).attr("quetion_parent_child_count");
+
+                            if (parseInt(question_parent_child_count) == 2) {
+                                post_data = {
+                                    'csrfMiddlewareToken': '{{ csrf_token }}',
+                                    'facility': obj.attr('facility_id'),
+                                    'asset' : asset_id,
+                                    'category' : obj.attr('comment_category_id'),
+                                    'question_text' : 'Fail comments for' + obj.attr('question_text'),
+                                    'answer_type' : 'text',
+                                    'parent' : question_id,
+                                    'question_set_id' : obj.attr('question_set_id')
+                                }
+                            }
+                            else {
+                                post_data = {
+                                    'csrfMiddlewareToken': '{{ csrf_token }}',
+                                    'facility': obj.attr('facility_id'),
+                                    'asset' : asset_id,
+                                    'category' : obj.attr('comment_category_id'),
+                                    'question_text' : 'Fail comments for' + obj.attr('question_text'),
+                                    'answer_type' : 'text',
+                                    'parent' : question_id,
+                                    'question_set_id' : obj.attr('question_set_id')
+                                }  
+                            }
+                        })
+                    }
+                }
+            })
+        }
     </script>
-{% endblock estra_js %}
+{% endblock extra_js %}
