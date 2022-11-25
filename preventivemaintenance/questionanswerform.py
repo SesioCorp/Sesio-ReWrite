@@ -48,8 +48,6 @@ class PreventiveMaintenanceQuestionAnswerForm(forms.models.ModelForm):
     def __init__(self, *args, **kwargs):
 
         #Initialize the Form
-        
-        self.questions = []
 
         self.asset = kwargs.pop("asset")
         self.slug = kwargs.pop("slug")
@@ -83,6 +81,52 @@ class PreventiveMaintenanceQuestionAnswerForm(forms.models.ModelForm):
         self.add_questions()
         self.__add_extra_fields()
 
+    def add_questions(self):
+
+        if self.step is not None:
+            questions = []
+            for question in self.qs_step():
+                questions.append(question)
+                answer = self._get_preexisting_answer(question)
+
+                if answer is not None:
+                    child_questions = question.get_all_child_question_by_category(include_self=False)
+                    index = 0
+
+                    for child_question in child_questions:
+                        answer = (
+                            answer if index == 0 else self._get_preexisting_answer(child_question.parent)
+                        )
+
+                        if child_question is not None and answer.is_fail:
+                            self.questions.append(child_question)
+
+                        else:
+                            break
+
+                        index += 1
+                    
+                for question in questions:
+                    if question.category.is_comment is True and question.parent:
+                        answer = Answer.objects.filter(
+                            question=question,
+                            preventive_maintenance = self.preventivemaintenance
+                        )
+                        parent_answer = self._get_preexisting_answer(question.parent)
+                        parent_child_question = (
+                            question.parent.parent_question.filter(category=question.parent.category).first()
+                            if question.parent.parent_question.filter(category=question.parent.category).exists()
+                            else None
+                        )
+
+                        if (
+                            answer.exists() and parent_answer and parent_child_question is not None
+                        ):
+                            self.add_question(question)
+
+                    else:
+                        self.add_question(question)
+
 
     def qs_step(self):
         if self.step == len(self.categories):
@@ -104,45 +148,7 @@ class PreventiveMaintenanceQuestionAnswerForm(forms.models.ModelForm):
             ).order_by("order", "id")
 
         return qs_step
-
-    def get_child_questions(self):
-        child_questions = self.questions.get_all_child_question_by_category(include_self=False)
-        index = 0
-
-        for child_question in child_questions:
-            answer = (
-                answer if index == 0 else self._get_preexisting_answer(child_question.parent)
-            )
-
-            if child_question is not None and answer.is_fail:
-                self.questions.append(child_question)
-
-            else:
-                break
-
-            index += 1
-
-    def get_comment_questions(self):
-        for question in self.questions:
-            if question.category.is_comment is True and question.parent:
-                answer = Answer.objects.filter(
-                    question=question,
-                    preventive_maintenance = self.preventivemaintenance
-                )
-                parent_answer = self._get_preexisting_answer(question.parent)
-                parent_child_question = (
-                    question.parent.parent_question.filter(category=question.parent.category).first()
-                    if question.parent.parent_question.filter(category=question.parent.category).exists()
-                    else None
-                )
-
-                if (
-                    answer.exists() and parent_answer and parent_child_question is not None
-                ):
-                    self.add_question(question)
-
-            else:
-                self.add_question(question)
+        
 
     def add_question(self, question, data=0):
         kwargs = {"label": question.question_text, "required": False}
@@ -274,17 +280,7 @@ class PreventiveMaintenanceQuestionAnswerForm(forms.models.ModelForm):
                 self.add_question(question)
 
 
-    def add_questions(self):
-
-        if self.step is not None:
-            for question in self.qs_step():
-                self.questions.append(question)
-                answer = self._get_preexisting_answer(question)
-
-                if answer is not None:
-                    self.get_child_questions()
-                    self.get_comment_questions()
-
+    
     
     def get_question_widget(self, question):
         try:

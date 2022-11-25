@@ -42,7 +42,6 @@ class QuestionCategory(BaseModel):
 class Question(BaseModel):
     facility = models.ForeignKey(Facility, on_delete=models.CASCADE, related_name="questions")
     category = models.ForeignKey(QuestionCategory, on_delete=models.CASCADE, related_name="questions")
-    question = models.TextField()
     answer_type = models.CharField(choices=QUESTION_TYPES, max_length=50)
     choices = models.TextField(blank=True, null=True)
     order = models.IntegerField(blank=True, null=True)
@@ -53,9 +52,9 @@ class Question(BaseModel):
 
     def __str__(self):
         if self.parent:
-            text = self.question + "(" + self.parent.question + ")"
+            text = self.question_text + "(" + self.parent.question_text + ")"
         else:
-            text = self.question
+            text = self.question_text
         return text
 
     def save(self, *args, **kwargs):
