@@ -201,3 +201,38 @@ class PreventiveMaintenanceQuestionAnswerView(View):
     
     def handle_invalid_form(self, context, form, request, survey):
         return render(request, self.template_name, context)
+
+    def treat_valid_form(self, form, kwargs, request, asset, preventivemaintenance):
+        save_form = PreventiveMaintenanceQuestionAnswerForm(
+            request.POST,
+            request.FILES or None,
+            slug=kwargs["slug"],
+            asset=asset,
+            user=request.user
+            )
+        if save_form.is_valid():
+            save_form.save(preventivemaintenance=preventivemaintenance)
+        else:
+            context = {
+                "forms": form,
+                "asset": asset,
+                "categories": form.current_categories
+            }
+            return self.handle_invalid_form(context, form, request, asset)
+        
+        preventivemaintenance_id = preventivemaintenance_id
+        if request.GET:
+            urlbind_with_get_request = (
+                reverse(
+                    "preventivemaintenance:preventive_maintenance_detail",
+                    kwargs={"pk": preventivemaintenance_id}
+                )
+                + "?" + request.GET.urlencode()
+            )
+        else: 
+            urlbind_with_get_request = reverse(
+                "preventivemaintenance:preventive_maintenance_detail",
+                kwargs={"pk":preventivemaintenance_id}
+            )
+
+        return redirect(urlbind_with_get_request)
