@@ -8,31 +8,33 @@
 {% load utils_tags %}
 
 {% block extra_css %}
-
-{% endblock extra_css %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/custom_dev.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/step-form.css' %}">
     <style>
         canvas.drawing, canvas.drawingBuffer {position: absolute; left: 0; top: 0;}
     </style>
+{% endblock extra_css %}
+    
 {% block content %}
 <section class="content">
     <div class="container">
         <div class="row">
             <div class="col-12">
                 <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title text-primary font-weight-bold">Preventive Maintenance</h3>
-                    <h3 class="card-title text-secondary font-weight-bold float-right">Code: {{preventivemaintenance_slug}}</h3>
-                </div>
-                <div class="card-body">
-                    <div class="stepwizard">
-                        <div class="stepwizard-row setup-panel">
-                            {% for category in categories %}
-                            <div class="stepwizard-step col-xs-3">
-                                <a href="#step-{{forloop.counter}}" type="button" class="btn {% if forloop.counter == 1 %} btn-success {% endif %} btn-circle {% if forloop.counter != 1 %} disabled {% endif %}">{{forloop.counter}}</a>
-                                <p><label for="" class="text-capitalize">{{category.title}}</label></p>
+                    <div class="card-header">
+                        <h3 class="card-title text-primary font-weight-bold">Preventive Maintenance</h3>
+                        <h3 class="card-title text-secondary font-weight-bold float-right">Code: {{preventivemaintenance_slug}}</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="stepwizard">
+                            <div class="stepwizard-row setup-panel">
+                                {% for category in categories %}
+                                <div class="stepwizard-step col-xs-3">
+                                    <a href="#step-{{forloop.counter}}" type="button" class="btn {% if forloop.counter == 1 %} btn-success {% endif %} btn-circle {% if forloop.counter != 1 %} disabled {% endif %}">{{forloop.counter}}</a>
+                                    <p><label for="" class="text-capitalize">{{category.title}}</label></p>
+                                </div>
+                                {% endfor %}
                             </div>
-                            {% endfor %}
                         </div>
                     </div>
                 </div>
@@ -380,6 +382,31 @@
                                     'parent' : question_id,
                                     'question_set_id' : obj.attr('question_set_id')
                                 }  
+                            }
+                            if (parseInt(question_child_count) == 1) {
+                                $.ajax({
+                                    method: "POST",
+                                    url: "{% url 'question:question-create-ajax' %}",
+                                    data: post_data,
+                                    async: false,
+                                    success: function (){
+                                        $('#loading').hide();
+                                    },
+                                    beforeSend: function (){
+                                        $('#loading').show();
+                                    },
+                                    complete: function (){
+                                        $('#loading').hide();
+                                    }
+                                }).done((res) => {
+                                    last_step = document.getElementById(obj.closest('.card-body').data('step_last'));
+                                    last_step_element = last_step.getElementByClassName("card-body");
+                                    new_div_element = document.createElement('div');
+                                    new_div_element.setAttribute('id', obj.attr('name') + '_' + obj.attr(asset_id));
+                                    new_div_element.innerHTML = res
+                                    last_step_element[0].append(new_div_element)
+                                    new_div_element.setAttribute('comment_questions_id', new_div_element.firstElementChild.getAttribute('id'));
+                                })
                             }
                         })
                     }

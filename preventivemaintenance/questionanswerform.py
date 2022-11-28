@@ -29,8 +29,6 @@ class PreventiveMaintenanceQuestionAnswerForm(forms.models.ModelForm):
         FLOAT: forms.FloatField,
         DATE: forms.DateField,
         SELECT_IMAGE: forms.ImageField,
-        RADIO: forms.RadioSelect,
-        SELECT: forms.Select
     }
 
     WIDGETS = {
@@ -169,11 +167,22 @@ class PreventiveMaintenanceQuestionAnswerForm(forms.models.ModelForm):
 
         field = self.get_question_field(question, **kwargs)
 
+        field.widget.attrs["category"] = (
+            question.category.title if question.category else ""
+        )
+
         field.widget.attrs["category_id"] = (question.category.pk if question.category else "")
         
         field.widget.attrs["comment_category_id"] = (
             self.asset.question_set.question.filter(category__is_comment=True).first().category.pk
             if self.asset.question_set.question.filter(category__is_comment=True).exists() else ""
+        )
+
+        field.widget.attrs["comment_question_id"] = (
+            self.asset.question_set.question.filter(parent=question, deleted=True).first().pk
+            if self.asset.question_set.question.filter(
+                parent=question, deleted=False, category__is_comment=True
+            ).exists() else ""
         )
 
         field.widget.attrs["fail_condition_answer"] = (
@@ -206,7 +215,7 @@ class PreventiveMaintenanceQuestionAnswerForm(forms.models.ModelForm):
         field.widget.attrs["question_text"] = question.question_text
 
         field.widget.attrs["question_child_count"] = (
-            len(question.parent.get_all_child_questions(include_self=False))
+            len(question.get_all_child_questions(include_self=False))
         )
 
         field.widget.attrs["question_parent_child_count"] = (

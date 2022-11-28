@@ -4,6 +4,7 @@ from systemandfacility.models import Facility
 from common.models import BaseModel
 from django.conf import settings
 from django.core.exceptions import ValidationError
+from django.utils.text import slugify
  
 
 TEXT = "text"
@@ -73,6 +74,23 @@ class Question(BaseModel):
         if len(values) < 2 + empty:
             message = "Selected field requires an associated list of choices."
             raise ValidationError(message)
+    
+    def get_clean_choices(self):
+        if self.choices is None:
+            return []
+        choices_list = []
+        for choice in self.choices.split(settings.CHOICES_SEPARATOR):
+            choice = choice.strip()
+            if choice:
+                choices_list.append(choice)
+        return choices_list
+
+    def get_choices(self):
+        choices_list = []
+        for choice in self.get_clean_choices():
+            choices_list.append((slugify(choice, allow_unicode=True), choice))
+        choice_tuple = tuple(choices_list)
+        return choice_tuple
     
     def get_all_child_questions(self, include_self=True, category_is_comment=True):
         child_questions = []
