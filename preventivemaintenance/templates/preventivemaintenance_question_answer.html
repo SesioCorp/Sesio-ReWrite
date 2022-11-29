@@ -410,8 +410,88 @@
                             }
                         })
                     }
+                    else {
+                        if (obj.attr('type') == 'number'){
+                            kwargs = {
+                                'question_id': question_id,
+                                'answer': obj.val(),
+                                'preventivemaintenance_slug': preventivemaintenance_slug,
+                                'asset_name': asset_name,
+                                'asset_id': asset_id,
+                                'step': step
+                            };
+                            url = "{% url 'preventivemaintenance:preventive-maintenance-question-answer-form' slug='str' pk=0 %}".replace('/str/0/', "/" + preventivemaintenance_slug + "/" + asset_id + "/");
+                            $.ajax({
+                                method: 'GET',
+                                url: url,
+                                data: kwargs,
+                                async: false,
+                                success: function () {
+                                    $('#loading').hide();
+                                },
+                                beforeSend: function () {
+                                    $('#loading').show();
+                                },
+                                complete: function () {
+                                    $('#loading').hide();
+                                }
+                            }).done((response) => {
+                                ele = document.createElement('div')
+                                ele.innerHTML = response;
+                                parent_element = document.getElementById(id_attr);
+                                parent_element.parentElement.after(ele);
+                                question_child_count = (i == 0) ? obj.attr('question_child_count') : $('#' + id_attr).attr('question_child_count')
+
+                                post_data = {
+                                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                                    'facility': obj.attr('facility_id'),
+                                    'asset': asset_id,
+                                    'category': obj.attr('comment_category_id'),
+                                    'question_text': 'Fail Comment for' + obj.attr('question_text'),
+                                    'answer_type': 'text',
+                                    'parent': question_id,
+                                    'question_set_id': obj.attr.('question_set_id')
+                                }
+                                if (parseInt(question_child_count) == 1) {
+                                    $.ajax({
+                                        method: 'POST',
+                                        url: '{% url "question:question-create-ajax" %}',
+                                        data: post_data,
+                                        async: false
+                                    }).done((res) => {
+                                        last_step = document.getElementById(obj.closest('.card-body').data('step_last'));
+                                        last_step_element = last_step.getElementByClassName('card-body');
+                                        new_div_element = document.createElement('div');
+                                        new_div_element.setAttribute('id', obj.attr('name') + '_' + obj.attr('asset_id'));
+                                        new_div_element.innerHTML = res
+                                        last_step_element[0].append(new_div_element)
+                                        new_div_element.setAttribute('comment_question_id', new_div_element.firstElementChild.getAttribute('id'));
+                                    })
+                                }
+                            })
+                        }
+
+                    }
                 }
             })
         }
+        $('.save_and_exit').click(function (e) {
+            $('#question_answer_form').append('<input type="hidden" name="save_and_exit" value="true" />')
+            $('#question_answer_form').submit()
+        });
+
+        function hide_elements () {
+            document.querySelectorAll(".prevBtn").forEach(e => e.disabled =false);
+            document.querySelectorAll(".nextBtn").forEach(e => e.disabled =false);
+            csrfmiddlewaretoken = "{{ csrf_token }}"
+
+        }
+    </script>
+    <script>
+        $(document).ready(function () {
+            $("#question_answer_form").on("submmit", function () {
+                $("#loading").show();
+            });
+        });
     </script>
 {% endblock extra_js %}
