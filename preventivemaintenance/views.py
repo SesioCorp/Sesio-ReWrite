@@ -9,6 +9,8 @@ from .forms import PreventiveMaintenanceAssetDetailsForm
 from asset.models import *
 from django.http import HttpResponseRedirect
 from .questionanswerform import PreventiveMaintenanceQuestionAnswerForm
+from django.contrib import messages
+from django.shortcuts import redirect, render
 
 
 TEXT = "text"
@@ -185,6 +187,36 @@ class PreventiveMaintenanceQuestionAnswerView(View):
             return render(request, render_template, ctx)
         return render(request, self.template_name, context)
 
+    def post(self, request, *args, **kwargs):
+        asset = Asset.objects.get(pk=int(kwargs.get("pk")))
+        step = kwargs.get("step", 0)
+        slug = kwargs.get("slug", 0)
+        preventivemaintenance = PreventiveMaintenance.objects.get(slug=slug)
+        save_and_exit = False
+        forms = PreventiveMaintenanceQuestionAnswerForm(
+            request.POST,
+            request.FILES or None,
+            slug=slug,
+            asset=asset,
+            user=request.user,
+            step=step
+        )
+        categories = forms.current_categories
+        context = {
+            "forms": forms,
+            "asset": asset,
+            "categories": categories
+        }
+
+        if forms.is_valid():
+            if save_and_exit:
+                messages.warning(self.request, f"Status: {asset} in progress")
+            else:
+                messages.warning(self.request, f"Status: {asset} completed")
+            return self.treat_valid_form(forms, kwargs, request, asset, preventivemaintenance)
+        return self.handle_invalid_form(context, forms, request, asset)
+
+
     def get_question_and_category_by_question_set(self, asset):
         data = {}
         categories = asset.question_set.question.values("category").distinct()
@@ -220,7 +252,7 @@ class PreventiveMaintenanceQuestionAnswerView(View):
             }
             return self.handle_invalid_form(context, form, request, asset)
         
-        preventivemaintenance_id = preventivemaintenance_id
+        preventivemaintenance_id = preventivemaintenance.id
         if request.GET:
             urlbind_with_get_request = (
                 reverse(

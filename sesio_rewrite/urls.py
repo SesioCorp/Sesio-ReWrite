@@ -13,7 +13,8 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
     path('workorder/', include(('workorder.urls', 'workorder'), namespace="workorder")),
     path('systemandfacility/', include(('systemandfacility.urls', 'systemandfacility'), namespace="systemandfacility")),
-    path('preventivemaintenance/', include(('preventivemaintenance.urls', 'preventivemaintenance'), namespace="preventivemaintenance"))
+    path('preventivemaintenance/', include(('preventivemaintenance.urls', 'preventivemaintenance'), namespace="preventivemaintenance")),
+    path('question/', include(('question.urls', 'question'), namespace='question'))
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

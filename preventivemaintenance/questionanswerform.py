@@ -88,7 +88,7 @@ class PreventiveMaintenanceQuestionAnswerForm(forms.models.ModelForm):
                 answer = self._get_preexisting_answer(question)
 
                 if answer is not None:
-                    child_questions = question.get_all_child_question_by_category(include_self=False)
+                    child_questions = question.get_all_child_questions_by_category(include_self=False)
                     index = 0
 
                     for child_question in child_questions:
@@ -501,7 +501,7 @@ class PreventiveMaintenanceQuestionAnswerForm(forms.models.ModelForm):
                     answer = None
 
                 if answer is None:
-                    answer = Answer(questions=question)
+                    answer = Answer(question=question)
                 
                 if question.answer_type in [TEXT, SHORT_TEXT, SELECT, RADIO, DATE]:
                     answer.answer_type_text_number = field_value
@@ -515,14 +515,15 @@ class PreventiveMaintenanceQuestionAnswerForm(forms.models.ModelForm):
                 answer.user = CustomUser.objects.all().last()
                 answer.preventive_maintenance = preventivemaintenance
                 answer.is_active = True
-                status = get_answer_by_preventive_maintenance(question, preventivemaintenance)["parent_answer"]
+                answer.save()
+                # status = get_answer_by_preventive_maintenance(question, preventivemaintenance)["parent_answer"]
 
-                if status.lower() == "fail":
-                    answer.is_fail = True
-                    answer.repair_due_date = (
-                        answer.preventive_maintenance.updated_at + timezone.timedelta(days = 45))
-                    answer.save()
-                else:
-                    answer.is_fail = False
-                    answer.save()
+                # if status.lower() == "fail":
+                #     answer.is_fail = True
+                #     answer.repair_due_date = (
+                #         answer.preventive_maintenance.updated_at + timezone.timedelta(days = 45))
+                #     answer.save()
+                # else:
+                #     answer.is_fail = False
+                #     answer.save()
         return response

@@ -19,22 +19,23 @@ class Answer(BaseModel):
 
     def __str__(self):
         if self.answer_type_text:
-            return self.answer_type_text
+            return str(self.answer_type_text)
 
         elif self.answer_type_integer:
-            return self.answer_type_integer
+            return str(self.answer_type_integer)
 
         elif self.answer_type_float:
-            return self.answer_type_float
+            return str(self.answer_type_float)
+        else:
+            return "yes"
+        # elif self.answer_type_boolean:
+        #     if self.answer_type_boolean == True:
+        #         return "Yes"
 
-        elif self.answer_type_boolean:
-            if self.answer_type_boolean == True:
-                return "Yes"
+        #     else: return "No"
 
-            else: return "No"
-
-        elif self.answer_type_image:
-            return "Image Type Answer"
+        # elif self.answer_type_image:
+        #     return "Image Type Answer"
     
     class Meta:
         verbose_name = "Answer"
