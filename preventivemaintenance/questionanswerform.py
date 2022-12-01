@@ -516,14 +516,14 @@ class PreventiveMaintenanceQuestionAnswerForm(forms.models.ModelForm):
                 answer.preventive_maintenance = preventivemaintenance
                 answer.is_active = True
                 answer.save()
-                # status = get_answer_by_preventive_maintenance(question, preventivemaintenance)["parent_answer"]
+                status = get_answer_by_preventive_maintenance(question, preventivemaintenance)["parent_answer"]
 
-                # if status.lower() == "fail":
-                #     answer.is_fail = True
-                #     answer.repair_due_date = (
-                #         answer.preventive_maintenance.updated_at + timezone.timedelta(days = 45))
-                #     answer.save()
-                # else:
-                #     answer.is_fail = False
-                #     answer.save()
+                if status.lower() == "fail":
+                    answer.is_fail = True
+                    answer.repair_due_date = (
+                        answer.preventive_maintenance.updated_at + timezone.timedelta(days = 45))
+                    answer.save()
+                else:
+                    answer.is_fail = False
+                    answer.save()
         return response
