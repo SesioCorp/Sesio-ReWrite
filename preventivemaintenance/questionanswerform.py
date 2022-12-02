@@ -7,6 +7,7 @@ from preventivemaintenance.models import PreventiveMaintenance
 from question.models import SHORT_TEXT, Question, QuestionCategory, QuestionSet
 from users.models import CustomUser
 from django.utils.text import slugify
+from preventivemaintenance.utils import get_answer_by_preventive_maintenance
 
 
 TEXT = "text"

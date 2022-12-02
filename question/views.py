@@ -25,11 +25,13 @@ class GetQuestionData(View):
                         pk__in=[key.pk for key in obj.conditional_keys.all()]
                     )
                 ]
-                if asset_preventivemaintenance.asset.data_set_form forms and obj.conditional_keys else ""
+                if asset_preventivemaintenance.asset.data_set_form and obj.conditional_keys
+                else ""
             )
             meta_data = (
                 asset_preventivemaintenance.asset.meta_data
-                if asset_preventivemaintenance.asset.meta_data else ""
+                if asset_preventivemaintenance.asset.meta_data
+                else ""
             )
             fields = [meta_data[key] for key in conditional_keys] if meta_data else ""
             if fields:
@@ -54,7 +56,7 @@ class GetQuestionData(View):
                             if obj.answer_type is INTERGER
                             else value in numpy.arange(minimum, maximum)
                         )
-                        if value in not None else ""
+                        if value is not None else ""
                     )
                     response = {"status": "None"}
                     if not is_between:

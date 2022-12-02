@@ -113,7 +113,7 @@ class Question(BaseModel):
             child_questions.append(self)
 
         for child_question in Question.objects.filter(parent=self, category=self.category):
-            _child_questions = child_question.get_all_child_questio_by_category(include_self=True)
+            _child_questions = child_question.get_all_child_questions_by_category(include_self=True)
 
             if len(_child_questions) > 0:
                 child_questions.extend(_child_questions)
