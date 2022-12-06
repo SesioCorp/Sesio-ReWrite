@@ -1,0 +1,104 @@
+{% load utils_tags %}
+
+{% if question.answer_type == "select" %}
+    <div class="form-group">
+        <label for="id_question_{{question.id}}">{{question.question_text}}</label>
+        <select name="question_{{question.pk}}"
+        category="{{question.category.title}}"
+        category_id="{{question.category.pk}}"
+        comment_category_id="{{comment_category.id}}"
+        comment_question_id="{{comment_question_id}}"
+        fail_condition_answer="{{fail_condition_answer}}"
+        asset_id="{{asset.id}}" 
+        asset_name="{{asset.name}}" 
+        facility_id="{{preventivemaintenance.facility.pk}}" 
+        parent_id="id_parent_{{question.parent.pk}}" 
+        question_text="{{question.question_text}}" 
+        question_set_id="{{asset.question_set.pk}}" 
+        class="form-control" 
+        title="" 
+        question_child_count="{{question_child_count}}" 
+        id="id_question_{{question.pk}}" 
+        parent_question_ids="{{parent_question_ids}}" 
+        child_questions="{{child_questions}}" 
+        parent_question_text="{{parent_question_text}}" 
+        question_parent_child_count="{{question_parent_child_count}}">
+            <option value="" selected="">--------</option>
+            {% get_question_choices question.choices as choices %}
+            {% for choice in choices %}
+                <option value="{{choice|lower}}" {% if answer.answer == choice.lower %} selected {% endif %}>{{choice}}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+{% elif question.answer_type == "select-multiple" %}
+    <div class="form-group">
+        <label for="id_question_{{question.id}}">{{question.question_tags}}</label>
+        <select name="question_{{question.pk}}"
+        category="{{question.category.title}}"
+        asset_id="{{asset.id}}"
+        asset_name="{{asset.name}}"
+        class="form-control" title="" required="" id="id_question_{{question.pk}}" multiple="">
+            <option value="">----------</option>
+            <option value="pass">Pass</option>
+            <option value="fail">Fail</option>
+        </select>
+    </div>
+
+{% elif question.answer_type == "radio" %}
+    <div class="form-group">
+        <label for="id_question_{{question_id}}">{{question.question_text}}</label>
+        <div class="radio radio-success" id="id_question_{{question.id}}">
+            <div class="form-check">
+                <label for="id_question_3_0" class="form-check-label">
+                    <input category="general" class="form-check-input" 
+                    asset_id="{{asset.id}}" asset_name="{{asset.name}}" id="id_question_3_0" 
+                    name="question_{{question.id}}" required="" title="" type="radio" value="Pass">
+                    Pass
+                </label>
+            </div>
+            <div class="form-check">
+                <label for="id_question_3_0" class="form-check-label">
+                    <input category="general" class="form-check-input" 
+                    asset_id="{{asset.id}}" asset_name="{{asset.name}}" id="id_question_3_0" 
+                    name="question_{{question.id}}" required="" title="" type="radio" value="Fail">
+                    Fail
+                </label>
+            </div>
+        </div>
+    </div>
+
+{% elif question.answer_type == "integer" %}
+    <div class="form-group">
+        <label for="id_question_{{question.id}}">{{question.question_text}}</label>
+        <input type="number" name="question_{{question.id}}" step="any" 
+        category="question.category" class="form-control" placeholder="{{question.question_text}}" 
+        title="" required="" id="id_question_{{question.id}}">
+    </div>
+
+{% elif question.answer_type == "float" %}
+    <div class="form-group">
+        <label for="id_question_{{question.id}}">{{question.question_text}}</label>
+        <input type="number" name="question_{{question.id}}" step="any" 
+        category="question.category" class="form-control" placeholder="{{question.question_text}}" 
+        title="" required="" id="id_question_{{question.id}}">
+    </div>
+
+{% elif question.answer_type == "date" %}
+    <div class="form-group">
+        <label for="id_question_{{question.id}}">{{question.question_text}}</label>
+        <div class="form-control date" id="datetimepicker1" data-target-input="nearest">
+            <input type="date" class="form-control datetimepicker-input" data-target="#datetimepicker1">
+            <div class="input-group-append" data-target="#datetimepicker1" data-toggle="datetimepicker">
+                <div class="input-group-text"><i class="fa fa-calender"></i></div>
+            </div>
+        </div>
+    </div>
+
+{% elif question.answer_type == "short-text" %}
+    <div class="form-group">
+        <label for="id_question_{{question.id}}">{{question.question_text}}</label>
+        <input type="text" name="question_{{question.pk}}" category="{{question.category.title}}"
+        asset_id="{{asset.id}}" asset_name="{{asset.name}}" class="form-control" title="" required="" id="id_question_{{question.pk}}">
+
+    </div>
