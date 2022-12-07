@@ -179,7 +179,6 @@
             }
         });
         $("input[type='radio']").on('change', function (){
-            clearTimeout(radiochangetimer);
             obj = $(this);
             ele = document.getElementById($(this).attr('id'));
             
@@ -450,7 +449,7 @@
                                     'question_text': 'Fail Comment for' + obj.attr('question_text'),
                                     'answer_type': 'text',
                                     'parent': question_id,
-                                    'question_set_id': obj.attr.('question_set_id')
+                                    'question_set_id': obj.attr('question_set_id')
                                 }
                                 if (parseInt(question_child_count) == 1) {
                                     $.ajax({

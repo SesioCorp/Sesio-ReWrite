@@ -2,10 +2,10 @@ from answer.models import Answer
 
 def get_answer_by_preventive_maintenance(question, preventivemaintenance):
     if Answer.objects.filter(
-        question=question, preventivemaintenance=preventivemaintenance, is_active=True
+        question=question, preventive_maintenance=preventivemaintenance, is_active=True
     ).exists():
         answer = Answer.objects.filter(
-            question=question, preventivemaintenance=preventivemaintenance
+            question=question, preventive_maintenance=preventivemaintenance
         ).last()
         answer_dict = {"parent_answer": "", "image": ""}
 
@@ -18,7 +18,7 @@ def get_answer_by_preventive_maintenance(question, preventivemaintenance):
                 try:
                     child_answer = Answer.objects.get(
                         question=question.parent_question.filter(category=question.category).first(),
-                        preventivemaintenance=preventivemaintenance, is_active=True
+                        preventive_maintenance=preventivemaintenance, is_active=True
                     )
                     image_url = child_answer.answer_type_image.url
                 except Exception:
@@ -27,7 +27,7 @@ def get_answer_by_preventive_maintenance(question, preventivemaintenance):
                 image_url = None
 
             answer_dict["answer"] = answer.answer_type_text_number
-            return_answer_dict
+            return answer_dict
 
         elif question.answer_type in ["select_image"]:
             parent_question_answer = (
@@ -39,7 +39,7 @@ def get_answer_by_preventive_maintenance(question, preventivemaintenance):
                 try:
                     child_answer = Answer.objects.get(
                         question=question,
-                        preventivemaintenance=preventivemaintenance,
+                        preventive_maintenance=preventivemaintenance,
                         is_active=True
                     )
                     image_url = child_answer.answer_type_image.url

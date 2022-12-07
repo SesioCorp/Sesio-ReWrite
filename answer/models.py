@@ -18,24 +18,7 @@ class Answer(BaseModel):
     is_fail = models.BooleanField(default=False)
 
     def __str__(self):
-        if self.answer_type_text:
-            return str(self.answer_type_text)
-
-        elif self.answer_type_integer:
-            return str(self.answer_type_integer)
-
-        elif self.answer_type_float:
-            return str(self.answer_type_float)
-        else:
-            return "yes"
-        # elif self.answer_type_boolean:
-        #     if self.answer_type_boolean == True:
-        #         return "Yes"
-
-        #     else: return "No"
-
-        # elif self.answer_type_image:
-        #     return "Image Type Answer"
+        return self.question.question_text
     
     class Meta:
         verbose_name = "Answer"

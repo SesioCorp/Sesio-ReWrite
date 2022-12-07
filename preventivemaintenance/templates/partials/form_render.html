@@ -102,3 +102,27 @@
         asset_id="{{asset.id}}" asset_name="{{asset.name}}" class="form-control" title="" required="" id="id_question_{{question.pk}}">
 
     </div>
+
+{% elif question.answer_type == "text" or question.answer_type == "short-text" %}
+    <div class="form-group" id="id_question_{{question.id}}">
+        <label for="id_question_{{question.id}}">{{question.question_text}}</label>
+        <textarea name="question_{{question.pk}}" category="{{question.category.title}}"
+        asset_id="{{asset.id}}" asset_name="{{asset.name}}" class="form-control" title="" required=""
+        id="id_question_{{question.pk}}" parent_id="id_parent_{{question.parent.pk}}"></textarea>
+    </div>
+
+{% elif question.answer_type == "select_image" %}
+    <div class="form-group">
+        <label for="id_question_{{question.id}}">{{question.question_text}}</label>
+        <br>
+        {% if answer %}
+            Currently: <a href="{{answer.image}}">{{answer.image}}</a>
+            <br>
+
+            Change:
+        {% endif %}
+        <input type="file" accept="image/*" name="question_{{question.pk}}" category="{{question.category.title}}"
+        asset_id="{{asset.id}}" asset_name="{{asset.name}}" parent_id="id_parent_{{questlion.parent.pk}}" class="form-control"
+        title="" required="" id="id_question_{{question.pk}}">
+    </div>
+ {% endif %}
