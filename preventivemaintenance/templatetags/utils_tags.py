@@ -3,6 +3,7 @@ from django import template
 from django.conf import settings
 from django.core.paginator import Paginator
 from preventivemaintenance.questionanswerform import PreventiveMaintenanceQuestionAnswerForm
+from answer.models import Answer
 
 register = template.Library()
 
@@ -73,4 +74,33 @@ def get_answer(question, preventivemaintenance):
             answer_dict["image"] = image_url
             return answer_dict
         
-        
+        if question.answer_type == "integer":
+            maximum = 50
+            minimum = 10
+            value = int(answer.answer_type_integer)
+            is_between = value in range(minimum, maximum + 1)
+            try:
+                child_answer = Answer.objects.get(question=question.parent_question.filter(category=question.category).first(), preventive_maintenance=preventivemaintenance)
+                image_url = child_answer.answer_type_image.url
+            except Exception:
+                image_url = None
+            
+            if not is_between:
+                if value > maximum or value < minimum:
+                    answer_dict["parent_answer"] = "Fail"
+                    answer_dict["image"] = image_url
+                    return answer_dict
+                else:
+                    answer_dict["parent_answer"] = "Pass"
+                    return answer_dict
+            
+            else:
+                answer_dict["parent_answer"] = "Pass"
+                return answer_dict
+
+            answer_dict["parent_answer"] = answer.answer_type_text_number
+            return answer_dict
+
+    else:
+        return None
+
