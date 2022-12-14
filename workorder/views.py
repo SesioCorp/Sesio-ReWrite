@@ -98,17 +98,25 @@ class WorkOrderWizardView(LoginRequiredMixin, SessionWizardView):
     )
     form_list = FORMS
 
+    def get_users(self):
+        users = CustomUser.objects.filter(
+                is_dispatch=False, is_superuser=False
+            ).exclude(pk=self.request.user.pk)
+        return users
+
+    def get_dispatch_user(self):
+        dispatch_user = CustomUser.objects.filter(
+                is_dispatch=True, is_superuser=False
+            ).first()
+        return dispatch_user
+
     def get_context_data(self, form, **kwargs):
         context = super(WorkOrderWizardView, self).get_context_data(form=form, **kwargs)
 
         if self.steps.current == "WorkOrderStatusForm":
-            user = CustomUser.objects.filter(
-                is_dispatch=False, is_superuser=False
-            ).exclude(pk=self.request.user.pk)
-            dispatch_user = CustomUser.objects.filter(
-                is_dispatch=True, is_superuser=False
-            ).first()
-            context.update({"users": user})
+            users = self.get_users()
+            dispatch_user = self.get_dispatch_user()
+            context.update({"users": users})
             context.update({"dispatch_user": dispatch_user})
 
         return context
