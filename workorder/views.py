@@ -39,37 +39,52 @@ TEMPLATES = {
 class WorkOrderListView(LoginRequiredMixin, ListView):
     model = WorkOrder
 
-    def get_context_data(self, **kwargs):
-        context = super(WorkOrderListView, self).get_context_data(**kwargs)
+    def get_assigned_workorders(self):
         assigned_workorders_queryset = WorkOrder.objects.filter(
             status="open", assigned_to=self.request.user
         )
+        return assigned_workorders_queryset
+    
+    def get_unassigned_workorders(self):
         unassigned_workorders_queryset = WorkOrder.objects.filter(
             status="open", assigned_to=CustomUser.objects.get(is_dispatch=True)
         )
-        context["assigned_workorders"] = WorkOrderFilter(
-            self.request.GET, queryset=assigned_workorders_queryset
-        )
-        try:
-            context["urgent_count"] = WorkOrder.objects.filter(
+        return unassigned_workorders_queryset
+
+    def get_assigned_workorders_urgent_count(self):
+        assigned_workorders_urgent_count = WorkOrder.objects.filter(
                 assigned_to=self.request.user,
                 status="open",
                 priority=Priority.objects.get(Q(name__startswith="U")),
             ).count()
-        except Priority.DoesNotExist:
-            context["urgent_count"] = 0
+        return assigned_workorders_urgent_count
 
-        try:
-            context["unassigned_urgent_count"] = WorkOrder.objects.filter(
+    def get_unassigned_work_orders_urgent_count(self):
+        unassigned_workorders_urgent_count = WorkOrder.objects.filter(
                 assigned_to=CustomUser.objects.get(is_dispatch=True),
                 status="open",
                 priority=Priority.objects.get(Q(name__startswith="U")),
             ).count()
-        except Priority.DoesNotExist:
-            context["unassigned_urgent_count"] = 0
-        context["unassigned_workorders"] = WorkOrderFilter(
-            self.request.GET, queryset=unassigned_workorders_queryset
+        return unassigned_workorders_urgent_count
+
+    def get_context_data(self, **kwargs):
+        context = super(WorkOrderListView, self).get_context_data(**kwargs)
+        context["assigned_workorders"] = WorkOrderFilter(
+            self.request.GET, queryset=self.get_assigned_workorders()
         )
+        context["unassigned_workorders"] = WorkOrderFilter(
+            self.request.GET, queryset=self.get_unassigned_workorders()
+        )
+        try:
+            context["assigned_workorders_urgent_count"] = self.get_assigned_workorders_urgent_count()
+        except Priority.DoesNotExist:
+            context["assigned_workorders_urgent_count"] = 0
+
+        try:
+            context["unassigned_workorders_urgent_count"] = self.get_unassigned_work_orders_urgent_count()
+        except Priority.DoesNotExist:
+            context["unassigned_workorders_urgent_count"] = 0
+
         return context
 
     def get_template_names(self):

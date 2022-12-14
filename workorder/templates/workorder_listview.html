@@ -56,7 +56,7 @@
                             Your Work Orders: <span class="text-info count_int">{{ assigned_workorders.qs.count }}</span>
                         </h3>
                         <h3 class="card-title float-right text-danger pm_details mr-5 font-weight-bold">
-                            Critical/Urgent: <span class="urgent_count">{{urgent_count}}</span>
+                            Critical/Urgent: <span class="urgent_count">{{assigned_workorders_urgent_count}}</span>
                         </float-right>
                     </div>
                     <div class="card card-body able-responsive">
@@ -92,7 +92,7 @@
                             Unassigned Work Orders: <span class="text-info count_int">{{ unassigned_workorders.qs.count }}</span>
                         </h3>
                         <h3 class="card-title float-right text-danger pm_details mr-5 font-weight-bold">
-                            Critical/Urgent: <span class="urgent_count">{{unassigned_urgent_count}}</span>
+                            Critical/Urgent: <span class="urgent_count">{{unassigned_workorders_urgent_count}}</span>
                         </float-right>
                     </div>
                     <div class="card card-body able-responsive">
