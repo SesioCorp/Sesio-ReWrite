@@ -271,12 +271,22 @@ class WorkOrderUpdateView(LoginRequiredMixin, UpdateView):
     template_name = "workorder_update_form.html"
     success_url = reverse_lazy("workorder:work_order_list")
 
+    def get_users(self):
+        users = CustomUser.objects.filter(
+                is_dispatch=False, is_superuser=False
+            ).exclude(pk=self.request.user.pk)
+        return users
+
+    def get_dispatch_user(self):
+        dispatch_user = CustomUser.objects.filter(
+                is_dispatch=True, is_superuser=False
+            ).first()
+        return dispatch_user
+
     def get_context_data(self, **kwargs):
         context = super(WorkOrderUpdateView, self).get_context_data(**kwargs)
-        users = CustomUser.objects.filter(
-            is_dispatch=False, is_superuser=False
-            ).exclude(pk=self.request.user.pk)
+        users = self.get_users()
+        dispatch_user = self.get_dispatch_user()
         context["users"] = users
-        dispatch_user = CustomUser.objects.filter(is_dispatch=True).first()
         context["dispatch_user"] = dispatch_user
         return context
