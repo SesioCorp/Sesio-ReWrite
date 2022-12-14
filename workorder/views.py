@@ -130,6 +130,14 @@ class WorkOrderWizardView(LoginRequiredMixin, SessionWizardView):
     def process_step(self, form):
         return self.get_form_step_data(form)
 
+    def get_time_spent(self):
+        time_spent = self.request.POST.get("WorkOrderStatusForm-timespent")
+        if time_spent == "":
+            time_spent = 0
+        else:
+            time_spent = time_spent
+        return time_spent
+
     def done(self, form_list, form_dict, **kwargs):
         location_data = form_dict["LocationForm"]
         location_object = location_data.save()
@@ -151,11 +159,9 @@ class WorkOrderWizardView(LoginRequiredMixin, SessionWizardView):
 
         except ObjectDoesNotExist:
             asset = []
-        timespent = self.request.POST.get("WorkOrderStatusForm-timespent")
-        if timespent == "":
-            timespent = 0
-        else:
-            timespent = timespent
+
+        time_spent = self.get_time_spent()
+
         workorder_status = self.request.POST.get("WorkOrderStatusForm-status")
         if workorder_status == "open":
             workorder = WorkOrder.objects.create(
@@ -171,7 +177,7 @@ class WorkOrderWizardView(LoginRequiredMixin, SessionWizardView):
                 assigned_to=CustomUser.objects.get(
                     id=int(self.request.POST.get("WorkOrderStatusForm-assigned_to"))
                 ),
-                timespent=int(timespent),
+                timespent=int(time_spent),
             )
         else:
             workorder = WorkOrder.objects.create(
@@ -184,7 +190,7 @@ class WorkOrderWizardView(LoginRequiredMixin, SessionWizardView):
                 status=workorder_status_data.instance.status,
                 priority=priority_object,
                 enter_device_id_manually=workorder_data.instance.enter_device_id_manually,
-                timespent=int(timespent),
+                timespent=int(time_spent),
                 completed_at=self.request.POST.get("WorkOrderStatusForm-completed_at"),
             )
 
