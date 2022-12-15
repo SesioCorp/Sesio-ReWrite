@@ -1,16 +1,12 @@
+import os
 from datetime import datetime
-from django.views.generic.base import TemplateView
-from django.views.generic.list import ListView
-from django.views.generic import View
-from django.views.generic.edit import UpdateView
-
+from django.views.generic import View, ListView, DetailView, UpdateView
 from workorder.forms import WorkOrderStatusForm, WorkOrderForm, WorkOrderAssignForm, WorkOrderUpdateForm
 from systemandfacility.forms import LocationForm
 from .models import Category, WorkOrder, Priority
 from .filters import WorkOrderFilter
 from formtools.wizard.views import SessionWizardView
 from django.core.files.storage import FileSystemStorage
-import os
 from django.core.exceptions import ObjectDoesNotExist
 from users.models import CustomUser
 from django.http import HttpResponseRedirect
@@ -18,7 +14,6 @@ from asset.models import Asset
 from django.conf import settings
 from django.http import JsonResponse
 from django.db.models import Q
-from django.views.generic.detail import DetailView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
