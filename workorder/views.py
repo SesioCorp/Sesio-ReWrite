@@ -163,36 +163,29 @@ class WorkOrderWizardView(LoginRequiredMixin, SessionWizardView):
         time_spent = self.get_time_spent()
 
         workorder_status = self.request.POST.get("WorkOrderStatusForm-status")
+        workorder = WorkOrder.objects.create(
+            created_at=datetime.now(),
+            facility=location_object.facility,
+            location=location_object,
+            category=category_object,
+            brief_description=workorder_data.instance.brief_description,
+            description=workorder_data.instance.description,
+            status=workorder_status_data.instance.status,
+            priority=priority_object,
+            enter_device_id_manually=workorder_data.instance.enter_device_id_manually,
+            timespent=int(time_spent),
+        )   
+        
+
         if workorder_status == "open":
-            workorder = WorkOrder.objects.create(
-                created_at=datetime.now(),
-                facility=location_object.facility,
-                location=location_object,
-                category=category_object,
-                brief_description=workorder_data.instance.brief_description,
-                description=workorder_data.instance.description,
-                status=workorder_status_data.instance.status,
-                priority=priority_object,
-                enter_device_id_manually=workorder_data.instance.enter_device_id_manually,
-                assigned_to=CustomUser.objects.get(
-                    id=int(self.request.POST.get("WorkOrderStatusForm-assigned_to"))
-                ),
-                timespent=int(time_spent),
+            workorder.assigned_to = CustomUser.objects.get(
+                id=int(self.request.POST.get("WorkOrderStatusForm-assigned_to"))
             )
+            workorder.save()
+
         else:
-            workorder = WorkOrder.objects.create(
-                created_at=datetime.now(),
-                facility=location_object.facility,
-                location=location_object,
-                category=category_object,
-                brief_description=workorder_data.instance.brief_description,
-                description=workorder_data.instance.description,
-                status=workorder_status_data.instance.status,
-                priority=priority_object,
-                enter_device_id_manually=workorder_data.instance.enter_device_id_manually,
-                timespent=int(time_spent),
-                completed_at=self.request.POST.get("WorkOrderStatusForm-completed_at"),
-            )
+            workorder.completed_at = self.request.POST.get("WorkOrderStatusForm-completed_at")
+            workorder.save()
 
         if asset == []:
             workorder.save()
@@ -217,6 +210,7 @@ class EnterDeviceIdView(LoginRequiredMixin, View):
             except Asset.DoesNotExist:
                 context = {"assets": None}
                 return JsonResponse(context)
+
 
 class WorkOrderDetailView(LoginRequiredMixin, DetailView):
     model = WorkOrder
