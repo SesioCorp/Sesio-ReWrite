@@ -51,19 +51,19 @@ class WorkOrderListView(LoginRequiredMixin, ListView):
         )
         return unassigned_workorders_queryset
 
+    def get_urgent_priority(self):
+        urgent_priority=Priority.objects.get(Q(name__startswith="U"))
+        return urgent_priority
+
     def get_assigned_workorders_urgent_count(self):
-        assigned_workorders_urgent_count = WorkOrder.objects.filter(
-                assigned_to=self.request.user,
-                status="open",
-                priority=Priority.objects.get(Q(name__startswith="U")),
+        assigned_workorders_urgent_count = self.get_assigned_workorders().filter(
+                priority=self.get_urgent_priority(),
             ).count()
         return assigned_workorders_urgent_count
 
-    def get_unassigned_work_orders_urgent_count(self):
-        unassigned_workorders_urgent_count = WorkOrder.objects.filter(
-                assigned_to=CustomUser.objects.get(is_dispatch=True),
-                status="open",
-                priority=Priority.objects.get(Q(name__startswith="U")),
+    def get_unassigned_workorders_urgent_count(self):
+        unassigned_workorders_urgent_count = self.get_unassigned_workorders().filter(
+                priority=self.get_urgent_priority(),
             ).count()
         return unassigned_workorders_urgent_count
 
@@ -81,7 +81,7 @@ class WorkOrderListView(LoginRequiredMixin, ListView):
             context["assigned_workorders_urgent_count"] = 0
 
         try:
-            context["unassigned_workorders_urgent_count"] = self.get_unassigned_work_orders_urgent_count()
+            context["unassigned_workorders_urgent_count"] = self.get_unassigned_workorders_urgent_count()
         except Priority.DoesNotExist:
             context["unassigned_workorders_urgent_count"] = 0
 
